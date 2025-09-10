@@ -13,8 +13,8 @@ website:
 format:
   html:
     theme:
-      - cosmo
-      - brand
+      light: minty
+      dark: darkly
     css: styles.css
     toc: true
 
