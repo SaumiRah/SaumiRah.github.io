@@ -1,12 +1,49 @@
 ---
 title: "Saumi Rahnamay"
-description: "Data Science | Computational Linguistics"
+format:
+  html:
+    html-math-method: katex
+    self-contained: false
+execute:
+  warning: false
 ---
+## **Hi, I'm Saumi.** 
+:::{layout-ncol=2}
+:::{#first-column}
+I graduated from Simon Fraser University in 2023 with a Bachelor of Arts and Social Sciences in Honours Philosophy, with a Minor in Social Data Analytics. I'm currently a masters student at UBC studying Computational Linguistics in Data Science. I expect to graduate in June 2026. 
 
-**Hi, I'm Saumi.** 
-I graduated from Simon Fraser University in 2023 with a Bachelor of Arts and Social Sciences in Honours Philosophy, with a Minor in Social Data Analytics. I'm currently a masters student at UBC studying Computational Linguistics in Data Science. I expect to graduate in June 2026.
 
-Please find my most up to date CV and a collection of completed projects below!
+You can find my most up to date CV [here](cv.pdf).
+:::
 
+:::{#second-column}
+![](img/selfie_cropped.jpg){width="250px"}
+:::
 
-*⚠️ page under construction ⚠️*
+:::
+
+## Featured Work
+
+::: {layout-ncol=3}
+
+::: {.card} 
+#### Project One
+Briefly describe your best project here.
+[[View Project](projects/project-1.qmd)]{.btn .btn-outline-primary .btn-sm}
+:::
+
+::: {.card}
+#### Project Two
+Describe your second best work.
+[[View Project](projects/project-2.qmd)]{.btn .btn-outline-primary .btn-sm}
+:::
+
+::: {.card}
+#### Project Three
+Describe your third best work.
+[[View Project](projects/project-3.qmd)]{.btn .btn-outline-primary .btn-sm}
+:::
+
+:::
+
+[View all projects →](projects.qmd)

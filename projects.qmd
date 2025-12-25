@@ -1,0 +1,8 @@
+---
+title: "Project Portfolio"
+listing:
+  contents: projects        # This is the folder where your project .qmd files live
+  type: grid                # Options: grid, default, or table
+  sort: "date desc"         # Shows newest projects first
+  categories: true          # Adds a sidebar to filter by "Python", "Data Viz", etc.
+---

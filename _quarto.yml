@@ -3,20 +3,25 @@ project:
   output-dir: docs
 
 website:
-  title: ""
+  search: false
   navbar:
     left:
       - href: index.qmd
         text: Home
-      - about.qmd
+      - href: projects.qmd
+        text: "Projects"
+      - href: cv.pdf
+        text: "CV"
+        icon: file-pdf
+    right:
+      - href: https://www.linkedin.com/in/saumi-rahnamay/
+        icon: linkedin
+
 
 format:
   html:
-    theme:
-      light: minty
-      dark: darkly
+    theme: cosmo
     css: styles.css
-    toc: true
 
 
 
