@@ -11,6 +11,8 @@ data. All categorical variables are aliased, and all numeric fields are
 shuffled at random to preserve confidentiality. File names and headers
 are kept the same.
 
+*<u>Note from the future</u>: If I were to tackle this project today I would approach the task differently: I would employ a more conrete naming convention, and would overall use more functions for DRYer code. I include this project here because it served as an important learning opportunity for me, and showcases my approach to solving a real-world assignment.*
+
 # Data Processing
 
 ``` r
@@ -104,7 +106,7 @@ head(eightSevDF)
     ## 5    Cat.5 34.92857 65.38376  7
     ## 6    Cat.6 30.63500 39.58481 30
 
-## `1884`
+## 1884
 
 ``` r
 eightFourDF <- recatData("D:\\Everything\\School\\RA position\\Tariff Schedules\\Analysis\\Sector Recategorization\\1884_Recat_V2.xlsx")
