@@ -10,7 +10,7 @@ website:
         text: Home
       - href: projects.qmd
         text: "Projects"
-      - href: cv.pdf
+      - href: SaumiRahnamay_cv.pdf
         text: "CV"
         icon: file-pdf
     right:

@@ -13,7 +13,7 @@ execute:
 I graduated from Simon Fraser University in 2023 with a Bachelor of Arts and Social Sciences in Honours Philosophy, with a Minor in Social Data Analytics. I'm currently a masters student at UBC studying Computational Linguistics in Data Science. I expect to graduate in June 2026. 
 
 
-You can find my most up to date CV [here](cv.pdf).
+You can find my most up to date CV [here](SaumiRahnamay_cv.pdf).
 :::
 
 :::{#second-column}
