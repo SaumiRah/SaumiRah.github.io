@@ -4,7 +4,7 @@ categories: [Python]
 
 This Python GUI project was orignally an assignment for COMP 218 at Athabasca University.
 
-# Assignment 4: A GUI-Based Quiz System
+# GUI-Based Quiz System
 <div style="text-align: center;">
 ![](Quiz_app.png)
 </div>
