@@ -38,13 +38,22 @@ Demonstrated a 106.16% increase in expected tips; demonstrated the effect of pre
 Inferential statistics performed with R.
 :::
 
-::: {#third-card}
+::: {#second-card}
 #### [Super Smash Brothers Player Statistics](projects/Melee-SQL.qmd)
-Analysis of my own Super Smash Brothers Melee player statistics. 
+Analysis of my own player statistics in the fighting game Super Smash Brothers Melee. 
 
 Determining where my play needs improvement, and optimizing my tournament strategy.
 
 EDA performed in SQL.
+:::
+
+::: {#second-card}
+#### Forthcoming ML Project...
+<div style="text-align: center;">
+*I am enrolled in several ML courses at UBC and am applying what I'm learning to a Machine Learning/Computational Linguistics project.*
+
+*In the meantime, I encourage you to imagine an impressive ML project here.*
+</div>
 :::
 
 :::
