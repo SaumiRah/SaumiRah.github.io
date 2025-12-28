@@ -1,0 +1,8 @@
+---
+title: "B.C. Housing: Endemic"
+description: "This is my Capstone project for the Social Data Analytics program at SFU. I presented this project to City of Vancouver at HUBBUB 18 in 2022. This research project describes the state of the BC Housing and Rental markets since the onset of the COVID-19 pandemic."
+image: BCHousingEndemic.png
+categories: [R, Visualization]
+---
+```{=html}
+<embed src="SDA 490 - Final Paper.pdf" width="800px" height="600px" />
