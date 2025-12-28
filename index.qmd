@@ -26,22 +26,25 @@ You can find my most up to date CV [here](cv.pdf).
 
 ::: {layout-ncol=3}
 
-::: {.card} 
-#### Project One
-Briefly describe your best project here.
-[[View Project](projects/project-1.qmd)]{.btn .btn-outline-primary .btn-sm}
+::: {#first-card} 
+#### [Optimizing Gratuity](projects/Optimizing_Gratuitiy.qmd)
+
+Analysis of day-of-week and precipitation levels on tip amounts from my part-time pizza delivery job. 
+
+![](projects/Pizza-Delivery-Tip-Maxxing-Part-1_files/figure-gfm/sec3-biv-graphic-1.png){width="200px"}
+
+Demonstrated a 106.16% increase in expected tips; demonstrated the effect of preset tip percentage options on expected tip. 
+
+Inferential statistics performed with R.
 :::
 
-::: {.card}
-#### Project Two
-Describe your second best work.
-[[View Project](projects/project-2.qmd)]{.btn .btn-outline-primary .btn-sm}
-:::
+::: {#third-card}
+#### [Super Smash Brothers Player Statistics](projects/Melee-SQL.qmd)
+Analysis of my own Super Smash Brothers Melee player statistics. 
 
-::: {.card}
-#### Project Three
-Describe your third best work.
-[[View Project](projects/project-3.qmd)]{.btn .btn-outline-primary .btn-sm}
+Determining where my play needs improvement, and optimizing my tournament strategy.
+
+EDA performed in SQL.
 :::
 
 :::

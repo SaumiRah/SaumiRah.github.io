@@ -162,9 +162,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
+<p><img src="spotify.jpg" class="img-fluid"></p>
 <hr>
-<p>This is a practice project for my <a href="https://github.com/SaumiRah/Data-Analytics-Portfolio">Data Analysis Portfolio</a>. I used <a href="https://www.kaggle.com/datasets/nelgiriyewithana/most-streamed-spotify-songs-2024">this data set</a> from Kaggle.</p>
-<div id="cell-4" class="cell" data-execution_count="2">
+<p>This is a simple data cleaning + EDA project. I used <a href="https://www.kaggle.com/datasets/nelgiriyewithana/most-streamed-spotify-songs-2024">this data set</a> from Kaggle.</p>
+<div id="cell-5" class="cell" data-execution_count="2">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> re</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -181,7 +182,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </ol>
 <section id="correct-encoding" class="level3">
 <h3 class="anchored" data-anchor-id="correct-encoding">1. Correct encoding</h3>
-<div id="cell-7" class="cell" data-execution_count="4">
+<div id="cell-8" class="cell" data-execution_count="4">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>sdf <span class="op">=</span> pd.read_csv(<span class="st">"Most Streamed Spotify Songs 2024.csv"</span>, encoding<span class="op">=</span><span class="st">'ISO-8859-1'</span>) <span class="co"># not encoded in utf-8</span></span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>sdf.info()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -227,11 +228,11 @@ memory usage: 1.0+ MB</code></pre>
 <section id="data-types" class="level3">
 <h3 class="anchored" data-anchor-id="data-types">2. Data Types</h3>
 <p>Most numerical variables were erroneously encoded as strings. Correcting this here.</p>
-<div id="cell-10" class="cell" data-execution_count="363">
+<div id="cell-11" class="cell" data-execution_count="363">
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># selecting all numerical variables erroneously encoded as a string object.</span></span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>objCol <span class="op">=</span> sdf.select_dtypes(include<span class="op">=</span>[<span class="bu">object</span>]).drop([<span class="st">'Track'</span>,<span class="st">'Album Name'</span>,<span class="st">'Artist'</span>,<span class="st">'Release Date'</span>,<span class="st">'ISRC'</span>], axis<span class="op">=</span><span class="dv">1</span>).columns</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div id="cell-11" class="cell" data-execution_count="364">
+<div id="cell-12" class="cell" data-execution_count="364">
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> convert_to_int(value, default<span class="op">=</span><span class="va">None</span>):</span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">try</span>:</span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Use regex to remove non-numeric characters</span></span>
@@ -242,7 +243,7 @@ memory usage: 1.0+ MB</code></pre>
 <span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> default</span>
 <span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>sdf[objCol] <span class="op">=</span> sdf[objCol].<span class="bu">map</span>(convert_to_int)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div id="cell-12" class="cell" data-execution_count="365">
+<div id="cell-13" class="cell" data-execution_count="365">
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>sdf.info()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>&lt;class 'pandas.core.frame.DataFrame'&gt;
@@ -290,7 +291,7 @@ memory usage: 1.0+ MB</code></pre>
 <li>Get a list of the count of missing values in each column, and drop the ones with too many.</li>
 <li>Impute missing numerical values with mean</li>
 </ol>
-<div id="cell-15" class="cell" data-execution_count="366">
+<div id="cell-16" class="cell" data-execution_count="366">
 <div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>sdfNAs <span class="op">=</span>  pd.DataFrame(sdf.isnull().<span class="bu">sum</span>()).reset_index().rename(columns<span class="op">=</span>{<span class="st">'index'</span>:<span class="st">'Track'</span>, <span class="dv">0</span> :<span class="st">'Missing Values'</span>})</span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>sdfNAs[sdfNAs[<span class="st">'Missing Values'</span>]<span class="op">&gt;</span><span class="dv">0</span>].sort_values(by<span class="op">=</span><span class="st">'Missing Values'</span>, ascending<span class="op">=</span><span class="va">False</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="366">
@@ -423,7 +424,7 @@ memory usage: 1.0+ MB</code></pre>
 </div>
 </div>
 <p>Choosing to drop “TIDAL Popularity”, “Soundcloud Streams”, “SiriusXM Spins” because they are: 1. missing too many values, and; 2. not incredibly interesting.</p>
-<div id="cell-17" class="cell" data-execution_count="367">
+<div id="cell-18" class="cell" data-execution_count="367">
 <div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>sdf.drop([<span class="st">"TIDAL Popularity"</span>, <span class="st">"Soundcloud Streams"</span>, <span class="st">"SiriusXM Spins"</span>], axis<span class="op">=</span><span class="dv">1</span>, inplace<span class="op">=</span><span class="va">True</span>)</span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>sdf.head()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="367">
@@ -586,7 +587,7 @@ memory usage: 1.0+ MB</code></pre>
 </div>
 </div>
 <p>Imputing missing numerical values by mean.</p>
-<div id="cell-19" class="cell" data-execution_count="370">
+<div id="cell-20" class="cell" data-execution_count="370">
 <div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>intCol <span class="op">=</span> sdf.select_dtypes(include<span class="op">=</span>[np.number]).columns</span>
 <span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>sdf[intCol] <span class="op">=</span> sdf[intCol].fillna(sdf[intCol].mean())</span>
@@ -602,7 +603,7 @@ memory usage: 1.0+ MB</code></pre>
       dtype='object')</code></pre>
 </div>
 </div>
-<div id="cell-20" class="cell" data-execution_count="371">
+<div id="cell-21" class="cell" data-execution_count="371">
 <div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>sdfNAs <span class="op">=</span>  pd.DataFrame(sdf.isnull().<span class="bu">sum</span>()).reset_index().rename(columns<span class="op">=</span>{<span class="st">'index'</span>:<span class="st">'Track'</span>, <span class="dv">0</span> :<span class="st">'Missing Values'</span>})</span>
 <span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>sdfNAs[sdfNAs[<span class="st">'Missing Values'</span>]<span class="op">&gt;</span><span class="dv">0</span>].sort_values(by<span class="op">=</span><span class="st">'Missing Values'</span>, ascending<span class="op">=</span><span class="va">False</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="371">
@@ -632,7 +633,7 @@ memory usage: 1.0+ MB</code></pre>
 </section>
 <section id="duplicates" class="level3">
 <h3 class="anchored" data-anchor-id="duplicates">4. Duplicates</h3>
-<div id="cell-22" class="cell" data-execution_count="372">
+<div id="cell-23" class="cell" data-execution_count="372">
 <div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>sdfDupes <span class="op">=</span> pd.DataFrame(sdf.duplicated()).rename(columns<span class="op">=</span>{<span class="dv">0</span>:<span class="st">'duplicate'</span>})</span>
 <span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>sdfDupes[sdfDupes[<span class="st">'duplicate'</span>]<span class="op">==</span> <span class="va">True</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="372">
@@ -661,7 +662,7 @@ memory usage: 1.0+ MB</code></pre>
 </div>
 </div>
 </div>
-<div id="cell-23" class="cell" data-execution_count="373">
+<div id="cell-24" class="cell" data-execution_count="373">
 <div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>sdf.iloc[<span class="dv">2449</span>:<span class="dv">2451</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="373">
 <div>
@@ -750,7 +751,7 @@ memory usage: 1.0+ MB</code></pre>
 </div>
 </div>
 </div>
-<div id="cell-24" class="cell" data-execution_count="374">
+<div id="cell-25" class="cell" data-execution_count="374">
 <div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>sdf <span class="op">=</span> sdf.drop(sdf.index[<span class="dv">2449</span>], axis<span class="op">=</span><span class="dv">0</span>).reset_index()</span>
 <span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>sdf.iloc[<span class="dv">2448</span>:<span class="dv">2452</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="374">
@@ -891,7 +892,7 @@ memory usage: 1.0+ MB</code></pre>
 </section>
 <section id="outliers-z-scores" class="level3">
 <h3 class="anchored" data-anchor-id="outliers-z-scores">5. Outliers: Z-scores</h3>
-<div id="cell-26" class="cell" data-execution_count="394">
+<div id="cell-27" class="cell" data-execution_count="394">
 <div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> zscoring(df, columns, threshold <span class="op">=</span><span class="dv">3</span>):</span>
 <span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>    z_scores_dict <span class="op">=</span> {}</span>
 <span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> col <span class="kw">in</span> columns:</span>
@@ -1205,7 +1206,7 @@ memory usage: 1.0+ MB</code></pre>
 </div>
 </div>
 </div>
-<div id="cell-27" class="cell" data-execution_count="395">
+<div id="cell-28" class="cell" data-execution_count="395">
 <div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> remove_outliers(df, z_scores_sdf, threshold<span class="op">=</span><span class="dv">3</span>):</span>
 <span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Identify rows with any Z-score greater than threshold</span></span>
 <span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>    outliers_mask <span class="op">=</span> (z_scores_sdf <span class="op">&gt;</span> threshold).<span class="bu">any</span>(axis<span class="op">=</span><span class="dv">1</span>)</span>
@@ -1217,7 +1218,7 @@ memory usage: 1.0+ MB</code></pre>
 <span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb17-10"><a href="#cb17-10" aria-hidden="true" tabindex="-1"></a>sdfClean <span class="op">=</span> remove_outliers(sdf, z_scores_sdf)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div id="cell-28" class="cell" data-execution_count="398">
+<div id="cell-29" class="cell" data-execution_count="398">
 <div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>sdf <span class="op">=</span> sdfClean.reset_index()</span>
 <span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>sdf</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="398">
@@ -1526,10 +1527,10 @@ memory usage: 1.0+ MB</code></pre>
 </section>
 <section id="formating-date" class="level3">
 <h3 class="anchored" data-anchor-id="formating-date">6. Formating Date</h3>
-<div id="cell-30" class="cell" data-execution_count="399">
+<div id="cell-31" class="cell" data-execution_count="399">
 <div class="sourceCode cell-code" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>sdf[<span class="st">'Release Date'</span>] <span class="op">=</span> pd.to_datetime(sdf[<span class="st">'Release Date'</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div id="cell-31" class="cell" data-execution_count="404">
+<div id="cell-32" class="cell" data-execution_count="404">
 <div class="sourceCode cell-code" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>sdf[<span class="st">'Release Month'</span>] <span class="op">=</span> sdf[<span class="st">'Release Date'</span>].dt.month</span>
 <span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>sdf[<span class="st">'Release Year'</span>] <span class="op">=</span> sdf[<span class="st">'Release Date'</span>].dt.year</span>
 <span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>sdf</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>

@@ -1,9 +1,16 @@
-SQL Project: Super Smash Bros. Melee
+---
+categories: [SQL]
+---
+
+Super Smash Brothers Player Statistics
 ================
+<div style="text-align: center;">
+![](gamecube.jpg){width="250px"}
+</div>
 ## Summary
-- This is a SQL project focused on measuring and improving my performance in a fighting game.
-- [Click here to skip to SQL queries](#section-iii-sql-queries)
-- Queries used: 
+- This is a SQL project focused on measuring and improving my performance in the fighting game Super Smash Brothers Melee.
+- Queries used:
+
     ```SQL
     WITH... AS (AKA CTEs)
     WHERE... (AND...)
@@ -96,6 +103,7 @@ select bird as Character, count(*) as "Games played" -- Counting Games
 FROM falco_games;
 ```
 Output:
+
 |Character|Games played                 |
 |---------|-----------------------------|
 |FALCO    |2332                         |
@@ -176,6 +184,7 @@ HAVING count(*) > 10 -- Ignore games on stages I've played less than 10 times
 ORDER BY Winrate desc;
 ```
 Output, ordered by `Winrate`:
+
 |Stage|Winrate                      |count(*)|
 |-----|-----------------------------|--------|
 |FINAL_DESTINATION|52.6                         |382     |
@@ -209,6 +218,7 @@ HAVING count(*) >= 10 -- filtering out stage-matchup combinations that I have pl
 ORDER BY Winrate desc;
 ```
 Output, ordered by `Winrate`:
+
 |Stage|matchup                      |Winrate|count(*)|
 |-----|-----------------------------|-------|--------|
 |YOSHIS_STORY|DONKEY_KONG                  |70     |10      |
@@ -329,6 +339,7 @@ ORDER BY CASE -- Aesthetic reordering so 'Morning' comes first, and 'Late Night'
 END;
 ```
 Output, ordered by `Winrate`:
+
 |Time of Day|Winrate                      |Games Played|
 |-----------|-----------------------------|------------|
 |Morning (5AM-9AM)|47.8                         |370         |
@@ -376,6 +387,7 @@ HAVING Games >= 10
 ORDER BY Winrate desc;
 ```
 Output, ordered by `Winrate`:
+
 |Day of Week|Time of Day                  |Winrate|Games|
 |-----------|-----------------------------|-------|-----|
 |Thursday   |Late Night (12AM-5AM)        |56     |184  |

@@ -135,19 +135,54 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <!-- margin-sidebar -->
     
 <!-- main -->
-<main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block"></header>
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+  <div class="quarto-categories">
+    <div class="quarto-category">SQL</div>
+  </div>
+  </div>
 
 
 
+<div class="quarto-title-meta">
 
-<section id="sql-project-super-smash-bros.-melee" class="level1">
-<h1>SQL Project: Super Smash Bros.&nbsp;Melee</h1>
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="super-smash-brothers-player-statistics" class="level1">
+<h1>Super Smash Brothers Player Statistics</h1>
+<div style="text-align: center;">
+<p><img src="gamecube.jpg" class="img-fluid" width="250"></p>
+</div>
 <section id="summary" class="level2">
 <h2 class="anchored" data-anchor-id="summary">Summary</h2>
 <ul>
-<li>This is a SQL project focused on measuring and improving my performance in a fighting game.</li>
-<li><a href="#section-iii-sql-queries">Click here to skip to SQL queries</a></li>
-<li>Queries used: <code>SQL     WITH... AS (AKA CTEs)     WHERE... (AND...)     HAVING     ROUND     SUM     COUNT     GROUP BY     ORDER BY     CASE... (WHEN... THEN... END)     CAST     LEFT JOIN     STRFTIME     DATE     TIME     BETWEEN</code></li>
+<li><p>This is a SQL project focused on measuring and improving my performance in the fighting game Super Smash Brothers Melee.</p></li>
+<li><p>Queries used:</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode sql code-with-copy"><code class="sourceCode sql"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="kw">WITH</span><span class="op">..</span>. <span class="kw">AS</span> (AKA CTEs)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="kw">WHERE</span><span class="op">..</span>. (<span class="kw">AND</span><span class="op">..</span>.)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="kw">HAVING</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">ROUND</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="fu">SUM</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="fu">COUNT</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="kw">GROUP</span> <span class="kw">BY</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="kw">ORDER</span> <span class="kw">BY</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="cf">CASE</span><span class="op">..</span>. (<span class="cf">WHEN</span><span class="op">..</span>. <span class="cf">THEN</span><span class="op">..</span>. <span class="cf">END</span>)</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="fu">CAST</span></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="kw">LEFT</span> <span class="kw">JOIN</span></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>STRFTIME</span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a><span class="dt">DATE</span></span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a><span class="dt">TIME</span></span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a><span class="kw">BETWEEN</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div></li>
 </ul>
 </section>
 <section id="table-of-contents" class="level2">
@@ -228,42 +263,56 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h2 class="anchored" data-anchor-id="section-iii.-sql-queries">Section III. SQL Queries</h2>
 <section id="how-many-games-have-i-played-using-falco" class="level3">
 <h3 class="anchored" data-anchor-id="how-many-games-have-i-played-using-falco">1. How many games have I played using “Falco”?</h3>
-<div class="sourceCode" id="cb1"><pre class="sourceCode sql code-with-copy"><code class="sourceCode sql"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co">-- Starting by filtering down to only the games where I play Falco</span></span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="kw">WITH</span></span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>falco_games <span class="kw">AS</span> (</span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>    <span class="kw">select</span></span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>        me.<span class="dt">character</span> <span class="kw">as</span> bird </span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>    <span class="kw">from</span> players me, players op </span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>    <span class="kw">where</span> me.<span class="kw">id</span> <span class="op">!=</span> op.<span class="kw">id</span> <span class="co">-- x /= y (there are two unique objects in the domain)</span></span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>    <span class="kw">and</span> me.game_id <span class="op">=</span> op.game_id <span class="co">-- Gxy &amp; Gyx (One object is in the same game as the other, and vice versa)</span></span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>    <span class="kw">and</span> me.<span class="dt">character</span><span class="op">=</span><span class="st">'FALCO'</span> <span class="co">-- Cx'Falco'  (One object has the property of playing Falco)</span></span>
-<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>    <span class="kw">and</span> me.code<span class="op">=</span><span class="st">'FROG#671'</span> <span class="co">-- Ox'FROG#671' (That object also has my specific code)</span></span>
-<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>) </span>
-<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="kw">select</span> bird <span class="kw">as</span> <span class="dt">Character</span>, <span class="fu">count</span>(<span class="op">*</span>) <span class="kw">as</span> <span class="ot">"Games played"</span> <span class="co">-- Counting Games</span></span>
-<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a><span class="kw">FROM</span> falco_games;</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>Output: |Character|Games played | |———|—————————–| |FALCO |2332 |</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode sql code-with-copy"><code class="sourceCode sql"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co">-- Starting by filtering down to only the games where I play Falco</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="kw">WITH</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>falco_games <span class="kw">AS</span> (</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>    <span class="kw">select</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>        me.<span class="dt">character</span> <span class="kw">as</span> bird </span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>    <span class="kw">from</span> players me, players op </span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>    <span class="kw">where</span> me.<span class="kw">id</span> <span class="op">!=</span> op.<span class="kw">id</span> <span class="co">-- x /= y (there are two unique objects in the domain)</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>    <span class="kw">and</span> me.game_id <span class="op">=</span> op.game_id <span class="co">-- Gxy &amp; Gyx (One object is in the same game as the other, and vice versa)</span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>    <span class="kw">and</span> me.<span class="dt">character</span><span class="op">=</span><span class="st">'FALCO'</span> <span class="co">-- Cx'Falco'  (One object has the property of playing Falco)</span></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>    <span class="kw">and</span> me.code<span class="op">=</span><span class="st">'FROG#671'</span> <span class="co">-- Ox'FROG#671' (That object also has my specific code)</span></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>) </span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a><span class="kw">select</span> bird <span class="kw">as</span> <span class="dt">Character</span>, <span class="fu">count</span>(<span class="op">*</span>) <span class="kw">as</span> <span class="ot">"Games played"</span> <span class="co">-- Counting Games</span></span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a><span class="kw">FROM</span> falco_games;</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Output:</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Character</th>
+<th>Games played</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>FALCO</td>
+<td>2332</td>
+</tr>
+</tbody>
+</table>
 </section>
 <section id="what-are-my-best-and-worst-matchups" class="level3">
 <h3 class="anchored" data-anchor-id="what-are-my-best-and-worst-matchups">2. What are my best and worst matchups?</h3>
-<div class="sourceCode" id="cb2"><pre class="sourceCode sql code-with-copy"><code class="sourceCode sql"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="kw">WITH</span></span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>falco_games <span class="kw">AS</span> (</span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>    <span class="kw">select</span> me.<span class="kw">id</span>, </span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>        me.game_id, </span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>        op.<span class="dt">character</span> <span class="kw">as</span> matchups, </span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>        me.winner <span class="kw">as</span> didIwin</span>
-<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>    <span class="kw">from</span> players me, players op </span>
-<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>    <span class="kw">where</span> me.<span class="kw">id</span> <span class="op">!=</span> op.<span class="kw">id</span></span>
-<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>    <span class="kw">and</span> me.game_id <span class="op">=</span> op.game_id</span>
-<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>    <span class="kw">and</span> me.<span class="dt">character</span><span class="op">=</span><span class="st">'FALCO'</span></span>
-<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>    <span class="kw">and</span> me.code<span class="op">=</span><span class="st">'FROG#671'</span></span>
-<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a><span class="kw">select</span> matchups <span class="kw">as</span> <span class="st">'Matchups'</span>,</span>
-<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>    <span class="fu">round</span>((<span class="fu">sum</span>(didIwin)<span class="op">*</span><span class="fl">1.0</span> <span class="op">/</span><span class="fu">count</span>(<span class="op">*</span>)<span class="op">*</span><span class="dv">100</span>), <span class="dv">1</span>) <span class="kw">as</span> Winrate, </span>
-<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>    <span class="co">-- Winrate: The percetentage of time I win...</span></span>
-<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>    <span class="fu">count</span>(<span class="op">*</span>) <span class="kw">as</span> <span class="st">'Games played'</span></span>
-<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a><span class="kw">FROM</span> falco_games</span>
-<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a><span class="kw">GROUP</span> <span class="kw">BY</span> matchups                                           <span class="co">-- ... each matchup</span></span>
-<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a><span class="kw">ORDER</span> <span class="kw">BY</span> Winrate <span class="kw">desc</span>;</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb3"><pre class="sourceCode sql code-with-copy"><code class="sourceCode sql"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="kw">WITH</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>falco_games <span class="kw">AS</span> (</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    <span class="kw">select</span> me.<span class="kw">id</span>, </span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>        me.game_id, </span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>        op.<span class="dt">character</span> <span class="kw">as</span> matchups, </span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>        me.winner <span class="kw">as</span> didIwin</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>    <span class="kw">from</span> players me, players op </span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>    <span class="kw">where</span> me.<span class="kw">id</span> <span class="op">!=</span> op.<span class="kw">id</span></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>    <span class="kw">and</span> me.game_id <span class="op">=</span> op.game_id</span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>    <span class="kw">and</span> me.<span class="dt">character</span><span class="op">=</span><span class="st">'FALCO'</span></span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>    <span class="kw">and</span> me.code<span class="op">=</span><span class="st">'FROG#671'</span></span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a><span class="kw">select</span> matchups <span class="kw">as</span> <span class="st">'Matchups'</span>,</span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>    <span class="fu">round</span>((<span class="fu">sum</span>(didIwin)<span class="op">*</span><span class="fl">1.0</span> <span class="op">/</span><span class="fu">count</span>(<span class="op">*</span>)<span class="op">*</span><span class="dv">100</span>), <span class="dv">1</span>) <span class="kw">as</span> Winrate, </span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>    <span class="co">-- Winrate: The percetentage of time I win...</span></span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>    <span class="fu">count</span>(<span class="op">*</span>) <span class="kw">as</span> <span class="st">'Games played'</span></span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a><span class="kw">FROM</span> falco_games</span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a><span class="kw">GROUP</span> <span class="kw">BY</span> matchups                                           <span class="co">-- ... each matchup</span></span>
+<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a><span class="kw">ORDER</span> <span class="kw">BY</span> Winrate <span class="kw">desc</span>;</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>Output, ordered by <code>Winrate</code>:</p>
 <table class="caption-top table">
 <thead>
@@ -409,81 +458,374 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="what-are-my-best-and-worst-stages" class="level3">
 <h3 class="anchored" data-anchor-id="what-are-my-best-and-worst-stages">3. What are my best and worst stages?</h3>
-<div class="sourceCode" id="cb3"><pre class="sourceCode sql code-with-copy"><code class="sourceCode sql"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="kw">WITH</span></span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>falco_games <span class="kw">AS</span> (</span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    <span class="kw">select</span> me.<span class="kw">id</span>, </span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>        me.game_id <span class="kw">as</span> gid, </span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>        me.winner <span class="kw">as</span> winner</span>
-<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>    <span class="kw">from</span> players me, players op </span>
-<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>    <span class="kw">where</span> me.<span class="kw">id</span> <span class="op">!=</span> op.<span class="kw">id</span></span>
-<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>    <span class="kw">and</span> me.game_id <span class="op">=</span> op.game_id</span>
-<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>    <span class="kw">and</span> me.<span class="dt">character</span><span class="op">=</span><span class="st">'FALCO'</span></span>
-<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>    <span class="kw">and</span> me.code<span class="op">=</span><span class="st">'FROG#671'</span></span>
-<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a><span class="kw">select</span> stage <span class="kw">as</span> Stage,</span>
-<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>   <span class="fu">round</span>((<span class="fu">sum</span>(winner)<span class="op">*</span><span class="fl">1.0</span><span class="op">/</span><span class="fu">count</span>(<span class="op">*</span>)<span class="op">*</span><span class="dv">100</span>),<span class="dv">1</span>) <span class="kw">as</span> Winrate,</span>
-<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>    <span class="fu">count</span>(<span class="op">*</span>)</span>
-<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a><span class="kw">From</span> falco_games</span>
-<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a><span class="kw">LEFT</span> <span class="kw">JOIN</span> games <span class="kw">on</span> gid <span class="op">=</span> games.<span class="kw">id</span> <span class="co">--Left joining with games to get stage data</span></span>
-<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a><span class="kw">GROUP</span> <span class="kw">BY</span> Stage</span>
-<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a><span class="kw">HAVING</span> <span class="fu">count</span>(<span class="op">*</span>) <span class="op">&gt;</span> <span class="dv">10</span> <span class="co">-- Ignore games on stages I've played less than 10 times</span></span>
-<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a><span class="kw">ORDER</span> <span class="kw">BY</span> Winrate <span class="kw">desc</span>;</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>Output, ordered by <code>Winrate</code>: |Stage|Winrate |count(*)| |—–|—————————–|——–| |FINAL_DESTINATION|52.6 |382 | |POKEMON_STADIUM|52.4 |393 | |FOUNTAIN_OF_DREAMS|47.7 |392 | |YOSHIS_STORY|46.8 |389 | |DREAM_LAND_N64|46.6 |371 | |BATTLEFIELD|46.1 |399 |</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode sql code-with-copy"><code class="sourceCode sql"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="kw">WITH</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>falco_games <span class="kw">AS</span> (</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>    <span class="kw">select</span> me.<span class="kw">id</span>, </span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>        me.game_id <span class="kw">as</span> gid, </span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>        me.winner <span class="kw">as</span> winner</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>    <span class="kw">from</span> players me, players op </span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>    <span class="kw">where</span> me.<span class="kw">id</span> <span class="op">!=</span> op.<span class="kw">id</span></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>    <span class="kw">and</span> me.game_id <span class="op">=</span> op.game_id</span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>    <span class="kw">and</span> me.<span class="dt">character</span><span class="op">=</span><span class="st">'FALCO'</span></span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>    <span class="kw">and</span> me.code<span class="op">=</span><span class="st">'FROG#671'</span></span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a><span class="kw">select</span> stage <span class="kw">as</span> Stage,</span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>   <span class="fu">round</span>((<span class="fu">sum</span>(winner)<span class="op">*</span><span class="fl">1.0</span><span class="op">/</span><span class="fu">count</span>(<span class="op">*</span>)<span class="op">*</span><span class="dv">100</span>),<span class="dv">1</span>) <span class="kw">as</span> Winrate,</span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>    <span class="fu">count</span>(<span class="op">*</span>)</span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a><span class="kw">From</span> falco_games</span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a><span class="kw">LEFT</span> <span class="kw">JOIN</span> games <span class="kw">on</span> gid <span class="op">=</span> games.<span class="kw">id</span> <span class="co">--Left joining with games to get stage data</span></span>
+<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a><span class="kw">GROUP</span> <span class="kw">BY</span> Stage</span>
+<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a><span class="kw">HAVING</span> <span class="fu">count</span>(<span class="op">*</span>) <span class="op">&gt;</span> <span class="dv">10</span> <span class="co">-- Ignore games on stages I've played less than 10 times</span></span>
+<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a><span class="kw">ORDER</span> <span class="kw">BY</span> Winrate <span class="kw">desc</span>;</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Output, ordered by <code>Winrate</code>:</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Stage</th>
+<th>Winrate</th>
+<th>count(*)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>FINAL_DESTINATION</td>
+<td>52.6</td>
+<td>382</td>
+</tr>
+<tr class="even">
+<td>POKEMON_STADIUM</td>
+<td>52.4</td>
+<td>393</td>
+</tr>
+<tr class="odd">
+<td>FOUNTAIN_OF_DREAMS</td>
+<td>47.7</td>
+<td>392</td>
+</tr>
+<tr class="even">
+<td>YOSHIS_STORY</td>
+<td>46.8</td>
+<td>389</td>
+</tr>
+<tr class="odd">
+<td>DREAM_LAND_N64</td>
+<td>46.6</td>
+<td>371</td>
+</tr>
+<tr class="even">
+<td>BATTLEFIELD</td>
+<td>46.1</td>
+<td>399</td>
+</tr>
+</tbody>
+</table>
 </section>
 <section id="what-are-my-best-and-worst-matchups-on-each-stage" class="level3">
 <h3 class="anchored" data-anchor-id="what-are-my-best-and-worst-matchups-on-each-stage">4. What are my best and worst matchups on each stage?</h3>
-<div class="sourceCode" id="cb4"><pre class="sourceCode sql code-with-copy"><code class="sourceCode sql"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="kw">WITH</span></span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>falco_games <span class="kw">AS</span> (</span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>    <span class="kw">select</span> me.<span class="kw">id</span> <span class="kw">as</span> mid, </span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>        me.game_id <span class="kw">as</span> gid,  </span>
-<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>        op.<span class="dt">character</span> <span class="kw">as</span> matchup, </span>
-<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>        me.winner <span class="kw">as</span> winner</span>
-<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>    <span class="kw">from</span> players me, players op </span>
-<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>    <span class="kw">where</span> me.<span class="kw">id</span> <span class="op">!=</span> op.<span class="kw">id</span></span>
-<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>    <span class="kw">and</span> me.game_id <span class="op">=</span> op.game_id</span>
-<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>    <span class="kw">and</span> me.<span class="dt">character</span><span class="op">=</span><span class="st">'FALCO'</span></span>
-<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>    <span class="kw">and</span> me.code<span class="op">=</span><span class="st">'FROG#671'</span></span>
-<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a><span class="kw">Select</span> stage <span class="kw">as</span> Stage, matchup,</span>
-<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>    <span class="fu">round</span>((<span class="fu">sum</span>(winner)<span class="op">*</span><span class="fl">1.0</span><span class="op">/</span><span class="fu">count</span>(<span class="op">*</span>)<span class="op">*</span><span class="dv">100</span>), <span class="dv">1</span>) <span class="kw">as</span> Winrate,</span>
-<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>    <span class="fu">count</span>(<span class="op">*</span>)</span>
-<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a><span class="kw">From</span> falco_games</span>
-<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a><span class="kw">LEFT</span> <span class="kw">JOIN</span> games <span class="kw">on</span> gid <span class="op">=</span> games.<span class="kw">id</span></span>
-<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a><span class="kw">GROUP</span> <span class="kw">BY</span> Stage, matchup</span>
-<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a><span class="kw">HAVING</span> <span class="fu">count</span>(<span class="op">*</span>) <span class="op">&gt;=</span> <span class="dv">10</span> <span class="co">-- filtering out stage-matchup combinations that I have played on/against less than 10 times</span></span>
-<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a><span class="kw">ORDER</span> <span class="kw">BY</span> Winrate <span class="kw">desc</span>;</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>Output, ordered by <code>Winrate</code>: |Stage|matchup |Winrate|count(*)| |—–|—————————–|——-|——–| |YOSHIS_STORY|DONKEY_KONG |70 |10 | |FINAL_DESTINATION|SHEIK |62.5 |32 | |BATTLEFIELD|CAPTAIN_FALCON |61.3 |62 | |POKEMON_STADIUM|FOX |61.3 |62 | |FOUNTAIN_OF_DREAMS|CAPTAIN_FALCON |60.3 |58 | |POKEMON_STADIUM|LUIGI |60 |10 | |BATTLEFIELD|SHEIK |57.1 |28 | |FOUNTAIN_OF_DREAMS|SHEIK |57.1 |21 | |FINAL_DESTINATION|MARTH |56.3 |64 | |FINAL_DESTINATION|FOX |55.1 |69 | |YOSHIS_STORY|CAPTAIN_FALCON |54.4 |57 | |FINAL_DESTINATION|FALCO |53.8 |93 | |DREAM_LAND_N64|CAPTAIN_FALCON |53.7 |54 | |POKEMON_STADIUM|FALCO |53.7 |108 | |POKEMON_STADIUM|SHEIK |51.9 |27 | |FINAL_DESTINATION|GANONDORF |50 |14 | |FOUNTAIN_OF_DREAMS|MARTH |50 |54 | |POKEMON_STADIUM|CAPTAIN_FALCON |50 |52 | |YOSHIS_STORY|FOX |48.5 |66 | |DREAM_LAND_N64|FOX |48.1 |54 | |DREAM_LAND_N64|FALCO |47.4 |97 | |FINAL_DESTINATION|CAPTAIN_FALCON |47.3 |55 | |BATTLEFIELD|FALCO |47.1 |102 | |FOUNTAIN_OF_DREAMS|FOX |47 |66 | |BATTLEFIELD|FOX |46.6 |73 | |YOSHIS_STORY|FALCO |45.7 |105 | |BATTLEFIELD|PEACH |45.5 |11 | |FOUNTAIN_OF_DREAMS|FALCO |45.3 |117 | |DREAM_LAND_N64|SHEIK |44.8 |29 | |DREAM_LAND_N64|GANONDORF |43.8 |16 | |POKEMON_STADIUM|MARTH |43.5 |69 | |YOSHIS_STORY|MARTH |41.7 |60 | |YOSHIS_STORY|SHEIK |40.9 |22 | |DREAM_LAND_N64|MARTH |39.7 |58 | |BATTLEFIELD|MARTH |39 |59 | |FOUNTAIN_OF_DREAMS|GANONDORF |36.4 |11 | |DREAM_LAND_N64|DONKEY_KONG |30 |10 | |YOSHIS_STORY|GANONDORF |28.6 |14 | |POKEMON_STADIUM|GANONDORF |27.3 |11 | |BATTLEFIELD|GANONDORF |10 |10 |</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode sql code-with-copy"><code class="sourceCode sql"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="kw">WITH</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>falco_games <span class="kw">AS</span> (</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>    <span class="kw">select</span> me.<span class="kw">id</span> <span class="kw">as</span> mid, </span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>        me.game_id <span class="kw">as</span> gid,  </span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>        op.<span class="dt">character</span> <span class="kw">as</span> matchup, </span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>        me.winner <span class="kw">as</span> winner</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>    <span class="kw">from</span> players me, players op </span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>    <span class="kw">where</span> me.<span class="kw">id</span> <span class="op">!=</span> op.<span class="kw">id</span></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>    <span class="kw">and</span> me.game_id <span class="op">=</span> op.game_id</span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>    <span class="kw">and</span> me.<span class="dt">character</span><span class="op">=</span><span class="st">'FALCO'</span></span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>    <span class="kw">and</span> me.code<span class="op">=</span><span class="st">'FROG#671'</span></span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a><span class="kw">Select</span> stage <span class="kw">as</span> Stage, matchup,</span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>    <span class="fu">round</span>((<span class="fu">sum</span>(winner)<span class="op">*</span><span class="fl">1.0</span><span class="op">/</span><span class="fu">count</span>(<span class="op">*</span>)<span class="op">*</span><span class="dv">100</span>), <span class="dv">1</span>) <span class="kw">as</span> Winrate,</span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a>    <span class="fu">count</span>(<span class="op">*</span>)</span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a><span class="kw">From</span> falco_games</span>
+<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a><span class="kw">LEFT</span> <span class="kw">JOIN</span> games <span class="kw">on</span> gid <span class="op">=</span> games.<span class="kw">id</span></span>
+<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a><span class="kw">GROUP</span> <span class="kw">BY</span> Stage, matchup</span>
+<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a><span class="kw">HAVING</span> <span class="fu">count</span>(<span class="op">*</span>) <span class="op">&gt;=</span> <span class="dv">10</span> <span class="co">-- filtering out stage-matchup combinations that I have played on/against less than 10 times</span></span>
+<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a><span class="kw">ORDER</span> <span class="kw">BY</span> Winrate <span class="kw">desc</span>;</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Output, ordered by <code>Winrate</code>:</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Stage</th>
+<th>matchup</th>
+<th>Winrate</th>
+<th>count(*)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>YOSHIS_STORY</td>
+<td>DONKEY_KONG</td>
+<td>70</td>
+<td>10</td>
+</tr>
+<tr class="even">
+<td>FINAL_DESTINATION</td>
+<td>SHEIK</td>
+<td>62.5</td>
+<td>32</td>
+</tr>
+<tr class="odd">
+<td>BATTLEFIELD</td>
+<td>CAPTAIN_FALCON</td>
+<td>61.3</td>
+<td>62</td>
+</tr>
+<tr class="even">
+<td>POKEMON_STADIUM</td>
+<td>FOX</td>
+<td>61.3</td>
+<td>62</td>
+</tr>
+<tr class="odd">
+<td>FOUNTAIN_OF_DREAMS</td>
+<td>CAPTAIN_FALCON</td>
+<td>60.3</td>
+<td>58</td>
+</tr>
+<tr class="even">
+<td>POKEMON_STADIUM</td>
+<td>LUIGI</td>
+<td>60</td>
+<td>10</td>
+</tr>
+<tr class="odd">
+<td>BATTLEFIELD</td>
+<td>SHEIK</td>
+<td>57.1</td>
+<td>28</td>
+</tr>
+<tr class="even">
+<td>FOUNTAIN_OF_DREAMS</td>
+<td>SHEIK</td>
+<td>57.1</td>
+<td>21</td>
+</tr>
+<tr class="odd">
+<td>FINAL_DESTINATION</td>
+<td>MARTH</td>
+<td>56.3</td>
+<td>64</td>
+</tr>
+<tr class="even">
+<td>FINAL_DESTINATION</td>
+<td>FOX</td>
+<td>55.1</td>
+<td>69</td>
+</tr>
+<tr class="odd">
+<td>YOSHIS_STORY</td>
+<td>CAPTAIN_FALCON</td>
+<td>54.4</td>
+<td>57</td>
+</tr>
+<tr class="even">
+<td>FINAL_DESTINATION</td>
+<td>FALCO</td>
+<td>53.8</td>
+<td>93</td>
+</tr>
+<tr class="odd">
+<td>DREAM_LAND_N64</td>
+<td>CAPTAIN_FALCON</td>
+<td>53.7</td>
+<td>54</td>
+</tr>
+<tr class="even">
+<td>POKEMON_STADIUM</td>
+<td>FALCO</td>
+<td>53.7</td>
+<td>108</td>
+</tr>
+<tr class="odd">
+<td>POKEMON_STADIUM</td>
+<td>SHEIK</td>
+<td>51.9</td>
+<td>27</td>
+</tr>
+<tr class="even">
+<td>FINAL_DESTINATION</td>
+<td>GANONDORF</td>
+<td>50</td>
+<td>14</td>
+</tr>
+<tr class="odd">
+<td>FOUNTAIN_OF_DREAMS</td>
+<td>MARTH</td>
+<td>50</td>
+<td>54</td>
+</tr>
+<tr class="even">
+<td>POKEMON_STADIUM</td>
+<td>CAPTAIN_FALCON</td>
+<td>50</td>
+<td>52</td>
+</tr>
+<tr class="odd">
+<td>YOSHIS_STORY</td>
+<td>FOX</td>
+<td>48.5</td>
+<td>66</td>
+</tr>
+<tr class="even">
+<td>DREAM_LAND_N64</td>
+<td>FOX</td>
+<td>48.1</td>
+<td>54</td>
+</tr>
+<tr class="odd">
+<td>DREAM_LAND_N64</td>
+<td>FALCO</td>
+<td>47.4</td>
+<td>97</td>
+</tr>
+<tr class="even">
+<td>FINAL_DESTINATION</td>
+<td>CAPTAIN_FALCON</td>
+<td>47.3</td>
+<td>55</td>
+</tr>
+<tr class="odd">
+<td>BATTLEFIELD</td>
+<td>FALCO</td>
+<td>47.1</td>
+<td>102</td>
+</tr>
+<tr class="even">
+<td>FOUNTAIN_OF_DREAMS</td>
+<td>FOX</td>
+<td>47</td>
+<td>66</td>
+</tr>
+<tr class="odd">
+<td>BATTLEFIELD</td>
+<td>FOX</td>
+<td>46.6</td>
+<td>73</td>
+</tr>
+<tr class="even">
+<td>YOSHIS_STORY</td>
+<td>FALCO</td>
+<td>45.7</td>
+<td>105</td>
+</tr>
+<tr class="odd">
+<td>BATTLEFIELD</td>
+<td>PEACH</td>
+<td>45.5</td>
+<td>11</td>
+</tr>
+<tr class="even">
+<td>FOUNTAIN_OF_DREAMS</td>
+<td>FALCO</td>
+<td>45.3</td>
+<td>117</td>
+</tr>
+<tr class="odd">
+<td>DREAM_LAND_N64</td>
+<td>SHEIK</td>
+<td>44.8</td>
+<td>29</td>
+</tr>
+<tr class="even">
+<td>DREAM_LAND_N64</td>
+<td>GANONDORF</td>
+<td>43.8</td>
+<td>16</td>
+</tr>
+<tr class="odd">
+<td>POKEMON_STADIUM</td>
+<td>MARTH</td>
+<td>43.5</td>
+<td>69</td>
+</tr>
+<tr class="even">
+<td>YOSHIS_STORY</td>
+<td>MARTH</td>
+<td>41.7</td>
+<td>60</td>
+</tr>
+<tr class="odd">
+<td>YOSHIS_STORY</td>
+<td>SHEIK</td>
+<td>40.9</td>
+<td>22</td>
+</tr>
+<tr class="even">
+<td>DREAM_LAND_N64</td>
+<td>MARTH</td>
+<td>39.7</td>
+<td>58</td>
+</tr>
+<tr class="odd">
+<td>BATTLEFIELD</td>
+<td>MARTH</td>
+<td>39</td>
+<td>59</td>
+</tr>
+<tr class="even">
+<td>FOUNTAIN_OF_DREAMS</td>
+<td>GANONDORF</td>
+<td>36.4</td>
+<td>11</td>
+</tr>
+<tr class="odd">
+<td>DREAM_LAND_N64</td>
+<td>DONKEY_KONG</td>
+<td>30</td>
+<td>10</td>
+</tr>
+<tr class="even">
+<td>YOSHIS_STORY</td>
+<td>GANONDORF</td>
+<td>28.6</td>
+<td>14</td>
+</tr>
+<tr class="odd">
+<td>POKEMON_STADIUM</td>
+<td>GANONDORF</td>
+<td>27.3</td>
+<td>11</td>
+</tr>
+<tr class="even">
+<td>BATTLEFIELD</td>
+<td>GANONDORF</td>
+<td>10</td>
+<td>10</td>
+</tr>
+</tbody>
+</table>
 </section>
 <section id="when-do-i-play-best" class="level3">
 <h3 class="anchored" data-anchor-id="when-do-i-play-best">5. When do I play best?</h3>
 <section id="day-of-the-week" class="level4">
 <h4 class="anchored" data-anchor-id="day-of-the-week">5.1. Day of the Week</h4>
-<div class="sourceCode" id="cb5"><pre class="sourceCode sql code-with-copy"><code class="sourceCode sql"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="kw">WITH</span></span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>falco_games <span class="kw">AS</span> (</span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>    <span class="kw">select</span> me.<span class="kw">id</span> <span class="kw">as</span> mid, </span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>        me.game_id <span class="kw">as</span> gid, </span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>        me.winner <span class="kw">as</span> winner</span>
-<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>    <span class="kw">from</span> players me, players op </span>
-<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>    <span class="kw">where</span> me.<span class="kw">id</span> <span class="op">!=</span> op.<span class="kw">id</span></span>
-<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>    <span class="kw">and</span> me.game_id <span class="op">=</span> op.game_id</span>
-<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>    <span class="kw">and</span> me.<span class="dt">character</span><span class="op">=</span><span class="st">'FALCO'</span></span>
-<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>    <span class="kw">and</span> me.code<span class="op">=</span><span class="st">'FROG#671'</span></span>
-<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a><span class="kw">select</span></span>
-<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a><span class="cf">CASE</span> <span class="fu">CAST</span> (strftime(<span class="st">'%w'</span>, <span class="dt">DATE</span>(start_time)) <span class="kw">as</span> <span class="dt">int</span>)   <span class="co">--strftime(%w,...) to get the day of the week based on the date of the game</span></span>
-<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>    <span class="cf">WHEN</span> <span class="dv">0</span> <span class="cf">then</span> <span class="st">'Sunday'</span><span class="co">-- Instead of expressing each day of week as an integer (sunday=0... saturday=6), strings</span></span>
-<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a>    <span class="cf">WHEN</span> <span class="dv">1</span> <span class="cf">then</span> <span class="st">'Monday'</span></span>
-<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a>    <span class="cf">WHEN</span> <span class="dv">2</span> <span class="cf">then</span> <span class="st">'Tuesday'</span></span>
-<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a>    <span class="cf">WHEN</span> <span class="dv">3</span> <span class="cf">then</span> <span class="st">'Wednesday'</span></span>
-<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a>    <span class="cf">WHEN</span> <span class="dv">4</span> <span class="cf">then</span> <span class="st">'Thursday'</span></span>
-<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a>    <span class="cf">WHEN</span> <span class="dv">5</span> <span class="cf">then</span> <span class="st">'Friday'</span></span>
-<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a>    <span class="cf">else</span> <span class="st">'Saturday'</span> <span class="cf">end</span> <span class="kw">as</span> <span class="ot">"Day of Week"</span>,</span>
-<span id="cb5-21"><a href="#cb5-21" aria-hidden="true" tabindex="-1"></a>    <span class="fu">round</span>((<span class="fu">sum</span>(winner)<span class="op">*</span><span class="fl">1.0</span><span class="op">/</span><span class="fu">count</span>(<span class="op">*</span>)<span class="op">*</span><span class="dv">100</span>), <span class="dv">1</span>) <span class="kw">as</span> Winrate,</span>
-<span id="cb5-22"><a href="#cb5-22" aria-hidden="true" tabindex="-1"></a>    <span class="fu">count</span>(<span class="op">*</span>) <span class="kw">as</span> Games</span>
-<span id="cb5-23"><a href="#cb5-23" aria-hidden="true" tabindex="-1"></a><span class="kw">From</span> falco_games</span>
-<span id="cb5-24"><a href="#cb5-24" aria-hidden="true" tabindex="-1"></a><span class="kw">LEFT</span> <span class="kw">JOIN</span> games <span class="kw">on</span> gid <span class="op">=</span> games.<span class="kw">id</span></span>
-<span id="cb5-25"><a href="#cb5-25" aria-hidden="true" tabindex="-1"></a><span class="kw">GROUP</span> <span class="kw">BY</span> <span class="dv">1</span></span>
-<span id="cb5-26"><a href="#cb5-26" aria-hidden="true" tabindex="-1"></a><span class="kw">ORDER</span> <span class="kw">BY</span> Winrate <span class="kw">desc</span>;</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb6"><pre class="sourceCode sql code-with-copy"><code class="sourceCode sql"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="kw">WITH</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>falco_games <span class="kw">AS</span> (</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>    <span class="kw">select</span> me.<span class="kw">id</span> <span class="kw">as</span> mid, </span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>        me.game_id <span class="kw">as</span> gid, </span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>        me.winner <span class="kw">as</span> winner</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>    <span class="kw">from</span> players me, players op </span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>    <span class="kw">where</span> me.<span class="kw">id</span> <span class="op">!=</span> op.<span class="kw">id</span></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>    <span class="kw">and</span> me.game_id <span class="op">=</span> op.game_id</span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>    <span class="kw">and</span> me.<span class="dt">character</span><span class="op">=</span><span class="st">'FALCO'</span></span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>    <span class="kw">and</span> me.code<span class="op">=</span><span class="st">'FROG#671'</span></span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a><span class="kw">select</span></span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a><span class="cf">CASE</span> <span class="fu">CAST</span> (strftime(<span class="st">'%w'</span>, <span class="dt">DATE</span>(start_time)) <span class="kw">as</span> <span class="dt">int</span>)   <span class="co">--strftime(%w,...) to get the day of the week based on the date of the game</span></span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>    <span class="cf">WHEN</span> <span class="dv">0</span> <span class="cf">then</span> <span class="st">'Sunday'</span><span class="co">-- Instead of expressing each day of week as an integer (sunday=0... saturday=6), strings</span></span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a>    <span class="cf">WHEN</span> <span class="dv">1</span> <span class="cf">then</span> <span class="st">'Monday'</span></span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a>    <span class="cf">WHEN</span> <span class="dv">2</span> <span class="cf">then</span> <span class="st">'Tuesday'</span></span>
+<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a>    <span class="cf">WHEN</span> <span class="dv">3</span> <span class="cf">then</span> <span class="st">'Wednesday'</span></span>
+<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a>    <span class="cf">WHEN</span> <span class="dv">4</span> <span class="cf">then</span> <span class="st">'Thursday'</span></span>
+<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a>    <span class="cf">WHEN</span> <span class="dv">5</span> <span class="cf">then</span> <span class="st">'Friday'</span></span>
+<span id="cb6-20"><a href="#cb6-20" aria-hidden="true" tabindex="-1"></a>    <span class="cf">else</span> <span class="st">'Saturday'</span> <span class="cf">end</span> <span class="kw">as</span> <span class="ot">"Day of Week"</span>,</span>
+<span id="cb6-21"><a href="#cb6-21" aria-hidden="true" tabindex="-1"></a>    <span class="fu">round</span>((<span class="fu">sum</span>(winner)<span class="op">*</span><span class="fl">1.0</span><span class="op">/</span><span class="fu">count</span>(<span class="op">*</span>)<span class="op">*</span><span class="dv">100</span>), <span class="dv">1</span>) <span class="kw">as</span> Winrate,</span>
+<span id="cb6-22"><a href="#cb6-22" aria-hidden="true" tabindex="-1"></a>    <span class="fu">count</span>(<span class="op">*</span>) <span class="kw">as</span> Games</span>
+<span id="cb6-23"><a href="#cb6-23" aria-hidden="true" tabindex="-1"></a><span class="kw">From</span> falco_games</span>
+<span id="cb6-24"><a href="#cb6-24" aria-hidden="true" tabindex="-1"></a><span class="kw">LEFT</span> <span class="kw">JOIN</span> games <span class="kw">on</span> gid <span class="op">=</span> games.<span class="kw">id</span></span>
+<span id="cb6-25"><a href="#cb6-25" aria-hidden="true" tabindex="-1"></a><span class="kw">GROUP</span> <span class="kw">BY</span> <span class="dv">1</span></span>
+<span id="cb6-26"><a href="#cb6-26" aria-hidden="true" tabindex="-1"></a><span class="kw">ORDER</span> <span class="kw">BY</span> Winrate <span class="kw">desc</span>;</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>Output, ordered by <code>Winrate</code>:</p>
 <table class="caption-top table">
 <thead>
@@ -534,41 +876,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="time-of-day" class="level4">
 <h4 class="anchored" data-anchor-id="time-of-day">5.2. Time of Day</h4>
-<div class="sourceCode" id="cb6"><pre class="sourceCode sql code-with-copy"><code class="sourceCode sql"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="kw">WITH</span></span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>falco_games <span class="kw">AS</span> (</span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>    <span class="kw">select</span> me.<span class="kw">id</span> <span class="kw">as</span> mid, </span>
-<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>        me.game_id <span class="kw">as</span> gid, </span>
-<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>        me.winner <span class="kw">as</span> winner</span>
-<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>    <span class="kw">from</span> players me, players op </span>
-<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>    <span class="kw">where</span> me.<span class="kw">id</span> <span class="op">!=</span> op.<span class="kw">id</span></span>
-<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>    <span class="kw">and</span> me.game_id <span class="op">=</span> op.game_id</span>
-<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>    <span class="kw">and</span> me.<span class="dt">character</span><span class="op">=</span><span class="st">'FALCO'</span></span>
-<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>    <span class="kw">and</span> me.code<span class="op">=</span><span class="st">'FROG#671'</span></span>
-<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a><span class="kw">select</span> </span>
-<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>    <span class="cf">CASE</span> <span class="co">-- Defining different times of the day based on the hour of the day</span></span>
-<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>        <span class="cf">WHEN</span> <span class="fu">CAST</span> (strftime(<span class="st">'%H'</span>, <span class="dt">TIME</span>(start_time)) <span class="kw">as</span> <span class="dt">int</span>) <span class="kw">BETWEEN</span> <span class="dv">0</span> <span class="kw">AND</span> <span class="dv">5</span> <span class="cf">THEN</span> <span class="st">'Late Night (12AM-5AM)'</span></span>
-<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a>        <span class="cf">WHEN</span> <span class="fu">CAST</span> (strftime(<span class="st">'%H'</span>, <span class="dt">TIME</span>(start_time)) <span class="kw">as</span> <span class="dt">int</span>) <span class="kw">BETWEEN</span> <span class="dv">5</span> <span class="kw">AND</span> <span class="dv">9</span> <span class="cf">THEN</span> <span class="st">'Morning (5AM-9AM)'</span></span>
-<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a>        <span class="cf">WHEN</span> <span class="fu">CAST</span> (strftime(<span class="st">'%H'</span>, <span class="dt">TIME</span>(start_time)) <span class="kw">as</span> <span class="dt">int</span>) <span class="kw">BETWEEN</span> <span class="dv">9</span> <span class="kw">AND</span> <span class="dv">14</span> <span class="cf">THEN</span> <span class="st">'Noon (9AM-2PM)'</span></span>
-<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a>        <span class="cf">WHEN</span> <span class="fu">CAST</span> (strftime(<span class="st">'%H'</span>, <span class="dt">TIME</span>(start_time)) <span class="kw">as</span> <span class="dt">int</span>) <span class="kw">BETWEEN</span> <span class="dv">14</span> <span class="kw">AND</span> <span class="dv">19</span> <span class="cf">THEN</span> <span class="st">'Afternoon (2PM-7PM)'</span></span>
-<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a>        <span class="cf">WHEN</span> <span class="fu">CAST</span> (strftime(<span class="st">'%H'</span>, <span class="dt">TIME</span>(start_time)) <span class="kw">as</span> <span class="dt">int</span>) <span class="op">&gt;=</span> <span class="dv">19</span> <span class="cf">THEN</span> <span class="st">'Evening (7PM-12AM)'</span></span>
-<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a>    <span class="cf">END</span> <span class="kw">AS</span> <span class="ot">"Time of Day"</span>,</span>
-<span id="cb6-20"><a href="#cb6-20" aria-hidden="true" tabindex="-1"></a>    <span class="fu">round</span>((<span class="fu">sum</span>(winner)<span class="op">*</span><span class="fl">1.0</span><span class="op">/</span><span class="fu">count</span>(<span class="op">*</span>)<span class="op">*</span><span class="dv">100</span>), <span class="dv">1</span>) <span class="kw">as</span> Winrate,</span>
-<span id="cb6-21"><a href="#cb6-21" aria-hidden="true" tabindex="-1"></a>    <span class="fu">count</span>(<span class="op">*</span>) <span class="kw">as</span> <span class="ot">"Games Played"</span></span>
-<span id="cb6-22"><a href="#cb6-22" aria-hidden="true" tabindex="-1"></a><span class="kw">From</span> falco_games</span>
-<span id="cb6-23"><a href="#cb6-23" aria-hidden="true" tabindex="-1"></a><span class="kw">LEFT</span> <span class="kw">JOIN</span> games <span class="kw">on</span> gid <span class="op">=</span> games.<span class="kw">id</span></span>
-<span id="cb6-24"><a href="#cb6-24" aria-hidden="true" tabindex="-1"></a><span class="kw">GROUP</span> <span class="kw">BY</span> <span class="dv">1</span></span>
-<span id="cb6-25"><a href="#cb6-25" aria-hidden="true" tabindex="-1"></a><span class="kw">ORDER</span> <span class="kw">BY</span> <span class="cf">CASE</span> <span class="co">-- Aesthetic reordering so 'Morning' comes first, and 'Late Night' comes last</span></span>
-<span id="cb6-26"><a href="#cb6-26" aria-hidden="true" tabindex="-1"></a>    <span class="cf">WHEN</span> <span class="fu">CAST</span> (strftime(<span class="st">'%H'</span>, <span class="dt">TIME</span>(start_time)) <span class="kw">as</span> <span class="dt">int</span>) <span class="kw">BETWEEN</span> <span class="dv">0</span> <span class="kw">AND</span> <span class="dv">5</span> <span class="cf">THEN</span> <span class="dv">5</span></span>
-<span id="cb6-27"><a href="#cb6-27" aria-hidden="true" tabindex="-1"></a>    <span class="cf">WHEN</span> <span class="fu">CAST</span> (strftime(<span class="st">'%H'</span>, <span class="dt">TIME</span>(start_time)) <span class="kw">as</span> <span class="dt">int</span>) <span class="kw">BETWEEN</span> <span class="dv">5</span> <span class="kw">AND</span> <span class="dv">9</span> <span class="cf">THEN</span> <span class="dv">1</span></span>
-<span id="cb6-28"><a href="#cb6-28" aria-hidden="true" tabindex="-1"></a>    <span class="cf">WHEN</span> <span class="fu">CAST</span> (strftime(<span class="st">'%H'</span>, <span class="dt">TIME</span>(start_time)) <span class="kw">as</span> <span class="dt">int</span>) <span class="kw">BETWEEN</span> <span class="dv">9</span> <span class="kw">AND</span> <span class="dv">14</span> <span class="cf">THEN</span> <span class="dv">2</span></span>
-<span id="cb6-29"><a href="#cb6-29" aria-hidden="true" tabindex="-1"></a>    <span class="cf">WHEN</span> <span class="fu">CAST</span> (strftime(<span class="st">'%H'</span>, <span class="dt">TIME</span>(start_time)) <span class="kw">as</span> <span class="dt">int</span>) <span class="kw">BETWEEN</span> <span class="dv">14</span> <span class="kw">AND</span> <span class="dv">19</span> <span class="cf">THEN</span> <span class="dv">3</span></span>
-<span id="cb6-30"><a href="#cb6-30" aria-hidden="true" tabindex="-1"></a>    <span class="cf">WHEN</span> <span class="fu">CAST</span> (strftime(<span class="st">'%H'</span>, <span class="dt">TIME</span>(start_time)) <span class="kw">as</span> <span class="dt">int</span>) <span class="op">&gt;=</span> <span class="dv">19</span> <span class="cf">THEN</span> <span class="dv">4</span></span>
-<span id="cb6-31"><a href="#cb6-31" aria-hidden="true" tabindex="-1"></a><span class="cf">END</span>;</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>Output, ordered by <code>Winrate</code>: |Time of Day|Winrate |Games Played| |———–|—————————–|————| |Morning (5AM-9AM)|47.8 |370 | |Noon (9AM-2PM)|61.5 |13 | |Afternoon (2PM-7PM)|48.6 |210 | |Evening (7PM-12AM)|46.2 |650 | |Late Night (12AM-5AM)|50.5 |1089 |</p>
-</section>
-<section id="day-of-the-week-and-time-of-day" class="level4">
-<h4 class="anchored" data-anchor-id="day-of-the-week-and-time-of-day">5.3. Day of the Week and Time of Day</h4>
 <div class="sourceCode" id="cb7"><pre class="sourceCode sql code-with-copy"><code class="sourceCode sql"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="kw">WITH</span></span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>falco_games <span class="kw">AS</span> (</span>
 <span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>    <span class="kw">select</span> me.<span class="kw">id</span> <span class="kw">as</span> mid, </span>
@@ -580,31 +887,282 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>    <span class="kw">and</span> me.<span class="dt">character</span><span class="op">=</span><span class="st">'FALCO'</span></span>
 <span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>    <span class="kw">and</span> me.code<span class="op">=</span><span class="st">'FROG#671'</span></span>
 <span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a><span class="kw">select</span></span>
-<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>    <span class="cf">CASE</span> <span class="fu">CAST</span> (strftime(<span class="st">'%w'</span>, <span class="dt">DATE</span>(start_time)) <span class="kw">as</span> <span class="dt">int</span>) </span>
-<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a>        <span class="cf">WHEN</span> <span class="dv">0</span> <span class="cf">then</span> <span class="st">'Sunday'</span></span>
-<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a>        <span class="cf">WHEN</span> <span class="dv">1</span> <span class="cf">then</span> <span class="st">'Monday'</span></span>
-<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a>        <span class="cf">WHEN</span> <span class="dv">2</span>  <span class="cf">then</span> <span class="st">'Tuesday'</span></span>
-<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a>        <span class="cf">WHEN</span> <span class="dv">3</span> <span class="cf">then</span> <span class="st">'Wednesday'</span></span>
-<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a>        <span class="cf">WHEN</span> <span class="dv">4</span> <span class="cf">then</span> <span class="st">'Thursday'</span></span>
-<span id="cb7-19"><a href="#cb7-19" aria-hidden="true" tabindex="-1"></a>        <span class="cf">WHEN</span> <span class="dv">5</span> <span class="cf">then</span> <span class="st">'Friday'</span></span>
-<span id="cb7-20"><a href="#cb7-20" aria-hidden="true" tabindex="-1"></a>        <span class="cf">else</span> <span class="st">'Saturday'</span> </span>
-<span id="cb7-21"><a href="#cb7-21" aria-hidden="true" tabindex="-1"></a>    <span class="cf">END</span> <span class="kw">as</span> <span class="st">'Day of Week'</span>,</span>
-<span id="cb7-22"><a href="#cb7-22" aria-hidden="true" tabindex="-1"></a>    <span class="cf">CASE</span> </span>
-<span id="cb7-23"><a href="#cb7-23" aria-hidden="true" tabindex="-1"></a>        <span class="cf">WHEN</span> <span class="fu">CAST</span> (strftime(<span class="st">'%H'</span>, <span class="dt">TIME</span>(start_time)) <span class="kw">as</span> <span class="dt">int</span>) <span class="kw">BETWEEN</span> <span class="dv">0</span> <span class="kw">AND</span> <span class="dv">5</span> <span class="cf">THEN</span> <span class="st">'Late Night (12AM-5AM)'</span></span>
-<span id="cb7-24"><a href="#cb7-24" aria-hidden="true" tabindex="-1"></a>        <span class="cf">WHEN</span> <span class="fu">CAST</span> (strftime(<span class="st">'%H'</span>, <span class="dt">TIME</span>(start_time)) <span class="kw">as</span> <span class="dt">int</span>) <span class="kw">BETWEEN</span> <span class="dv">5</span> <span class="kw">AND</span> <span class="dv">9</span> <span class="cf">THEN</span> <span class="st">'Morning (5AM-9AM)'</span></span>
-<span id="cb7-25"><a href="#cb7-25" aria-hidden="true" tabindex="-1"></a>        <span class="cf">WHEN</span> <span class="fu">CAST</span> (strftime(<span class="st">'%H'</span>, <span class="dt">TIME</span>(start_time)) <span class="kw">as</span> <span class="dt">int</span>) <span class="kw">BETWEEN</span> <span class="dv">9</span> <span class="kw">AND</span> <span class="dv">14</span> <span class="cf">THEN</span> <span class="st">'Noon (9AM-2PM)'</span></span>
-<span id="cb7-26"><a href="#cb7-26" aria-hidden="true" tabindex="-1"></a>        <span class="cf">WHEN</span> <span class="fu">CAST</span> (strftime(<span class="st">'%H'</span>, <span class="dt">TIME</span>(start_time)) <span class="kw">as</span> <span class="dt">int</span>) <span class="kw">BETWEEN</span> <span class="dv">14</span> <span class="kw">AND</span> <span class="dv">19</span> <span class="cf">THEN</span> <span class="st">'Afternoon (2PM-7PM)'</span></span>
-<span id="cb7-27"><a href="#cb7-27" aria-hidden="true" tabindex="-1"></a>        <span class="cf">WHEN</span> <span class="fu">CAST</span> (strftime(<span class="st">'%H'</span>, <span class="dt">TIME</span>(start_time)) <span class="kw">as</span> <span class="dt">int</span>) <span class="op">&gt;=</span> <span class="dv">19</span> <span class="cf">THEN</span> <span class="st">'Evening (7PM-12AM)'</span></span>
-<span id="cb7-28"><a href="#cb7-28" aria-hidden="true" tabindex="-1"></a>    <span class="cf">END</span> <span class="kw">AS</span> <span class="st">'Time of Day'</span>,</span>
-<span id="cb7-29"><a href="#cb7-29" aria-hidden="true" tabindex="-1"></a>    <span class="fu">round</span>((<span class="fu">sum</span>(winner)<span class="op">*</span><span class="fl">1.0</span><span class="op">/</span><span class="fu">count</span>(<span class="op">*</span>)<span class="op">*</span><span class="dv">100</span>), <span class="dv">1</span>) <span class="kw">as</span> Winrate,</span>
-<span id="cb7-30"><a href="#cb7-30" aria-hidden="true" tabindex="-1"></a>    <span class="fu">count</span>(<span class="op">*</span>) <span class="kw">as</span> Games</span>
-<span id="cb7-31"><a href="#cb7-31" aria-hidden="true" tabindex="-1"></a><span class="kw">From</span> falco_games</span>
-<span id="cb7-32"><a href="#cb7-32" aria-hidden="true" tabindex="-1"></a><span class="kw">LEFT</span> <span class="kw">JOIN</span> games <span class="kw">on</span> gid <span class="op">=</span> games.<span class="kw">id</span></span>
-<span id="cb7-33"><a href="#cb7-33" aria-hidden="true" tabindex="-1"></a><span class="kw">GROUP</span> <span class="kw">BY</span> <span class="dv">1</span>, <span class="dv">2</span></span>
-<span id="cb7-34"><a href="#cb7-34" aria-hidden="true" tabindex="-1"></a><span class="kw">HAVING</span> Games <span class="op">&gt;=</span> <span class="dv">10</span></span>
-<span id="cb7-35"><a href="#cb7-35" aria-hidden="true" tabindex="-1"></a><span class="kw">ORDER</span> <span class="kw">BY</span> Winrate <span class="kw">desc</span>;</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>Output, ordered by <code>Winrate</code>: |Day of Week|Time of Day |Winrate|Games| |———–|—————————–|——-|—–| |Thursday |Late Night (12AM-5AM) |56 |184 | |Wednesday |Afternoon (2PM-7PM) |56 |75 | |Wednesday |Evening (7PM-12AM) |55.1 |78 | |Monday |Morning (5AM-9AM) |54.5 |33 | |Sunday |Afternoon (2PM-7PM) |54.5 |11 | |Tuesday |Morning (5AM-9AM) |53.3 |15 | |Tuesday |Afternoon (2PM-7PM) |53.1 |32 | |Saturday |Late Night (12AM-5AM) |52.4 |187 | |Wednesday |Late Night (12AM-5AM) |52.4 |126 | |Monday |Late Night (12AM-5AM) |50 |184 | |Saturday |Morning (5AM-9AM) |50 |32 | |Wednesday |Noon (9AM-2PM) |50 |10 | |Sunday |Morning (5AM-9AM) |49.4 |89 | |Friday |Morning (5AM-9AM) |48.8 |43 | |Friday |Afternoon (2PM-7PM) |47.5 |40 | |Tuesday |Late Night (12AM-5AM) |47.1 |261 | |Friday |Late Night (12AM-5AM) |46.9 |98 | |Friday |Evening (7PM-12AM) |46.6 |118 | |Wednesday |Morning (5AM-9AM) |46.3 |80 | |Thursday |Evening (7PM-12AM) |46.2 |106 | |Tuesday |Evening (7PM-12AM) |45.5 |88 | |Sunday |Late Night (12AM-5AM) |44.9 |49 | |Saturday |Evening (7PM-12AM) |44.7 |76 | |Monday |Evening (7PM-12AM) |44 |150 | |Thursday |Morning (5AM-9AM) |42.3 |78 | |Sunday |Evening (7PM-12AM) |38.2 |34 | |Monday |Afternoon (2PM-7PM) |38.1 |21 | |Saturday |Afternoon (2PM-7PM) |21.7 |23 |</p>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a><span class="kw">select</span> </span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>    <span class="cf">CASE</span> <span class="co">-- Defining different times of the day based on the hour of the day</span></span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a>        <span class="cf">WHEN</span> <span class="fu">CAST</span> (strftime(<span class="st">'%H'</span>, <span class="dt">TIME</span>(start_time)) <span class="kw">as</span> <span class="dt">int</span>) <span class="kw">BETWEEN</span> <span class="dv">0</span> <span class="kw">AND</span> <span class="dv">5</span> <span class="cf">THEN</span> <span class="st">'Late Night (12AM-5AM)'</span></span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a>        <span class="cf">WHEN</span> <span class="fu">CAST</span> (strftime(<span class="st">'%H'</span>, <span class="dt">TIME</span>(start_time)) <span class="kw">as</span> <span class="dt">int</span>) <span class="kw">BETWEEN</span> <span class="dv">5</span> <span class="kw">AND</span> <span class="dv">9</span> <span class="cf">THEN</span> <span class="st">'Morning (5AM-9AM)'</span></span>
+<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a>        <span class="cf">WHEN</span> <span class="fu">CAST</span> (strftime(<span class="st">'%H'</span>, <span class="dt">TIME</span>(start_time)) <span class="kw">as</span> <span class="dt">int</span>) <span class="kw">BETWEEN</span> <span class="dv">9</span> <span class="kw">AND</span> <span class="dv">14</span> <span class="cf">THEN</span> <span class="st">'Noon (9AM-2PM)'</span></span>
+<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a>        <span class="cf">WHEN</span> <span class="fu">CAST</span> (strftime(<span class="st">'%H'</span>, <span class="dt">TIME</span>(start_time)) <span class="kw">as</span> <span class="dt">int</span>) <span class="kw">BETWEEN</span> <span class="dv">14</span> <span class="kw">AND</span> <span class="dv">19</span> <span class="cf">THEN</span> <span class="st">'Afternoon (2PM-7PM)'</span></span>
+<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a>        <span class="cf">WHEN</span> <span class="fu">CAST</span> (strftime(<span class="st">'%H'</span>, <span class="dt">TIME</span>(start_time)) <span class="kw">as</span> <span class="dt">int</span>) <span class="op">&gt;=</span> <span class="dv">19</span> <span class="cf">THEN</span> <span class="st">'Evening (7PM-12AM)'</span></span>
+<span id="cb7-19"><a href="#cb7-19" aria-hidden="true" tabindex="-1"></a>    <span class="cf">END</span> <span class="kw">AS</span> <span class="ot">"Time of Day"</span>,</span>
+<span id="cb7-20"><a href="#cb7-20" aria-hidden="true" tabindex="-1"></a>    <span class="fu">round</span>((<span class="fu">sum</span>(winner)<span class="op">*</span><span class="fl">1.0</span><span class="op">/</span><span class="fu">count</span>(<span class="op">*</span>)<span class="op">*</span><span class="dv">100</span>), <span class="dv">1</span>) <span class="kw">as</span> Winrate,</span>
+<span id="cb7-21"><a href="#cb7-21" aria-hidden="true" tabindex="-1"></a>    <span class="fu">count</span>(<span class="op">*</span>) <span class="kw">as</span> <span class="ot">"Games Played"</span></span>
+<span id="cb7-22"><a href="#cb7-22" aria-hidden="true" tabindex="-1"></a><span class="kw">From</span> falco_games</span>
+<span id="cb7-23"><a href="#cb7-23" aria-hidden="true" tabindex="-1"></a><span class="kw">LEFT</span> <span class="kw">JOIN</span> games <span class="kw">on</span> gid <span class="op">=</span> games.<span class="kw">id</span></span>
+<span id="cb7-24"><a href="#cb7-24" aria-hidden="true" tabindex="-1"></a><span class="kw">GROUP</span> <span class="kw">BY</span> <span class="dv">1</span></span>
+<span id="cb7-25"><a href="#cb7-25" aria-hidden="true" tabindex="-1"></a><span class="kw">ORDER</span> <span class="kw">BY</span> <span class="cf">CASE</span> <span class="co">-- Aesthetic reordering so 'Morning' comes first, and 'Late Night' comes last</span></span>
+<span id="cb7-26"><a href="#cb7-26" aria-hidden="true" tabindex="-1"></a>    <span class="cf">WHEN</span> <span class="fu">CAST</span> (strftime(<span class="st">'%H'</span>, <span class="dt">TIME</span>(start_time)) <span class="kw">as</span> <span class="dt">int</span>) <span class="kw">BETWEEN</span> <span class="dv">0</span> <span class="kw">AND</span> <span class="dv">5</span> <span class="cf">THEN</span> <span class="dv">5</span></span>
+<span id="cb7-27"><a href="#cb7-27" aria-hidden="true" tabindex="-1"></a>    <span class="cf">WHEN</span> <span class="fu">CAST</span> (strftime(<span class="st">'%H'</span>, <span class="dt">TIME</span>(start_time)) <span class="kw">as</span> <span class="dt">int</span>) <span class="kw">BETWEEN</span> <span class="dv">5</span> <span class="kw">AND</span> <span class="dv">9</span> <span class="cf">THEN</span> <span class="dv">1</span></span>
+<span id="cb7-28"><a href="#cb7-28" aria-hidden="true" tabindex="-1"></a>    <span class="cf">WHEN</span> <span class="fu">CAST</span> (strftime(<span class="st">'%H'</span>, <span class="dt">TIME</span>(start_time)) <span class="kw">as</span> <span class="dt">int</span>) <span class="kw">BETWEEN</span> <span class="dv">9</span> <span class="kw">AND</span> <span class="dv">14</span> <span class="cf">THEN</span> <span class="dv">2</span></span>
+<span id="cb7-29"><a href="#cb7-29" aria-hidden="true" tabindex="-1"></a>    <span class="cf">WHEN</span> <span class="fu">CAST</span> (strftime(<span class="st">'%H'</span>, <span class="dt">TIME</span>(start_time)) <span class="kw">as</span> <span class="dt">int</span>) <span class="kw">BETWEEN</span> <span class="dv">14</span> <span class="kw">AND</span> <span class="dv">19</span> <span class="cf">THEN</span> <span class="dv">3</span></span>
+<span id="cb7-30"><a href="#cb7-30" aria-hidden="true" tabindex="-1"></a>    <span class="cf">WHEN</span> <span class="fu">CAST</span> (strftime(<span class="st">'%H'</span>, <span class="dt">TIME</span>(start_time)) <span class="kw">as</span> <span class="dt">int</span>) <span class="op">&gt;=</span> <span class="dv">19</span> <span class="cf">THEN</span> <span class="dv">4</span></span>
+<span id="cb7-31"><a href="#cb7-31" aria-hidden="true" tabindex="-1"></a><span class="cf">END</span>;</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Output, ordered by <code>Winrate</code>:</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Time of Day</th>
+<th>Winrate</th>
+<th>Games Played</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Morning (5AM-9AM)</td>
+<td>47.8</td>
+<td>370</td>
+</tr>
+<tr class="even">
+<td>Noon (9AM-2PM)</td>
+<td>61.5</td>
+<td>13</td>
+</tr>
+<tr class="odd">
+<td>Afternoon (2PM-7PM)</td>
+<td>48.6</td>
+<td>210</td>
+</tr>
+<tr class="even">
+<td>Evening (7PM-12AM)</td>
+<td>46.2</td>
+<td>650</td>
+</tr>
+<tr class="odd">
+<td>Late Night (12AM-5AM)</td>
+<td>50.5</td>
+<td>1089</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="day-of-the-week-and-time-of-day" class="level4">
+<h4 class="anchored" data-anchor-id="day-of-the-week-and-time-of-day">5.3. Day of the Week and Time of Day</h4>
+<div class="sourceCode" id="cb8"><pre class="sourceCode sql code-with-copy"><code class="sourceCode sql"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="kw">WITH</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>falco_games <span class="kw">AS</span> (</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>    <span class="kw">select</span> me.<span class="kw">id</span> <span class="kw">as</span> mid, </span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>        me.game_id <span class="kw">as</span> gid, </span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>        me.winner <span class="kw">as</span> winner</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>    <span class="kw">from</span> players me, players op </span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>    <span class="kw">where</span> me.<span class="kw">id</span> <span class="op">!=</span> op.<span class="kw">id</span></span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>    <span class="kw">and</span> me.game_id <span class="op">=</span> op.game_id</span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>    <span class="kw">and</span> me.<span class="dt">character</span><span class="op">=</span><span class="st">'FALCO'</span></span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>    <span class="kw">and</span> me.code<span class="op">=</span><span class="st">'FROG#671'</span></span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a><span class="kw">select</span></span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a>    <span class="cf">CASE</span> <span class="fu">CAST</span> (strftime(<span class="st">'%w'</span>, <span class="dt">DATE</span>(start_time)) <span class="kw">as</span> <span class="dt">int</span>) </span>
+<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a>        <span class="cf">WHEN</span> <span class="dv">0</span> <span class="cf">then</span> <span class="st">'Sunday'</span></span>
+<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a>        <span class="cf">WHEN</span> <span class="dv">1</span> <span class="cf">then</span> <span class="st">'Monday'</span></span>
+<span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a>        <span class="cf">WHEN</span> <span class="dv">2</span>  <span class="cf">then</span> <span class="st">'Tuesday'</span></span>
+<span id="cb8-17"><a href="#cb8-17" aria-hidden="true" tabindex="-1"></a>        <span class="cf">WHEN</span> <span class="dv">3</span> <span class="cf">then</span> <span class="st">'Wednesday'</span></span>
+<span id="cb8-18"><a href="#cb8-18" aria-hidden="true" tabindex="-1"></a>        <span class="cf">WHEN</span> <span class="dv">4</span> <span class="cf">then</span> <span class="st">'Thursday'</span></span>
+<span id="cb8-19"><a href="#cb8-19" aria-hidden="true" tabindex="-1"></a>        <span class="cf">WHEN</span> <span class="dv">5</span> <span class="cf">then</span> <span class="st">'Friday'</span></span>
+<span id="cb8-20"><a href="#cb8-20" aria-hidden="true" tabindex="-1"></a>        <span class="cf">else</span> <span class="st">'Saturday'</span> </span>
+<span id="cb8-21"><a href="#cb8-21" aria-hidden="true" tabindex="-1"></a>    <span class="cf">END</span> <span class="kw">as</span> <span class="st">'Day of Week'</span>,</span>
+<span id="cb8-22"><a href="#cb8-22" aria-hidden="true" tabindex="-1"></a>    <span class="cf">CASE</span> </span>
+<span id="cb8-23"><a href="#cb8-23" aria-hidden="true" tabindex="-1"></a>        <span class="cf">WHEN</span> <span class="fu">CAST</span> (strftime(<span class="st">'%H'</span>, <span class="dt">TIME</span>(start_time)) <span class="kw">as</span> <span class="dt">int</span>) <span class="kw">BETWEEN</span> <span class="dv">0</span> <span class="kw">AND</span> <span class="dv">5</span> <span class="cf">THEN</span> <span class="st">'Late Night (12AM-5AM)'</span></span>
+<span id="cb8-24"><a href="#cb8-24" aria-hidden="true" tabindex="-1"></a>        <span class="cf">WHEN</span> <span class="fu">CAST</span> (strftime(<span class="st">'%H'</span>, <span class="dt">TIME</span>(start_time)) <span class="kw">as</span> <span class="dt">int</span>) <span class="kw">BETWEEN</span> <span class="dv">5</span> <span class="kw">AND</span> <span class="dv">9</span> <span class="cf">THEN</span> <span class="st">'Morning (5AM-9AM)'</span></span>
+<span id="cb8-25"><a href="#cb8-25" aria-hidden="true" tabindex="-1"></a>        <span class="cf">WHEN</span> <span class="fu">CAST</span> (strftime(<span class="st">'%H'</span>, <span class="dt">TIME</span>(start_time)) <span class="kw">as</span> <span class="dt">int</span>) <span class="kw">BETWEEN</span> <span class="dv">9</span> <span class="kw">AND</span> <span class="dv">14</span> <span class="cf">THEN</span> <span class="st">'Noon (9AM-2PM)'</span></span>
+<span id="cb8-26"><a href="#cb8-26" aria-hidden="true" tabindex="-1"></a>        <span class="cf">WHEN</span> <span class="fu">CAST</span> (strftime(<span class="st">'%H'</span>, <span class="dt">TIME</span>(start_time)) <span class="kw">as</span> <span class="dt">int</span>) <span class="kw">BETWEEN</span> <span class="dv">14</span> <span class="kw">AND</span> <span class="dv">19</span> <span class="cf">THEN</span> <span class="st">'Afternoon (2PM-7PM)'</span></span>
+<span id="cb8-27"><a href="#cb8-27" aria-hidden="true" tabindex="-1"></a>        <span class="cf">WHEN</span> <span class="fu">CAST</span> (strftime(<span class="st">'%H'</span>, <span class="dt">TIME</span>(start_time)) <span class="kw">as</span> <span class="dt">int</span>) <span class="op">&gt;=</span> <span class="dv">19</span> <span class="cf">THEN</span> <span class="st">'Evening (7PM-12AM)'</span></span>
+<span id="cb8-28"><a href="#cb8-28" aria-hidden="true" tabindex="-1"></a>    <span class="cf">END</span> <span class="kw">AS</span> <span class="st">'Time of Day'</span>,</span>
+<span id="cb8-29"><a href="#cb8-29" aria-hidden="true" tabindex="-1"></a>    <span class="fu">round</span>((<span class="fu">sum</span>(winner)<span class="op">*</span><span class="fl">1.0</span><span class="op">/</span><span class="fu">count</span>(<span class="op">*</span>)<span class="op">*</span><span class="dv">100</span>), <span class="dv">1</span>) <span class="kw">as</span> Winrate,</span>
+<span id="cb8-30"><a href="#cb8-30" aria-hidden="true" tabindex="-1"></a>    <span class="fu">count</span>(<span class="op">*</span>) <span class="kw">as</span> Games</span>
+<span id="cb8-31"><a href="#cb8-31" aria-hidden="true" tabindex="-1"></a><span class="kw">From</span> falco_games</span>
+<span id="cb8-32"><a href="#cb8-32" aria-hidden="true" tabindex="-1"></a><span class="kw">LEFT</span> <span class="kw">JOIN</span> games <span class="kw">on</span> gid <span class="op">=</span> games.<span class="kw">id</span></span>
+<span id="cb8-33"><a href="#cb8-33" aria-hidden="true" tabindex="-1"></a><span class="kw">GROUP</span> <span class="kw">BY</span> <span class="dv">1</span>, <span class="dv">2</span></span>
+<span id="cb8-34"><a href="#cb8-34" aria-hidden="true" tabindex="-1"></a><span class="kw">HAVING</span> Games <span class="op">&gt;=</span> <span class="dv">10</span></span>
+<span id="cb8-35"><a href="#cb8-35" aria-hidden="true" tabindex="-1"></a><span class="kw">ORDER</span> <span class="kw">BY</span> Winrate <span class="kw">desc</span>;</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Output, ordered by <code>Winrate</code>:</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Day of Week</th>
+<th>Time of Day</th>
+<th>Winrate</th>
+<th>Games</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Thursday</td>
+<td>Late Night (12AM-5AM)</td>
+<td>56</td>
+<td>184</td>
+</tr>
+<tr class="even">
+<td>Wednesday</td>
+<td>Afternoon (2PM-7PM)</td>
+<td>56</td>
+<td>75</td>
+</tr>
+<tr class="odd">
+<td>Wednesday</td>
+<td>Evening (7PM-12AM)</td>
+<td>55.1</td>
+<td>78</td>
+</tr>
+<tr class="even">
+<td>Monday</td>
+<td>Morning (5AM-9AM)</td>
+<td>54.5</td>
+<td>33</td>
+</tr>
+<tr class="odd">
+<td>Sunday</td>
+<td>Afternoon (2PM-7PM)</td>
+<td>54.5</td>
+<td>11</td>
+</tr>
+<tr class="even">
+<td>Tuesday</td>
+<td>Morning (5AM-9AM)</td>
+<td>53.3</td>
+<td>15</td>
+</tr>
+<tr class="odd">
+<td>Tuesday</td>
+<td>Afternoon (2PM-7PM)</td>
+<td>53.1</td>
+<td>32</td>
+</tr>
+<tr class="even">
+<td>Saturday</td>
+<td>Late Night (12AM-5AM)</td>
+<td>52.4</td>
+<td>187</td>
+</tr>
+<tr class="odd">
+<td>Wednesday</td>
+<td>Late Night (12AM-5AM)</td>
+<td>52.4</td>
+<td>126</td>
+</tr>
+<tr class="even">
+<td>Monday</td>
+<td>Late Night (12AM-5AM)</td>
+<td>50</td>
+<td>184</td>
+</tr>
+<tr class="odd">
+<td>Saturday</td>
+<td>Morning (5AM-9AM)</td>
+<td>50</td>
+<td>32</td>
+</tr>
+<tr class="even">
+<td>Wednesday</td>
+<td>Noon (9AM-2PM)</td>
+<td>50</td>
+<td>10</td>
+</tr>
+<tr class="odd">
+<td>Sunday</td>
+<td>Morning (5AM-9AM)</td>
+<td>49.4</td>
+<td>89</td>
+</tr>
+<tr class="even">
+<td>Friday</td>
+<td>Morning (5AM-9AM)</td>
+<td>48.8</td>
+<td>43</td>
+</tr>
+<tr class="odd">
+<td>Friday</td>
+<td>Afternoon (2PM-7PM)</td>
+<td>47.5</td>
+<td>40</td>
+</tr>
+<tr class="even">
+<td>Tuesday</td>
+<td>Late Night (12AM-5AM)</td>
+<td>47.1</td>
+<td>261</td>
+</tr>
+<tr class="odd">
+<td>Friday</td>
+<td>Late Night (12AM-5AM)</td>
+<td>46.9</td>
+<td>98</td>
+</tr>
+<tr class="even">
+<td>Friday</td>
+<td>Evening (7PM-12AM)</td>
+<td>46.6</td>
+<td>118</td>
+</tr>
+<tr class="odd">
+<td>Wednesday</td>
+<td>Morning (5AM-9AM)</td>
+<td>46.3</td>
+<td>80</td>
+</tr>
+<tr class="even">
+<td>Thursday</td>
+<td>Evening (7PM-12AM)</td>
+<td>46.2</td>
+<td>106</td>
+</tr>
+<tr class="odd">
+<td>Tuesday</td>
+<td>Evening (7PM-12AM)</td>
+<td>45.5</td>
+<td>88</td>
+</tr>
+<tr class="even">
+<td>Sunday</td>
+<td>Late Night (12AM-5AM)</td>
+<td>44.9</td>
+<td>49</td>
+</tr>
+<tr class="odd">
+<td>Saturday</td>
+<td>Evening (7PM-12AM)</td>
+<td>44.7</td>
+<td>76</td>
+</tr>
+<tr class="even">
+<td>Monday</td>
+<td>Evening (7PM-12AM)</td>
+<td>44</td>
+<td>150</td>
+</tr>
+<tr class="odd">
+<td>Thursday</td>
+<td>Morning (5AM-9AM)</td>
+<td>42.3</td>
+<td>78</td>
+</tr>
+<tr class="even">
+<td>Sunday</td>
+<td>Evening (7PM-12AM)</td>
+<td>38.2</td>
+<td>34</td>
+</tr>
+<tr class="odd">
+<td>Monday</td>
+<td>Afternoon (2PM-7PM)</td>
+<td>38.1</td>
+<td>21</td>
+</tr>
+<tr class="even">
+<td>Saturday</td>
+<td>Afternoon (2PM-7PM)</td>
+<td>21.7</td>
+<td>23</td>
+</tr>
+</tbody>
+</table>
 </section>
 </section>
 </section>

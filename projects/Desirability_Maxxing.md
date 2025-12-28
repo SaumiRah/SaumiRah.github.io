@@ -1,12 +1,15 @@
-Pizza Delivery GIS Project
+---
+categories: [GIS]
+---
+Optimizing Desirability
 ================
 
 # Preface
-Part two of an ongoing project where I analyze data surrounding my part time job as a pizza delivery driver at Me-n-Ed's Port Coquitlam. Part two focuses on geographic data. It was originally submitted as an assignment for GEOG 255 at Simon Fraser University. 
+Part two of an ongoing project where I analyze data surrounding my part time job as a pizza delivery driver. Part two focuses on geographic data. It was originally submitted as an assignment for GEOG 255 at Simon Fraser University. 
 
 # Section I. Research Question and Theory
-Based on the success the first part of this project had, I decided to extend the scope of this project to include geographic questions. The research circumstances being studied are explained in [part one](https://github.com/SaumiRah/Portfolio/blob/main/Tip-Maxxing_R.md#section-i-research-question-theory-and-hypotheses). An important bit of exposition required is that while Me-n-Ed's is located in Port Coquitlam, it isn’t limited to delivering to that municipality. Additionally, we deliver to 3 neighbouring municipalities for a total of 4: Coquitlam, Port Coquitlam, Port Moody and Anmore.
-An important part way of making sure I’m getting the most tip money on a given shift is to not waste time on the road; the faster I get back to the restaurant, the more deliveries I take and the more tip money I make. Deliveries to closer addresses are preferable for this reason; less time spent in transit. The ideal delivery will therefore be high-tipping, and nearby. One could represent the desirability of a delivery as a ratio of its tip over it’s distance from the restaurant. If that’s the case, my question is which municipality will be on average the most desirable to deliver to?
+Based on the success the first part of this project had, I decided to extend the scope of this project to include geographic questions. The research circumstances being studied are explained in part one. An important bit of exposition required is that while Me-n-Ed's is located in Port Coquitlam, it isn’t limited to delivering to that municipality. Additionally, we deliver to 3 neighbouring municipalities for a total of 4: Coquitlam, Port Coquitlam, Port Moody and Anmore.
+An important part of making sure I’m getting the most tip money on a given shift is to not waste time on the road; the faster I get back to the restaurant, the more deliveries I take and the more tip money I make. Deliveries to closer addresses are preferable for this reason; less time spent in transit. The ideal delivery will therefore be high-tipping, and nearby. One could represent the desirability of a delivery as a ratio of its tip over it’s distance from the restaurant. If that’s the case, my question is which municipality will be on average the most desirable to deliver to?
 To answer this question, I intend on producing a map visualizing the shortest routes[^1] to a set of delivery addresses. This involves network analysis based on the location of Me-n-Ed's and the local road network. Furthermore, I will generate a choropleth layer representing the desirability of each municipality.
 
 Furthermore, I have an additional speculative inquiry. In the past month or so, management has been gossiping about the possibility of opening another Me-n-Ed's right in the center of Port Moody. In this hypothetical scenario, deliveries closest to the Port Moody location will be taken by the Port Moody location, instead of the Port Coquitlam location. Because Port Moody is pretty close to where I live, I could ask to be transferred to the Port Moody branch and work there instead if I wanted to. In the interest of maximizing my income from this job, which location would be the most desirable to work at?

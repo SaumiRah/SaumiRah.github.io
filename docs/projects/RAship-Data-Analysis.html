@@ -87,6 +87,35 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   }
 }</script>
 
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
 
 <link rel="stylesheet" href="../styles.css">
 </head>
@@ -135,9 +164,28 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <!-- margin-sidebar -->
     
 <!-- main -->
-<main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block"></header>
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+  <div class="quarto-categories">
+    <div class="quarto-category">R</div>
+    <div class="quarto-category">Visualization</div>
+  </div>
+  </div>
 
 
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
 
 
 <section id="raship-code" class="level1">
@@ -145,6 +193,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="acknowledgements" class="level2">
 <h2 class="anchored" data-anchor-id="acknowledgements">Acknowledgements</h2>
 <p>The following is an R project I developed to perform data analysis on historic economic data for my position as a Research Assistant for Prof.&nbsp;Nicolas Schmitt at Simon Fraser University. The version of this file published on Github will load redacted versions of proprietary data. All categorical variables are aliased, and all numeric fields are shuffled at random to preserve confidentiality. File names and headers are kept the same.</p>
+<p><em><u>Note from the future</u>: If I were to tackle this project today I would approach the task much differently: I would employ a more conrete naming convention for variables and files, use version control, and would overall use more functions for DRYer code. I include this project here because it served as an important learning opportunity for me, and demonstrates that I’ve solved a real-world assignment.</em></p>
 </section>
 </section>
 <section id="data-processing" class="level1">
@@ -227,7 +276,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 ## 6    Cat.6 30.63500 39.58481 30</code></pre>
 </section>
 <section id="section-3" class="level2">
-<h2 class="anchored" data-anchor-id="section-3"><code>1884</code></h2>
+<h2 class="anchored" data-anchor-id="section-3">1884</h2>
 <div class="sourceCode" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>eightFourDF <span class="ot">&lt;-</span> <span class="fu">recatData</span>(<span class="st">"D:</span><span class="sc">\\</span><span class="st">Everything</span><span class="sc">\\</span><span class="st">School</span><span class="sc">\\</span><span class="st">RA position</span><span class="sc">\\</span><span class="st">Tariff Schedules</span><span class="sc">\\</span><span class="st">Analysis</span><span class="sc">\\</span><span class="st">Sector Recategorization</span><span class="sc">\\</span><span class="st">1884_Recat_V2.xlsx"</span>)</span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(eightFourDF)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <pre><code>##   Category     mean       sd  n
@@ -425,290 +474,60 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="graphs" class="level1">
 <h1>Graphs</h1>
-<section id="histogram-mean-tariffs-recategorized" class="level3">
-<h3 class="anchored" data-anchor-id="histogram-mean-tariffs-recategorized">Histogram: Mean Tariffs Recategorized</h3>
-<div class="sourceCode" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>reCatLabs <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"1"</span><span class="sc">:</span><span class="st">"16"</span>)</span>
-<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(fDF , <span class="fu">aes</span>(<span class="at">x=</span>Category, <span class="at">y=</span>mean, <span class="at">group=</span>Year)) <span class="sc">+</span> </span>
-<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_bar</span>(<span class="at">stat=</span><span class="st">"identity"</span>, <span class="fu">aes</span>(<span class="at">fill=</span>Year), <span class="at">size=</span><span class="dv">2</span>, <span class="at">position=</span><span class="st">"dodge"</span>)<span class="sc">+</span></span>
-<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>  <span class="co">#geom_errorbar(aes(fill= Year, ymin= ifelse(mean-sd &lt; 0, 0, mean-sd), ymax=mean+sd), position= "dodge") + #comment this out to remove SD bars.</span></span>
-<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">size=</span><span class="dv">2</span>, <span class="at">position=</span> <span class="fu">position_dodge</span>(<span class="at">width=</span><span class="fl">0.9</span>))<span class="sc">+</span></span>
-<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a>  <span class="co">#theme_economist()+</span></span>
-<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_discrete</span>(<span class="at">labels=</span>reCatLabs)<span class="sc">+</span></span>
-<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x=</span><span class="st">""</span>, <span class="at">y=</span><span class="st">"Mean (Fr.)"</span>)<span class="sc">+</span></span>
-<span id="cb19-10"><a href="#cb19-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggtitle</span>(<span class="st">"Mean Tariffs Recategorized"</span>)<span class="sc">+</span> <span class="co"># edit graph title</span></span>
-<span id="cb19-11"><a href="#cb19-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_text</span>(<span class="at">data =</span> fDF, <span class="fu">aes</span>(<span class="at">label =</span> n), </span>
-<span id="cb19-12"><a href="#cb19-12" aria-hidden="true" tabindex="-1"></a>            <span class="at">position =</span> <span class="fu">position_dodge</span>(<span class="at">width =</span> <span class="fl">0.9</span>), <span class="at">vjust =</span> <span class="sc">-</span><span class="fl">0.25</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p><img src="RAship-Data-Analysis_files/figure-gfm/graph1-1.png" class="img-fluid"><!-- --></p>
-</section>
-<section id="scatterplot-recategorized-mean-standard-deviation" class="level3">
-<h3 class="anchored" data-anchor-id="scatterplot-recategorized-mean-standard-deviation">Scatterplot: Recategorized: Mean ~ Standard Deviation</h3>
-<div class="sourceCode" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>fDF<span class="sc">$</span>ID <span class="ot">&lt;-</span> <span class="fu">rep</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">16</span>, <span class="at">each =</span> <span class="dv">6</span>)</span>
-<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(fDF, <span class="at">x=</span>sd, <span class="at">y=</span>mean)<span class="sc">+</span></span>
-<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">stat=</span><span class="st">"identity"</span>, <span class="fu">aes</span>(<span class="at">color=</span>Year, <span class="at">x=</span>sd, <span class="at">y=</span>mean), <span class="at">size=</span><span class="dv">2</span>)<span class="sc">+</span></span>
-<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_smooth</span>(<span class="fu">aes</span>(<span class="at">color=</span> Year, <span class="at">x=</span>sd, <span class="at">y=</span>mean), <span class="at">method =</span> <span class="st">"lm"</span>, <span class="at">alpha =</span> .<span class="dv">15</span>)<span class="sc">+</span></span>
-<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a>  <span class="co">#theme_economist()+</span></span>
-<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">legend.position=</span> <span class="st">"left"</span>)<span class="sc">+</span></span>
-<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">xlim</span>(<span class="dv">0</span>,<span class="dv">50</span>)<span class="sc">+</span></span>
-<span id="cb20-9"><a href="#cb20-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ylim</span>(<span class="dv">0</span>, <span class="dv">50</span>)<span class="sc">+</span></span>
-<span id="cb20-10"><a href="#cb20-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x=</span><span class="st">"Standard Deviation"</span>, <span class="at">y=</span><span class="st">"Mean (Fr.)"</span>)<span class="sc">+</span></span>
-<span id="cb20-11"><a href="#cb20-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggtitle</span>(<span class="st">"Recategorized: Mean ~ Standard Deviation"</span>)<span class="sc">+</span></span>
-<span id="cb20-12"><a href="#cb20-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_text_repel</span>(<span class="fu">aes</span>(<span class="at">color=</span> Year, <span class="at">x=</span>sd, <span class="at">y=</span>mean),</span>
-<span id="cb20-13"><a href="#cb20-13" aria-hidden="true" tabindex="-1"></a>                   <span class="at">label=</span><span class="fu">paste0</span>(fDF<span class="sc">$</span>ID,<span class="st">"^("</span>,fDF<span class="sc">$</span>n,<span class="st">")"</span>),</span>
-<span id="cb20-14"><a href="#cb20-14" aria-hidden="true" tabindex="-1"></a>                   <span class="at">parse=</span><span class="cn">TRUE</span>,</span>
-<span id="cb20-15"><a href="#cb20-15" aria-hidden="true" tabindex="-1"></a>                   <span class="at">label.padding =</span> <span class="fu">unit</span>(<span class="fl">0.1</span>, <span class="st">"lines"</span>), <span class="co"># Rectangle size around label</span></span>
-<span id="cb20-16"><a href="#cb20-16" aria-hidden="true" tabindex="-1"></a>                   <span class="at">label.size =</span> <span class="fl">0.02</span>,</span>
-<span id="cb20-17"><a href="#cb20-17" aria-hidden="true" tabindex="-1"></a>                   <span class="at">force=</span><span class="dv">1</span>,</span>
-<span id="cb20-18"><a href="#cb20-18" aria-hidden="true" tabindex="-1"></a>                   <span class="at">force_pull =</span> <span class="fl">0.1</span></span>
-<span id="cb20-19"><a href="#cb20-19" aria-hidden="true" tabindex="-1"></a>  )<span class="sc">+</span></span>
-<span id="cb20-20"><a href="#cb20-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_zoom</span>(<span class="at">xlim =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">10</span>),</span>
-<span id="cb20-21"><a href="#cb20-21" aria-hidden="true" tabindex="-1"></a>             <span class="at">zoom.size =</span> <span class="fl">0.75</span>,</span>
-<span id="cb20-22"><a href="#cb20-22" aria-hidden="true" tabindex="-1"></a>             <span class="at">ylim=</span><span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">10</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p><img src="RAship-Data-Analysis_files/figure-gfm/graph2-1.png" class="img-fluid"><!-- --></p>
-<p>lm(mean ~ Category, data=fDF)</p>
-</section>
-<section id="measuring-change-over-consecutive-years" class="level2">
-<h2 class="anchored" data-anchor-id="measuring-change-over-consecutive-years">Measuring Change Over Consecutive Years</h2>
-<section id="the-change-of-the-number-of-items-in-each-category-over-consecutive-years-n_it-n_it-1n_it-1100" class="level3">
-<h3 class="anchored" data-anchor-id="the-change-of-the-number-of-items-in-each-category-over-consecutive-years-n_it-n_it-1n_it-1100">The % change of the number of items in each category over consecutive years: [(n_(it)-n_(it-1))/n_(it-1)]*100</h3>
-<div class="sourceCode" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>fDF <span class="ot">&lt;-</span> fDF <span class="sc">%&gt;%</span></span>
-<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(Category, Year) <span class="sc">%&gt;%</span></span>
-<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>()</span>
-<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>n_percentage_change_df <span class="ot">&lt;-</span> fDF <span class="sc">%&gt;%</span></span>
-<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(Category) <span class="sc">%&gt;%</span></span>
-<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">n_Percentage_Change =</span> (n <span class="sc">-</span> <span class="fu">lag</span>(n)) <span class="sc">/</span> <span class="fu">lag</span>(n) <span class="sc">*</span> <span class="dv">100</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">n_Percentage_Change =</span> <span class="fu">ifelse</span>(Year <span class="sc">==</span> <span class="dv">1849</span>, <span class="cn">NA</span>, n_Percentage_Change)) <span class="sc">%&gt;%</span> <span class="co">#setting all 1849 rows to NA to be removed later</span></span>
-<span id="cb21-9"><a href="#cb21-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>()</span>
-<span id="cb21-10"><a href="#cb21-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb21-11"><a href="#cb21-11" aria-hidden="true" tabindex="-1"></a>n_percentage_change_df <span class="ot">&lt;-</span> <span class="fu">na.omit</span>(n_percentage_change_df) <span class="co">#removing all 1849 rows because they have no previous year to be compared to</span></span>
-<span id="cb21-12"><a href="#cb21-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb21-13"><a href="#cb21-13" aria-hidden="true" tabindex="-1"></a><span class="co"># Histogram</span></span>
-<span id="cb21-14"><a href="#cb21-14" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(n_percentage_change_df , <span class="fu">aes</span>(<span class="at">x=</span>Category, <span class="at">y=</span>n_Percentage_Change, <span class="at">group=</span>Year)) <span class="sc">+</span> </span>
-<span id="cb21-15"><a href="#cb21-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_bar</span>(<span class="at">stat=</span><span class="st">"identity"</span>, <span class="fu">aes</span>(<span class="at">fill=</span>Year), <span class="at">size=</span><span class="dv">2</span>, <span class="at">position=</span><span class="st">"dodge"</span>)<span class="sc">+</span></span>
-<span id="cb21-16"><a href="#cb21-16" aria-hidden="true" tabindex="-1"></a>  <span class="co">#geom_errorbar(aes(fill= Year, ymin= ifelse(mean-sd &lt; 0, 0, mean-sd), ymax=mean+sd), position= "dodge") +</span></span>
-<span id="cb21-17"><a href="#cb21-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">size=</span><span class="dv">2</span>, <span class="at">position=</span> <span class="fu">position_dodge</span>(<span class="at">width=</span><span class="fl">0.9</span>))<span class="sc">+</span></span>
-<span id="cb21-18"><a href="#cb21-18" aria-hidden="true" tabindex="-1"></a>  <span class="co">#theme_economist()+</span></span>
-<span id="cb21-19"><a href="#cb21-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_discrete</span>(<span class="at">labels=</span>reCatLabs)<span class="sc">+</span></span>
-<span id="cb21-20"><a href="#cb21-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x=</span><span class="st">""</span>, <span class="at">y=</span><span class="st">"% Change in 'n'"</span>)<span class="sc">+</span></span>
-<span id="cb21-21"><a href="#cb21-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggtitle</span>(<span class="fu">TeX</span>(<span class="st">"Difference in Category(i) n-values over consecutive Years (t): $</span><span class="sc">\\</span><span class="st">frac{(n_{it}-n_{it-1})}{n_{it-1}}</span><span class="sc">\\</span><span class="st">cdot 100$"</span>))<span class="sc">+</span> <span class="co"># edit graph title</span></span>
-<span id="cb21-22"><a href="#cb21-22" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_text</span>(<span class="at">data =</span> n_percentage_change_df, <span class="fu">aes</span>(<span class="at">label =</span> <span class="fu">round</span>(n_Percentage_Change, <span class="dv">1</span>)), </span>
-<span id="cb21-23"><a href="#cb21-23" aria-hidden="true" tabindex="-1"></a>            <span class="at">position =</span> <span class="fu">position_dodge</span>(<span class="at">width =</span> <span class="fl">0.9</span>), <span class="at">vjust =</span> <span class="sc">-</span><span class="fl">0.25</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p><img src="RAship-Data-Analysis_files/figure-gfm/graph3-1.png" class="img-fluid"><!-- --></p>
-</section>
-<section id="the-change-of-the-proportions-of-categories-of-all-items-in-that-year-over-consecutive-years-n_it-n_it-1n_it-1100" class="level3">
-<h3 class="anchored" data-anchor-id="the-change-of-the-proportions-of-categories-of-all-items-in-that-year-over-consecutive-years-n_it-n_it-1n_it-1100">The % change of the proportions of categories (of all items in that year) over consecutive years: [(%n_(it)-%n_(it-1))/%n_(it-1)]*100</h3>
-<div class="sourceCode" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="co"># finding totals firsts</span></span>
-<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>prop_df <span class="ot">&lt;-</span> fDF</span>
-<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>prop_df<span class="sc">$</span>Year <span class="ot">&lt;-</span> <span class="fu">as.factor</span>(fDF<span class="sc">$</span>Year)</span>
-<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a>prop_df <span class="ot">&lt;-</span> <span class="fu">within</span>(prop_df, {</span>
-<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a>  year_sum <span class="ot">&lt;-</span> <span class="fu">ave</span>(n, Year, <span class="at">FUN=</span>sum)</span>
-<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a>})</span>
-<span id="cb22-8"><a href="#cb22-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-9"><a href="#cb22-9" aria-hidden="true" tabindex="-1"></a><span class="co"># proportional change over previous year</span></span>
-<span id="cb22-10"><a href="#cb22-10" aria-hidden="true" tabindex="-1"></a>n_proportion_change_df <span class="ot">&lt;-</span> prop_df <span class="sc">%&gt;%</span></span>
-<span id="cb22-11"><a href="#cb22-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(Category, Year) <span class="sc">%&gt;%</span></span>
-<span id="cb22-12"><a href="#cb22-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(Year) <span class="sc">%&gt;%</span></span>
-<span id="cb22-13"><a href="#cb22-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">n_Proportion =</span> n<span class="sc">/</span>year_sum) <span class="sc">%&gt;%</span> </span>
-<span id="cb22-14"><a href="#cb22-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">n_prop_change =</span> (n_Proportion <span class="sc">-</span> <span class="fu">lag</span>(n_Proportion)) <span class="sc">/</span> <span class="fu">lag</span>(n_Proportion) <span class="sc">*</span> <span class="dv">100</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb22-15"><a href="#cb22-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">n_prop_change =</span> <span class="fu">ifelse</span>(Year <span class="sc">==</span> <span class="dv">1849</span>, <span class="cn">NA</span>, n_prop_change)) <span class="sc">%&gt;%</span> <span class="co">#setting all 1849 rows to NA to be removed later</span></span>
-<span id="cb22-16"><a href="#cb22-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>()</span>
-<span id="cb22-17"><a href="#cb22-17" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-18"><a href="#cb22-18" aria-hidden="true" tabindex="-1"></a>n_proportion_change_df <span class="ot">&lt;-</span> <span class="fu">na.omit</span>(n_proportion_change_df) <span class="co">#removing all 1849 rows because they have no previous year to be compared to</span></span>
-<span id="cb22-19"><a href="#cb22-19" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-20"><a href="#cb22-20" aria-hidden="true" tabindex="-1"></a><span class="co"># Histogram</span></span>
-<span id="cb22-21"><a href="#cb22-21" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(n_proportion_change_df, <span class="fu">aes</span>(<span class="at">x=</span>Category, <span class="at">y=</span>n_prop_change, <span class="at">group=</span>Year)) <span class="sc">+</span></span>
-<span id="cb22-22"><a href="#cb22-22" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_bar</span>(<span class="at">stat=</span><span class="st">"identity"</span>, <span class="fu">aes</span>(<span class="at">fill=</span>Year), <span class="at">size=</span><span class="dv">2</span>, <span class="at">position=</span><span class="st">"dodge"</span>)<span class="sc">+</span></span>
-<span id="cb22-23"><a href="#cb22-23" aria-hidden="true" tabindex="-1"></a>  <span class="co">#geom_errorbar(aes(fill= Year, ymin= ifelse(mean-sd &lt; 0, 0, mean-sd), ymax=mean+sd), position= "dodge") +</span></span>
-<span id="cb22-24"><a href="#cb22-24" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">size=</span><span class="dv">2</span>, <span class="at">position=</span> <span class="fu">position_dodge</span>(<span class="at">width=</span><span class="fl">0.9</span>))<span class="sc">+</span></span>
-<span id="cb22-25"><a href="#cb22-25" aria-hidden="true" tabindex="-1"></a>  <span class="co">#theme_economist()+</span></span>
-<span id="cb22-26"><a href="#cb22-26" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_discrete</span>(<span class="at">labels=</span>reCatLabs)<span class="sc">+</span></span>
-<span id="cb22-27"><a href="#cb22-27" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x=</span><span class="st">""</span>, <span class="at">y=</span><span class="st">"% Change"</span>)<span class="sc">+</span></span>
-<span id="cb22-28"><a href="#cb22-28" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggtitle</span>(<span class="fu">TeX</span>(<span class="st">"Proportional difference in Category (i) n-values over consecutive Years (t): $</span><span class="sc">\\</span><span class="st">frac{(p_{it}-p_{it-1})}{p_{it-1}}</span><span class="sc">\\</span><span class="st">cdot 100,</span><span class="sc">\\</span><span class="st">frac{n_{it}}{</span><span class="sc">\\</span><span class="st">sum_in_{i}}= p_{it}$"</span>))<span class="sc">+</span> <span class="co"># edit graph title</span></span>
-<span id="cb22-29"><a href="#cb22-29" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_text</span>(<span class="at">data =</span> n_proportion_change_df, <span class="fu">aes</span>(<span class="at">label =</span> <span class="fu">round</span>(n_prop_change, <span class="dv">1</span>)), </span>
-<span id="cb22-30"><a href="#cb22-30" aria-hidden="true" tabindex="-1"></a>            <span class="at">position =</span> <span class="fu">position_dodge</span>(<span class="at">width =</span> <span class="fl">0.9</span>), <span class="at">vjust =</span> <span class="sc">-</span><span class="fl">0.25</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p><img src="RAship-Data-Analysis_files/figure-gfm/graph9-1.png" class="img-fluid"><!-- --></p>
-</section>
-<section id="the-change-in-mean-tariffs-over-consecutive-years-t_it-t_it-1t_it-1100" class="level3">
-<h3 class="anchored" data-anchor-id="the-change-in-mean-tariffs-over-consecutive-years-t_it-t_it-1t_it-1100">The % change in mean tariffs over consecutive years: [(T_(it)-T_(it-1))/T_(it-1)]*100</h3>
-<p>(make sure: are you using REAL or NOMINAL tariffs? Change ggplot text accordingly)</p>
-<div class="sourceCode" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>fDF <span class="ot">&lt;-</span> fDF <span class="sc">%&gt;%</span></span>
-<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(Category, Year) <span class="sc">%&gt;%</span></span>
-<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>()</span>
-<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a>realMean_change_df <span class="ot">&lt;-</span> fDF <span class="sc">%&gt;%</span></span>
-<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(Category) <span class="sc">%&gt;%</span></span>
-<span id="cb23-7"><a href="#cb23-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">realMean_Percentage_Change =</span> (mean <span class="sc">-</span> <span class="fu">lag</span>(mean)) <span class="sc">/</span> <span class="fu">lag</span>(mean) <span class="sc">*</span> <span class="dv">100</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb23-8"><a href="#cb23-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">realMean_Percentage_Change =</span> <span class="fu">ifelse</span>(Year <span class="sc">==</span> <span class="dv">1849</span>, <span class="cn">NA</span>, realMean_Percentage_Change)) <span class="sc">%&gt;%</span> <span class="co">#setting all 1849 rows to NA to be removed later</span></span>
-<span id="cb23-9"><a href="#cb23-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>() <span class="sc">%&gt;%</span></span>
-<span id="cb23-10"><a href="#cb23-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">na.omit</span>(realMean_change_df)</span>
-<span id="cb23-11"><a href="#cb23-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-12"><a href="#cb23-12" aria-hidden="true" tabindex="-1"></a><span class="co"># Histogram</span></span>
-<span id="cb23-13"><a href="#cb23-13" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(realMean_change_df , <span class="fu">aes</span>(<span class="at">x=</span>Category, <span class="at">y=</span>realMean_Percentage_Change, <span class="at">group=</span>Year)) <span class="sc">+</span> </span>
-<span id="cb23-14"><a href="#cb23-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_bar</span>(<span class="at">stat=</span><span class="st">"identity"</span>, <span class="fu">aes</span>(<span class="at">fill=</span>Year), <span class="at">size=</span><span class="dv">2</span>, <span class="at">position=</span><span class="st">"dodge"</span>)<span class="sc">+</span></span>
-<span id="cb23-15"><a href="#cb23-15" aria-hidden="true" tabindex="-1"></a>  <span class="co">#geom_errorbar(aes(fill= Year, ymin= ifelse(mean-sd &lt; 0, 0, mean-sd), ymax=mean+sd), position= "dodge") +</span></span>
-<span id="cb23-16"><a href="#cb23-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">size=</span><span class="dv">2</span>, <span class="at">position=</span> <span class="fu">position_dodge</span>(<span class="at">width=</span><span class="fl">0.9</span>))<span class="sc">+</span></span>
-<span id="cb23-17"><a href="#cb23-17" aria-hidden="true" tabindex="-1"></a>  <span class="co">#theme_economist()+</span></span>
-<span id="cb23-18"><a href="#cb23-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_discrete</span>(<span class="at">labels=</span>reCatLabs)<span class="sc">+</span></span>
-<span id="cb23-19"><a href="#cb23-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x=</span><span class="st">""</span>, <span class="at">y=</span><span class="st">"% Change in Nominal Mean Tariffs"</span>)<span class="sc">+</span></span>
-<span id="cb23-20"><a href="#cb23-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggtitle</span>(<span class="fu">TeX</span>(<span class="st">"Difference in Nominal Mean Tariffs (NT) arranged by Category (i) over consecutive Years (t): $</span><span class="sc">\\</span><span class="st">frac{(NT_{it}-NT_{it-1})}{NT_{it-1}}</span><span class="sc">\\</span><span class="st">cdot 100$"</span>))<span class="sc">+</span> <span class="co"># edit graph title</span></span>
-<span id="cb23-21"><a href="#cb23-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_text</span>(<span class="at">data =</span> realMean_change_df, <span class="fu">aes</span>(<span class="at">label =</span> <span class="fu">round</span>(realMean_Percentage_Change, <span class="dv">1</span>)), </span>
-<span id="cb23-22"><a href="#cb23-22" aria-hidden="true" tabindex="-1"></a>            <span class="at">position =</span> <span class="fu">position_dodge</span>(<span class="at">width =</span> <span class="fl">0.9</span>), <span class="at">vjust =</span> <span class="sc">-</span><span class="fl">0.25</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p><img src="RAship-Data-Analysis_files/figure-gfm/graph4-1.png" class="img-fluid"><!-- --></p>
+<section id="the-change-of-the-number-of-items-in-each-category-over-consecutive-years-fracp_it-p_it-1p_it-1cdot-100" class="level3">
+<h3 class="anchored" data-anchor-id="the-change-of-the-number-of-items-in-each-category-over-consecutive-years-fracp_it-p_it-1p_it-1cdot-100">The % change of the number of items in each category over consecutive years: <span class="math inline">\(\frac{(p_{it}-p_{it-1})}{p_{it-1}}\cdot 100\%\)</span></h3>
+<div class="sourceCode" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>fDF <span class="ot">&lt;-</span> fDF <span class="sc">%&gt;%</span></span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(Category, Year) <span class="sc">%&gt;%</span></span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>()</span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>n_percentage_change_df <span class="ot">&lt;-</span> fDF <span class="sc">%&gt;%</span></span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(Category) <span class="sc">%&gt;%</span></span>
+<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">n_Percentage_Change =</span> (n <span class="sc">-</span> <span class="fu">lag</span>(n)) <span class="sc">/</span> <span class="fu">lag</span>(n) <span class="sc">*</span> <span class="dv">100</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">n_Percentage_Change =</span> <span class="fu">ifelse</span>(Year <span class="sc">==</span> <span class="dv">1849</span>, <span class="cn">NA</span>, n_Percentage_Change)) <span class="sc">%&gt;%</span> <span class="co">#setting all 1849 rows to NA to be removed later</span></span>
+<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>()</span>
+<span id="cb19-10"><a href="#cb19-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-11"><a href="#cb19-11" aria-hidden="true" tabindex="-1"></a>n_percentage_change_df <span class="ot">&lt;-</span> <span class="fu">na.omit</span>(n_percentage_change_df) <span class="co">#removing all 1849 rows because they have no previous year to be compared to</span></span>
+<span id="cb19-12"><a href="#cb19-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-13"><a href="#cb19-13" aria-hidden="true" tabindex="-1"></a><span class="co"># Histogram</span></span>
+<span id="cb19-14"><a href="#cb19-14" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(n_percentage_change_df , <span class="fu">aes</span>(<span class="at">x=</span>Category, <span class="at">y=</span>n_Percentage_Change, <span class="at">group=</span>Year)) <span class="sc">+</span> </span>
+<span id="cb19-15"><a href="#cb19-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_bar</span>(<span class="at">stat=</span><span class="st">"identity"</span>, <span class="fu">aes</span>(<span class="at">fill=</span>Year), <span class="at">size=</span><span class="dv">2</span>, <span class="at">position=</span><span class="st">"dodge"</span>)<span class="sc">+</span></span>
+<span id="cb19-16"><a href="#cb19-16" aria-hidden="true" tabindex="-1"></a>  <span class="co">#geom_errorbar(aes(fill= Year, ymin= ifelse(mean-sd &lt; 0, 0, mean-sd), ymax=mean+sd), position= "dodge") +</span></span>
+<span id="cb19-17"><a href="#cb19-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">size=</span><span class="dv">2</span>, <span class="at">position=</span> <span class="fu">position_dodge</span>(<span class="at">width=</span><span class="fl">0.9</span>))<span class="sc">+</span></span>
+<span id="cb19-18"><a href="#cb19-18" aria-hidden="true" tabindex="-1"></a>  <span class="co">#theme_economist()+</span></span>
+<span id="cb19-19"><a href="#cb19-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_discrete</span>(<span class="at">labels=</span>reCatLabs)<span class="sc">+</span></span>
+<span id="cb19-20"><a href="#cb19-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x=</span><span class="st">""</span>, <span class="at">y=</span><span class="st">"% Change in 'n'"</span>)<span class="sc">+</span></span>
+<span id="cb19-21"><a href="#cb19-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggtitle</span>(<span class="fu">TeX</span>(<span class="st">"Difference in Category(i) n-values over consecutive Years (t): $</span><span class="sc">\\</span><span class="st">frac{(n_{it}-n_{it-1})}{n_{it-1}}</span><span class="sc">\\</span><span class="st">cdot 100$"</span>))<span class="sc">+</span> <span class="co"># edit graph title</span></span>
+<span id="cb19-22"><a href="#cb19-22" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_text</span>(<span class="at">data =</span> n_percentage_change_df, <span class="fu">aes</span>(<span class="at">label =</span> <span class="fu">round</span>(n_Percentage_Change, <span class="dv">1</span>)), </span>
+<span id="cb19-23"><a href="#cb19-23" aria-hidden="true" tabindex="-1"></a>            <span class="at">position =</span> <span class="fu">position_dodge</span>(<span class="at">width =</span> <span class="fl">0.9</span>), <span class="at">vjust =</span> <span class="sc">-</span><span class="fl">0.25</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p><img src="Change over Time Graphs/Observations (n)/Proportional observation differences over consecutive years.jpeg" class="img-fluid"></p>
 </section>
 <section id="the-change-in-tariff-sds-over-consecutive-years-sd_it-sd_it-1sd_it-1100" class="level3">
 <h3 class="anchored" data-anchor-id="the-change-in-tariff-sds-over-consecutive-years-sd_it-sd_it-1sd_it-1100">The % change in Tariff SDs over consecutive years: [(SD_(it)-SD_(it-1))/SD_(it-1)]*100</h3>
 <p>(make sure: are you using REAL or NOMINAL tariffs?)</p>
-<div class="sourceCode" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>fDF <span class="ot">&lt;-</span> fDF <span class="sc">%&gt;%</span></span>
-<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(Category, Year) <span class="sc">%&gt;%</span></span>
-<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>()</span>
-<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a>realSD_change_df <span class="ot">&lt;-</span> fDF <span class="sc">%&gt;%</span></span>
-<span id="cb24-6"><a href="#cb24-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(Category) <span class="sc">%&gt;%</span></span>
-<span id="cb24-7"><a href="#cb24-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">realSD_Percentage_Change =</span> (sd <span class="sc">-</span> <span class="fu">lag</span>(sd)) <span class="sc">/</span> <span class="fu">lag</span>(sd) <span class="sc">*</span> <span class="dv">100</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb24-8"><a href="#cb24-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">realSD_Percentage_Change =</span> <span class="fu">ifelse</span>(Year <span class="sc">==</span> <span class="dv">1849</span>, <span class="cn">NA</span>, realSD_Percentage_Change)) <span class="sc">%&gt;%</span> <span class="co">#setting all 1849 rows to NA to be removed later</span></span>
-<span id="cb24-9"><a href="#cb24-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>()</span>
-<span id="cb24-10"><a href="#cb24-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb24-11"><a href="#cb24-11" aria-hidden="true" tabindex="-1"></a>realSD_change_df <span class="ot">&lt;-</span> <span class="fu">na.omit</span>(realSD_change_df)</span>
-<span id="cb24-12"><a href="#cb24-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb24-13"><a href="#cb24-13" aria-hidden="true" tabindex="-1"></a><span class="co"># Histogram</span></span>
-<span id="cb24-14"><a href="#cb24-14" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(realSD_change_df , <span class="fu">aes</span>(<span class="at">x=</span>Category, <span class="at">y=</span>realSD_Percentage_Change, <span class="at">group=</span>Year)) <span class="sc">+</span> </span>
-<span id="cb24-15"><a href="#cb24-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_bar</span>(<span class="at">stat=</span><span class="st">"identity"</span>, <span class="fu">aes</span>(<span class="at">fill=</span>Year), <span class="at">size=</span><span class="dv">2</span>, <span class="at">position=</span><span class="st">"dodge"</span>)<span class="sc">+</span></span>
-<span id="cb24-16"><a href="#cb24-16" aria-hidden="true" tabindex="-1"></a>  <span class="co">#geom_errorbar(aes(fill= Year, ymin= ifelse(mean-sd &lt; 0, 0, mean-sd), ymax=mean+sd), position= "dodge") +</span></span>
-<span id="cb24-17"><a href="#cb24-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">size=</span><span class="dv">2</span>, <span class="at">position=</span> <span class="fu">position_dodge</span>(<span class="at">width=</span><span class="fl">0.9</span>))<span class="sc">+</span></span>
-<span id="cb24-18"><a href="#cb24-18" aria-hidden="true" tabindex="-1"></a>  <span class="co">#theme_economist()+</span></span>
-<span id="cb24-19"><a href="#cb24-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_discrete</span>(<span class="at">labels=</span>reCatLabs)<span class="sc">+</span></span>
-<span id="cb24-20"><a href="#cb24-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x=</span><span class="st">""</span>, <span class="at">y=</span><span class="st">"% Change in Nominal Tariff SD"</span>)<span class="sc">+</span></span>
-<span id="cb24-21"><a href="#cb24-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggtitle</span>(<span class="fu">TeX</span>(<span class="st">"Difference in Nominal Tariff SDs (SD) arranged by Category (i) over consecutive Years (t): $</span><span class="sc">\\</span><span class="st">frac{(SD_{it}-SD_{it-1})}{SD_{it-1}}</span><span class="sc">\\</span><span class="st">cdot 100$"</span>))<span class="sc">+</span> <span class="co"># edit graph title</span></span>
-<span id="cb24-22"><a href="#cb24-22" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_text</span>(<span class="at">data =</span> realSD_change_df, <span class="fu">aes</span>(<span class="at">label =</span> <span class="fu">round</span>(realSD_Percentage_Change, <span class="dv">1</span>)), </span>
-<span id="cb24-23"><a href="#cb24-23" aria-hidden="true" tabindex="-1"></a>            <span class="at">position =</span> <span class="fu">position_dodge</span>(<span class="at">width =</span> <span class="fl">0.9</span>), <span class="at">vjust =</span> <span class="sc">-</span><span class="fl">0.25</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p><img src="RAship-Data-Analysis_files/figure-gfm/graph5-1.png" class="img-fluid"><!-- --></p>
-</section>
-</section>
-<section id="measuring-change-over-1849-1884-1884-1902" class="level2">
-<h2 class="anchored" data-anchor-id="measuring-change-over-1849-1884-1884-1902">Measuring change over: 1849-1884 &amp; 1884-1902</h2>
-<section id="the-change-of-the-number-of-items-in-each-category-n_it-n_it-1n_it-1100" class="level3">
-<h3 class="anchored" data-anchor-id="the-change-of-the-number-of-items-in-each-category-n_it-n_it-1n_it-1100">The % change of the number of items in each category [(n_(it)-n_(it-1))/n_(it-1)]*100</h3>
-<div class="sourceCode" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>fournine_otwo_n_percentage_change_df <span class="ot">&lt;-</span> fDF <span class="sc">%&gt;%</span></span>
-<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(Category, Year) <span class="sc">%&gt;%</span></span>
-<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(Category) <span class="sc">%&gt;%</span></span>
-<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">row =</span> <span class="fu">ifelse</span>(Year <span class="sc">==</span> <span class="dv">1851</span><span class="sc">|</span> Year <span class="sc">==</span> <span class="dv">1887</span><span class="sc">|</span> Year <span class="sc">==</span> <span class="dv">1891</span>, <span class="cn">NA</span>, <span class="dv">1</span>)) <span class="sc">%&gt;%</span> <span class="co"># filtering out unwanted years</span></span>
-<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">na.omit</span>(fournine_otwo_n_percentage_change_df) <span class="sc">%&gt;%</span> <span class="co">#...</span></span>
-<span id="cb25-6"><a href="#cb25-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">!</span>(row)) <span class="sc">%&gt;%</span> <span class="co">#...</span></span>
-<span id="cb25-7"><a href="#cb25-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">n_Change =</span> (n <span class="sc">-</span> <span class="fu">lag</span>(n))<span class="sc">/</span> <span class="fu">lag</span>(n) <span class="sc">*</span> <span class="dv">100</span>) <span class="sc">%&gt;%</span> </span>
-<span id="cb25-8"><a href="#cb25-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">n_Change =</span> <span class="fu">ifelse</span>(Year <span class="sc">==</span> <span class="dv">1849</span>, <span class="cn">NA</span>, n_Change))<span class="sc">%&gt;%</span> <span class="co">#setting all 1849 rows to NA to be removed later</span></span>
-<span id="cb25-9"><a href="#cb25-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">na.omit</span>(fournine_otwo_n_percentage_change_df) <span class="sc">%&gt;%</span> <span class="co">#removing all 1849 rows because they have no previous year to be compared to</span></span>
-<span id="cb25-10"><a href="#cb25-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>()</span>
-<span id="cb25-11"><a href="#cb25-11" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb25-12"><a href="#cb25-12" aria-hidden="true" tabindex="-1"></a><span class="co"># Histogram</span></span>
-<span id="cb25-13"><a href="#cb25-13" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(fournine_otwo_n_percentage_change_df , <span class="fu">aes</span>(<span class="at">x=</span>Category, <span class="at">y=</span>n_Change, <span class="at">group=</span>Year)) <span class="sc">+</span> </span>
-<span id="cb25-14"><a href="#cb25-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_bar</span>(<span class="at">stat=</span><span class="st">"identity"</span>, <span class="fu">aes</span>(<span class="at">fill=</span>Year), <span class="at">size=</span><span class="dv">2</span>, <span class="at">position=</span><span class="st">"dodge"</span>)<span class="sc">+</span></span>
-<span id="cb25-15"><a href="#cb25-15" aria-hidden="true" tabindex="-1"></a>  <span class="co">#geom_errorbar(aes(fill= Year, ymin= ifelse(mean-sd &lt; 0, 0, mean-sd), ymax=mean+sd), position= "dodge") +</span></span>
-<span id="cb25-16"><a href="#cb25-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">size=</span><span class="dv">2</span>, <span class="at">position=</span> <span class="fu">position_dodge</span>(<span class="at">width=</span><span class="fl">0.9</span>))<span class="sc">+</span></span>
-<span id="cb25-17"><a href="#cb25-17" aria-hidden="true" tabindex="-1"></a>  <span class="co">#theme_economist()+</span></span>
-<span id="cb25-18"><a href="#cb25-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_discrete</span>(<span class="at">labels=</span>reCatLabs)<span class="sc">+</span></span>
-<span id="cb25-19"><a href="#cb25-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x=</span><span class="st">""</span>, <span class="at">y=</span><span class="st">"% Change in 'n'"</span>)<span class="sc">+</span></span>
-<span id="cb25-20"><a href="#cb25-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggtitle</span>(<span class="fu">TeX</span>(<span class="st">"Difference in Category(i) n-values: 1849-1884 &amp; 1884-1902 (t): $</span><span class="sc">\\</span><span class="st">frac{(n_{it}-n_{it-1})}{n_{it-1}}</span><span class="sc">\\</span><span class="st">cdot 100$"</span>))<span class="sc">+</span> <span class="co"># edit graph title</span></span>
-<span id="cb25-21"><a href="#cb25-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_text</span>(<span class="at">data =</span> fournine_otwo_n_percentage_change_df, <span class="fu">aes</span>(<span class="at">label =</span> <span class="fu">round</span>(n_Change, <span class="dv">1</span>)), </span>
-<span id="cb25-22"><a href="#cb25-22" aria-hidden="true" tabindex="-1"></a>            <span class="at">position =</span> <span class="fu">position_dodge</span>(<span class="at">width =</span> <span class="fl">0.9</span>), <span class="at">vjust =</span> <span class="sc">-</span><span class="fl">0.25</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p><img src="RAship-Data-Analysis_files/figure-gfm/graph6-1.png" class="img-fluid"><!-- --></p>
-</section>
-<section id="the-change-of-the-proportions-of-observations-per-category-n_it-n_it-1n_it-1100" class="level3">
-<h3 class="anchored" data-anchor-id="the-change-of-the-proportions-of-observations-per-category-n_it-n_it-1n_it-1100">The % change of the proportions of observations per category: [(%n_(it)-%n_(it-1))/%n_(it-1)]*100</h3>
-<div class="sourceCode" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="co"># finding totals first</span></span>
-<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>prop_df <span class="ot">&lt;-</span> fDF</span>
-<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>prop_df<span class="sc">$</span>Year <span class="ot">&lt;-</span> <span class="fu">as.factor</span>(fDF<span class="sc">$</span>Year)</span>
-<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a>prop_df <span class="ot">&lt;-</span> <span class="fu">within</span>(prop_df, {</span>
-<span id="cb26-6"><a href="#cb26-6" aria-hidden="true" tabindex="-1"></a>  year_sum <span class="ot">&lt;-</span> <span class="fu">ave</span>(n, Year, <span class="at">FUN=</span>sum)</span>
-<span id="cb26-7"><a href="#cb26-7" aria-hidden="true" tabindex="-1"></a>})</span>
-<span id="cb26-8"><a href="#cb26-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb26-9"><a href="#cb26-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb26-10"><a href="#cb26-10" aria-hidden="true" tabindex="-1"></a><span class="co"># proportional change over previous year</span></span>
-<span id="cb26-11"><a href="#cb26-11" aria-hidden="true" tabindex="-1"></a>fournine_otwo_n_proportion_change_df <span class="ot">&lt;-</span> prop_df <span class="sc">%&gt;%</span></span>
-<span id="cb26-12"><a href="#cb26-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(Category, Year) <span class="sc">%&gt;%</span></span>
-<span id="cb26-13"><a href="#cb26-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(Category) <span class="sc">%&gt;%</span></span>
-<span id="cb26-14"><a href="#cb26-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">row =</span> <span class="fu">ifelse</span>(Year <span class="sc">==</span> <span class="dv">1851</span><span class="sc">|</span> Year <span class="sc">==</span> <span class="dv">1887</span><span class="sc">|</span> Year <span class="sc">==</span> <span class="dv">1891</span>, <span class="cn">NA</span>, <span class="dv">1</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb26-15"><a href="#cb26-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">na.omit</span>(fournin_otwo_n_proportion_change_df) <span class="sc">%&gt;%</span></span>
-<span id="cb26-16"><a href="#cb26-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">!</span>(row)) <span class="sc">%&gt;%</span></span>
-<span id="cb26-17"><a href="#cb26-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">n_Proportion =</span> n<span class="sc">/</span>year_sum) <span class="sc">%&gt;%</span> </span>
-<span id="cb26-18"><a href="#cb26-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">n_prop_change =</span> (n_Proportion <span class="sc">-</span> <span class="fu">lag</span>(n_Proportion)) <span class="sc">/</span> <span class="fu">lag</span>(n_Proportion) <span class="sc">*</span> <span class="dv">100</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb26-19"><a href="#cb26-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">n_prop_change =</span> <span class="fu">ifelse</span>(Year <span class="sc">==</span> <span class="dv">1849</span>, <span class="cn">NA</span>, n_prop_change)) <span class="sc">%&gt;%</span> <span class="co">#setting all 1849 rows to NA to be removed later</span></span>
-<span id="cb26-20"><a href="#cb26-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">na.omit</span>(fournin_otwo_n_proportion_change_df) <span class="sc">%&gt;%</span> <span class="co">#removing all 1849 rows because they have no previous year to be compared to</span></span>
-<span id="cb26-21"><a href="#cb26-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>()</span>
-<span id="cb26-22"><a href="#cb26-22" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb26-23"><a href="#cb26-23" aria-hidden="true" tabindex="-1"></a><span class="co"># Histogram</span></span>
-<span id="cb26-24"><a href="#cb26-24" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(fournine_otwo_n_proportion_change_df, <span class="fu">aes</span>(<span class="at">x=</span>Category, <span class="at">y=</span>n_prop_change, <span class="at">group=</span>Year)) <span class="sc">+</span></span>
-<span id="cb26-25"><a href="#cb26-25" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_bar</span>(<span class="at">stat=</span><span class="st">"identity"</span>, <span class="fu">aes</span>(<span class="at">fill=</span>Year), <span class="at">size=</span><span class="dv">2</span>, <span class="at">position=</span><span class="st">"dodge"</span>)<span class="sc">+</span></span>
-<span id="cb26-26"><a href="#cb26-26" aria-hidden="true" tabindex="-1"></a>  <span class="co">#geom_errorbar(aes(fill= Year, ymin= ifelse(mean-sd &lt; 0, 0, mean-sd), ymax=mean+sd), position= "dodge") +</span></span>
-<span id="cb26-27"><a href="#cb26-27" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">size=</span><span class="dv">2</span>, <span class="at">position=</span> <span class="fu">position_dodge</span>(<span class="at">width=</span><span class="fl">0.9</span>))<span class="sc">+</span></span>
-<span id="cb26-28"><a href="#cb26-28" aria-hidden="true" tabindex="-1"></a>  <span class="co">#theme_economist()+</span></span>
-<span id="cb26-29"><a href="#cb26-29" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_discrete</span>(<span class="at">labels=</span>reCatLabs)<span class="sc">+</span></span>
-<span id="cb26-30"><a href="#cb26-30" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x=</span><span class="st">""</span>, <span class="at">y=</span><span class="st">"% Change"</span>)<span class="sc">+</span></span>
-<span id="cb26-31"><a href="#cb26-31" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggtitle</span>(<span class="fu">TeX</span>(<span class="st">"Proportional difference in Category (i) n-values: 1849-1884 &amp; 1884-1902 (t): $</span><span class="sc">\\</span><span class="st">frac{(p_{it}-p_{it-1})}{p_{it-1}}</span><span class="sc">\\</span><span class="st">cdot 100,</span><span class="sc">\\</span><span class="st">frac{n_{it}}{</span><span class="sc">\\</span><span class="st">sum_in_{i}}= p_{it}$"</span>))<span class="sc">+</span> <span class="co"># edit graph title</span></span>
-<span id="cb26-32"><a href="#cb26-32" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_text</span>(<span class="at">data =</span> fournine_otwo_n_proportion_change_df, <span class="fu">aes</span>(<span class="at">label =</span> <span class="fu">round</span>(n_prop_change, <span class="dv">1</span>)), </span>
-<span id="cb26-33"><a href="#cb26-33" aria-hidden="true" tabindex="-1"></a>            <span class="at">position =</span> <span class="fu">position_dodge</span>(<span class="at">width =</span> <span class="fl">0.9</span>), <span class="at">vjust =</span> <span class="sc">-</span><span class="fl">0.25</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p><img src="RAship-Data-Analysis_files/figure-gfm/graph12-1.png" class="img-fluid"><!-- --></p>
-</section>
-</section>
-<section id="the-change-in-mean-tariffs-t_it-t_it-1t_it-1100" class="level2">
-<h2 class="anchored" data-anchor-id="the-change-in-mean-tariffs-t_it-t_it-1t_it-1100">The % change in mean tariffs: [(T_(it)-T_(it-1))/T_(it-1)]*100</h2>
-<p>(make sure: are you using REAL or NOMINAL tariffs? Change ggplot text accordingly)</p>
-<div class="sourceCode" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>fournine_otwo_Mean_change_df <span class="ot">&lt;-</span> fDF <span class="sc">%&gt;%</span></span>
-<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(Category, Year) <span class="sc">%&gt;%</span></span>
-<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(Category) <span class="sc">%&gt;%</span></span>
-<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">row =</span> <span class="fu">ifelse</span>(Year<span class="sc">==</span><span class="dv">1851</span> <span class="sc">|</span> Year<span class="sc">==</span><span class="dv">1887</span> <span class="sc">|</span> Year<span class="sc">==</span><span class="dv">1891</span>, <span class="cn">NA</span>, <span class="dv">1</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb27-5"><a href="#cb27-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">na.omit</span>(fournine_otwo_Mean_change_df) <span class="sc">%&gt;%</span></span>
-<span id="cb27-6"><a href="#cb27-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">!</span>(row)) <span class="sc">%&gt;%</span></span>
-<span id="cb27-7"><a href="#cb27-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Mean_Percentage_Change =</span> (mean <span class="sc">-</span> <span class="fu">lag</span>(mean)) <span class="sc">/</span> <span class="fu">lag</span>(mean) <span class="sc">*</span> <span class="dv">100</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb27-8"><a href="#cb27-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Mean_Percentage_Change =</span> <span class="fu">ifelse</span>(Year <span class="sc">==</span> <span class="dv">1849</span>, <span class="cn">NA</span>, Mean_Percentage_Change)) <span class="sc">%&gt;%</span> <span class="co">#setting all 1849 rows to NA to be removed later</span></span>
-<span id="cb27-9"><a href="#cb27-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>() <span class="sc">%&gt;%</span> </span>
-<span id="cb27-10"><a href="#cb27-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">na.omit</span>(fournine_otwo_Mean_change_df) <span class="co">#removing all 1849 rows because they have no previous year to be compared to</span></span>
-<span id="cb27-11"><a href="#cb27-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb27-12"><a href="#cb27-12" aria-hidden="true" tabindex="-1"></a>reCatLabs <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"1"</span><span class="sc">:</span><span class="st">"16"</span>)</span>
-<span id="cb27-13"><a href="#cb27-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb27-14"><a href="#cb27-14" aria-hidden="true" tabindex="-1"></a><span class="co"># Histogram</span></span>
-<span id="cb27-15"><a href="#cb27-15" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(fournine_otwo_Mean_change_df , <span class="fu">aes</span>(<span class="at">x=</span>Category, <span class="at">y=</span>Mean_Percentage_Change, <span class="at">group=</span>Year)) <span class="sc">+</span> </span>
-<span id="cb27-16"><a href="#cb27-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_bar</span>(<span class="at">stat=</span><span class="st">"identity"</span>, <span class="fu">aes</span>(<span class="at">fill=</span>Year), <span class="at">size=</span><span class="dv">2</span>, <span class="at">position=</span><span class="st">"dodge"</span>)<span class="sc">+</span></span>
-<span id="cb27-17"><a href="#cb27-17" aria-hidden="true" tabindex="-1"></a>  <span class="co">#geom_errorbar(aes(fill= Year, ymin= ifelse(mean-sd &lt; 0, 0, mean-sd), ymax=mean+sd), position= "dodge") +</span></span>
-<span id="cb27-18"><a href="#cb27-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">size=</span><span class="dv">2</span>, <span class="at">position=</span> <span class="fu">position_dodge</span>(<span class="at">width=</span><span class="fl">0.9</span>))<span class="sc">+</span></span>
-<span id="cb27-19"><a href="#cb27-19" aria-hidden="true" tabindex="-1"></a>  <span class="co">#theme_economist()+</span></span>
-<span id="cb27-20"><a href="#cb27-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_discrete</span>(<span class="at">labels=</span>reCatLabs)<span class="sc">+</span></span>
-<span id="cb27-21"><a href="#cb27-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x=</span><span class="st">""</span>, <span class="at">y=</span><span class="st">"% Change in Real Mean Tariffs"</span>)<span class="sc">+</span></span>
-<span id="cb27-22"><a href="#cb27-22" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggtitle</span>(<span class="fu">TeX</span>(<span class="st">"Difference in Real Mean Tariffs (RT) arranged by Category (i): 1849-1884 &amp; 1884-1902 (t): $</span><span class="sc">\\</span><span class="st">frac{(RT_{it}-RT_{it-1})}{RT_{it-1}}</span><span class="sc">\\</span><span class="st">cdot 100$"</span>))<span class="sc">+</span> <span class="co"># edit graph title</span></span>
-<span id="cb27-23"><a href="#cb27-23" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_text</span>(<span class="at">data =</span> fournine_otwo_Mean_change_df, <span class="fu">aes</span>(<span class="at">label =</span> <span class="fu">round</span>(Mean_Percentage_Change, <span class="dv">1</span>)), </span>
-<span id="cb27-24"><a href="#cb27-24" aria-hidden="true" tabindex="-1"></a>            <span class="at">position =</span> <span class="fu">position_dodge</span>(<span class="at">width =</span> <span class="fl">0.9</span>), <span class="at">vjust =</span> <span class="sc">-</span><span class="fl">0.25</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p><img src="RAship-Data-Analysis_files/figure-gfm/graph10-1.png" class="img-fluid"><!-- --></p>
-</section>
-<section id="the-change-in-tariff-sds-t_it-t_it-1t_it-1100" class="level2">
-<h2 class="anchored" data-anchor-id="the-change-in-tariff-sds-t_it-t_it-1t_it-1100">The % change in Tariff SDs: [(T_(it)-T_(it-1))/T_(it-1)]*100</h2>
-<p>(make sure: are you using REAL or NOMINAL tariffs? Change ggplot text accordingly)</p>
-<div class="sourceCode" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>fournine_otwo_SD_change_df <span class="ot">&lt;-</span> fDF <span class="sc">%&gt;%</span></span>
-<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(Category, Year) <span class="sc">%&gt;%</span></span>
-<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(Category) <span class="sc">%&gt;%</span></span>
-<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">row =</span> <span class="fu">ifelse</span>(Year<span class="sc">==</span><span class="dv">1851</span> <span class="sc">|</span> Year<span class="sc">==</span><span class="dv">1887</span> <span class="sc">|</span> Year<span class="sc">==</span><span class="dv">1891</span>, <span class="cn">NA</span>, <span class="dv">1</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb28-5"><a href="#cb28-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">na.omit</span>(fournine_otwo_SD_change_df) <span class="sc">%&gt;%</span></span>
-<span id="cb28-6"><a href="#cb28-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">!</span>(row)) <span class="sc">%&gt;%</span></span>
-<span id="cb28-7"><a href="#cb28-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">SD_Percentage_Change =</span> (sd <span class="sc">-</span> <span class="fu">lag</span>(sd)) <span class="sc">/</span> <span class="fu">lag</span>(sd) <span class="sc">*</span> <span class="dv">100</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb28-8"><a href="#cb28-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">SD_Percentage_Change =</span> <span class="fu">ifelse</span>(Year <span class="sc">==</span> <span class="dv">1849</span>, <span class="cn">NA</span>, SD_Percentage_Change)) <span class="sc">%&gt;%</span> <span class="co">#setting all 1849 rows to NA to be removed later</span></span>
-<span id="cb28-9"><a href="#cb28-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>() <span class="sc">%&gt;%</span> </span>
-<span id="cb28-10"><a href="#cb28-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">na.omit</span>(fournine_otwo_SD_change_df) <span class="co">#removing all 1849 rows because they have no previous year to be compared to</span></span>
-<span id="cb28-11"><a href="#cb28-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb28-12"><a href="#cb28-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb28-13"><a href="#cb28-13" aria-hidden="true" tabindex="-1"></a><span class="co"># Histogram</span></span>
-<span id="cb28-14"><a href="#cb28-14" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(fournine_otwo_SD_change_df , <span class="fu">aes</span>(<span class="at">x=</span>Category, <span class="at">y=</span>SD_Percentage_Change, <span class="at">group=</span>Year)) <span class="sc">+</span> </span>
-<span id="cb28-15"><a href="#cb28-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_bar</span>(<span class="at">stat=</span><span class="st">"identity"</span>, <span class="fu">aes</span>(<span class="at">fill=</span>Year), <span class="at">size=</span><span class="dv">2</span>, <span class="at">position=</span><span class="st">"dodge"</span>)<span class="sc">+</span></span>
-<span id="cb28-16"><a href="#cb28-16" aria-hidden="true" tabindex="-1"></a>  <span class="co">#geom_errorbar(aes(fill= Year, ymin= ifelse(mean-sd &lt; 0, 0, mean-sd), ymax=mean+sd), position= "dodge") +</span></span>
-<span id="cb28-17"><a href="#cb28-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">size=</span><span class="dv">2</span>, <span class="at">position=</span> <span class="fu">position_dodge</span>(<span class="at">width=</span><span class="fl">0.9</span>))<span class="sc">+</span></span>
-<span id="cb28-18"><a href="#cb28-18" aria-hidden="true" tabindex="-1"></a>  <span class="co">#theme_economist()+</span></span>
-<span id="cb28-19"><a href="#cb28-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_discrete</span>(<span class="at">labels=</span>reCatLabs)<span class="sc">+</span></span>
-<span id="cb28-20"><a href="#cb28-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x=</span><span class="st">""</span>, <span class="at">y=</span><span class="st">"% Change in Real Tariff SDs "</span>)<span class="sc">+</span></span>
-<span id="cb28-21"><a href="#cb28-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggtitle</span>(<span class="fu">TeX</span>(<span class="st">"Difference in Real Tariff SDs (SD) arranged by Category (i): 1849-1884 &amp; 1884-1902 (t): $</span><span class="sc">\\</span><span class="st">frac{(SD_{it}-SD_{it-1})}{SD_{it-1}}</span><span class="sc">\\</span><span class="st">cdot 100$"</span>))<span class="sc">+</span> <span class="co"># edit graph title</span></span>
-<span id="cb28-22"><a href="#cb28-22" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_text</span>(<span class="at">data =</span> fournine_otwo_SD_change_df, <span class="fu">aes</span>(<span class="at">label =</span> <span class="fu">round</span>(SD_Percentage_Change, <span class="dv">1</span>)), </span>
-<span id="cb28-23"><a href="#cb28-23" aria-hidden="true" tabindex="-1"></a>            <span class="at">position =</span> <span class="fu">position_dodge</span>(<span class="at">width =</span> <span class="fl">0.9</span>), <span class="at">vjust =</span> <span class="sc">-</span><span class="fl">0.25</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p><img src="RAship-Data-Analysis_files/figure-gfm/graph7-1.png" class="img-fluid"><!-- --></p>
+<div class="sourceCode" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>fDF <span class="ot">&lt;-</span> fDF <span class="sc">%&gt;%</span></span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(Category, Year) <span class="sc">%&gt;%</span></span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>()</span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>realSD_change_df <span class="ot">&lt;-</span> fDF <span class="sc">%&gt;%</span></span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(Category) <span class="sc">%&gt;%</span></span>
+<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">realSD_Percentage_Change =</span> (sd <span class="sc">-</span> <span class="fu">lag</span>(sd)) <span class="sc">/</span> <span class="fu">lag</span>(sd) <span class="sc">*</span> <span class="dv">100</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">realSD_Percentage_Change =</span> <span class="fu">ifelse</span>(Year <span class="sc">==</span> <span class="dv">1849</span>, <span class="cn">NA</span>, realSD_Percentage_Change)) <span class="sc">%&gt;%</span> <span class="co">#setting all 1849 rows to NA to be removed later</span></span>
+<span id="cb20-9"><a href="#cb20-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>()</span>
+<span id="cb20-10"><a href="#cb20-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-11"><a href="#cb20-11" aria-hidden="true" tabindex="-1"></a>realSD_change_df <span class="ot">&lt;-</span> <span class="fu">na.omit</span>(realSD_change_df)</span>
+<span id="cb20-12"><a href="#cb20-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-13"><a href="#cb20-13" aria-hidden="true" tabindex="-1"></a><span class="co"># Histogram</span></span>
+<span id="cb20-14"><a href="#cb20-14" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(realSD_change_df , <span class="fu">aes</span>(<span class="at">x=</span>Category, <span class="at">y=</span>realSD_Percentage_Change, <span class="at">group=</span>Year)) <span class="sc">+</span> </span>
+<span id="cb20-15"><a href="#cb20-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_bar</span>(<span class="at">stat=</span><span class="st">"identity"</span>, <span class="fu">aes</span>(<span class="at">fill=</span>Year), <span class="at">size=</span><span class="dv">2</span>, <span class="at">position=</span><span class="st">"dodge"</span>)<span class="sc">+</span></span>
+<span id="cb20-16"><a href="#cb20-16" aria-hidden="true" tabindex="-1"></a>  <span class="co">#geom_errorbar(aes(fill= Year, ymin= ifelse(mean-sd &lt; 0, 0, mean-sd), ymax=mean+sd), position= "dodge") +</span></span>
+<span id="cb20-17"><a href="#cb20-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">size=</span><span class="dv">2</span>, <span class="at">position=</span> <span class="fu">position_dodge</span>(<span class="at">width=</span><span class="fl">0.9</span>))<span class="sc">+</span></span>
+<span id="cb20-18"><a href="#cb20-18" aria-hidden="true" tabindex="-1"></a>  <span class="co">#theme_economist()+</span></span>
+<span id="cb20-19"><a href="#cb20-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_discrete</span>(<span class="at">labels=</span>reCatLabs)<span class="sc">+</span></span>
+<span id="cb20-20"><a href="#cb20-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x=</span><span class="st">""</span>, <span class="at">y=</span><span class="st">"% Change in Nominal Tariff SD"</span>)<span class="sc">+</span></span>
+<span id="cb20-21"><a href="#cb20-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggtitle</span>(<span class="fu">TeX</span>(<span class="st">"Difference in Nominal Tariff SDs (SD) arranged by Category (i) over consecutive Years (t): $</span><span class="sc">\\</span><span class="st">frac{(SD_{it}-SD_{it-1})}{SD_{it-1}}</span><span class="sc">\\</span><span class="st">cdot 100$"</span>))<span class="sc">+</span> <span class="co"># edit graph title</span></span>
+<span id="cb20-22"><a href="#cb20-22" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_text</span>(<span class="at">data =</span> realSD_change_df, <span class="fu">aes</span>(<span class="at">label =</span> <span class="fu">round</span>(realSD_Percentage_Change, <span class="dv">1</span>)), </span>
+<span id="cb20-23"><a href="#cb20-23" aria-hidden="true" tabindex="-1"></a>            <span class="at">position =</span> <span class="fu">position_dodge</span>(<span class="at">width =</span> <span class="fl">0.9</span>), <span class="at">vjust =</span> <span class="sc">-</span><span class="fl">0.25</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p><img src="Change over Time Graphs/Mean and SD/Difference in Nominal Tariff SDs arranged by category over consecutive years.jpeg" class="img-fluid"></p>
 
 
 </section>

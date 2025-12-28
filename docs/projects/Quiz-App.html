@@ -158,13 +158,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
+<p>This Python GUI project was orignally an assignment for COMP 218 at Athabasca University.</p>
 <section id="assignment-4-a-gui-based-quiz-system" class="level1">
 <h1>Assignment 4: A GUI-Based Quiz System</h1>
-<p>COMP 218 - Intro to Comp Prog w/ Python<br>
-Saumi Rahnamay<br>
-SID: 3718069<br>
-Time to complete: ~40 hours</p>
-<hr>
+<div style="text-align: center;">
+<p><img src="Quiz_app.png" class="img-fluid"></p>
+</div>
 <section id="interpretation" class="level3">
 <h3 class="anchored" data-anchor-id="interpretation">Interpretation</h3>
 <p>Goal: develop a GUI program that allows the user to create quizzes, add questions to those quizzes, take the quizzes after adding questions and receive a final score at the end of quiz. The Quiz program should also be able to preview the quizzes after creating questions.</p>
@@ -256,22 +255,75 @@ Time to complete: ~40 hours</p>
 </ul>
 </section>
 <section id="classes" class="level4">
-<h4 class="anchored" data-anchor-id="classes">Classes</h4>
+<h4 class="anchored" data-anchor-id="classes">Classes:</h4>
 </section>
 <section id="quiz_item---models-individual-quiz-items-that-can-be-added-to-quizzes." class="level4">
 <h4 class="anchored" data-anchor-id="quiz_item---models-individual-quiz-items-that-can-be-added-to-quizzes."><code>Quiz_item</code> - Models individual quiz items that can be added to quizzes.</h4>
-<p>Attributes: - <code>question</code> - The string containing the question. - <code>choices</code> - A variable length argument containing the possible answers to the question. - <code>answer</code> - The correct answer, validated to be one of the provided possible answers.</p>
-<p>Methods: - <code>set_question(new_question)</code> - Updates the question description. - <code>set_choices(choice_number, new_choice)</code> - Updates the specified possible choice. - <code>set_answer(new_answer)</code> - Sets the correct answer, ensuring validity. - <code>preview()</code> - Returns a string containing the question and choices of the <code>Quiz_item</code> objects.</p>
+<p>Attributes:</p>
+<ul>
+<li><code>question</code> - The string containing the question.</li>
+<li><code>choices</code> - A variable length argument containing the possible answers to the question.</li>
+<li><code>answer</code> - The correct answer, validated to be one of the provided possible answers.</li>
+</ul>
+<p>Methods:</p>
+<ul>
+<li><code>set_question(new_question)</code> - Updates the question description.</li>
+<li><code>set_choices(choice_number, new_choice)</code> - Updates the specified possible choice.</li>
+<li><code>set_answer(new_answer)</code> - Sets the correct answer, ensuring validity.</li>
+<li><code>preview()</code> - Returns a string containing the question and choices of the <code>Quiz_item</code> objects.</li>
+</ul>
 </section>
 <section id="quiz---models-quizzes-acting-like-collections-of-quiz_item-objects-with-additional-methods-and-functionality." class="level4">
 <h4 class="anchored" data-anchor-id="quiz---models-quizzes-acting-like-collections-of-quiz_item-objects-with-additional-methods-and-functionality."><code>Quiz</code> - Models Quizzes, acting like collections of Quiz_item objects with additional methods and functionality.</h4>
-<p>Attributes: - <code>quizItemList</code> - A list of <code>Quiz_item</code> objects. - <code>title</code> - The title of the quiz.</p>
-<p>Methods: - <code>add_question(quizItem)</code> - Add <code>Quiz_item</code> object to the <code>quizItemList</code>. - <code>display_questions()</code> - Returns string of questions, choices and answers for GUI display. - <code>take_quiz</code> - Executes quiz on user, returns final score calculation and all corrections if any.</p>
+<p>Attributes:</p>
+<ul>
+<li><code>quizItemList</code> - A list of <code>Quiz_item</code> objects.</li>
+<li><code>title</code> - The title of the quiz.</li>
+</ul>
+<p>Methods:</p>
+<ul>
+<li><code>add_question(quizItem)</code> - Add <code>Quiz_item</code> object to the <code>quizItemList</code>.</li>
+<li><code>display_questions()</code> - Returns string of questions, choices and answers for GUI display.</li>
+<li><code>take_quiz</code> - Executes quiz on user, returns final score calculation and all corrections if any.</li>
+</ul>
 </section>
 <section id="quizapp---provides-the-gui-and-methods-for-the-program." class="level4">
 <h4 class="anchored" data-anchor-id="quizapp---provides-the-gui-and-methods-for-the-program."><code>QuizApp</code> - Provides the GUI and methods for the program.</h4>
-<p>Attributes: - <code>root</code> - the parent window for the GUI application (which is initialized in the main execution) - <code>quizzes</code> - a dictionary containing quizzes. - <code>main_menu_quizzes_frame</code> - Frame widget containing main menu buttons to select quiz - <code>current_quiz</code> and <code>current_quiz_name</code> - The selected quiz object and its name - <code>answer_var</code> - Variable holding the user’s selected answer as an integer - <code>question_entry</code> - the question of a new quiz item - <code>choices_entries</code> - list containing choices of a new quiz item - <code>score</code> - holds the score of as the user proceeds through a quiz - <code>current_question_index</code> - holds the index of the current Quiz_item objects in <code>quizItemList</code> as the user proceeds through the quiz - <code>time_total</code> - the total time the user has to take the quiz, in seconds - <code>time_remaining</code> - the time remaining the user has to complete the quiz, max = <code>time_total</code> and min = 0. - <code>timer_running_flag</code> - flag set to False by default, set to True when Timer widget is activated - <code>user_got_right</code> - list of questions the user got right when taking the quiz. - <code>quiz_complete_flag</code> - flag set to False by default, set to true when Quiz complete. - <code>timer</code> - label widget acting as a countdown timer during the quiz. - <code>remaining_quiz_items</code> - label widget listing the current question number and the total number of questions during the quiz. - <code>quiz_corrections_frame</code> - Frame containing any corrections after the quiz is over.</p>
-<p>Methods: - <code>main_menu()</code> - Displays the main menu. - <code>create_quiz()</code> - Creates new quiz object and adds it to the <code>quizzes</code> dictionary. - <code>quiz_menu(quiz_name)</code> - Opens quiz menu for the selected quiz, allows user to add questions, preview questions and take the quiz. - <code>add_question()</code> - Menu with fields to create new quiz item object to be added to the selected quiz object.s - <code>submit_question()</code> - Method to validate the quiz item object created in <code>add_questions</code>. - <code>preview_quiz()</code> - Opens a dialogue box that previews all quiz items in the selected quiz object. - <code>start_quiz()</code> - Begins the interactive quiz program. - <code>display_question()</code> - Starting with the first quiz item object, displays the questions and all choices for the user to select as the answer. - <code>check_answer(user_answer)</code> - When user selects an answer in <code>display_question()</code>, compares it to the correct answer of the question and updates the user’s score accordingly. - <code>update_timer()</code> - Updates the <code>timer</code> to decrement by one every second. Also contains both exit conditions for the quiz: When the user answers every question and when the user runs out of time. - <code>show_results()</code> - Shows the user their score as a percentage and their corrections to incorrectly or unanswered questions, if any. - <code>clear_window()</code> - Clears all widgets off the parent window. This runs every time the user changes menus, and whenever a quiz is started or finished.</p>
+<p>Attributes:</p>
+<ul>
+<li><code>root</code> - the parent window for the GUI application (which is initialized in the main execution)</li>
+<li><code>quizzes</code> - a dictionary containing quizzes.</li>
+<li><code>main_menu_quizzes_frame</code> - Frame widget containing main menu buttons to select quiz</li>
+<li><code>current_quiz</code> and <code>current_quiz_name</code> - The selected quiz object and its name</li>
+<li><code>answer_var</code> - Variable holding the user’s selected answer as an integer</li>
+<li><code>question_entry</code> - the question of a new quiz item</li>
+<li><code>choices_entries</code> - list containing choices of a new quiz item</li>
+<li><code>score</code> - holds the score of as the user proceeds through a quiz</li>
+<li><code>current_question_index</code> - holds the index of the current Quiz_item objects in <code>quizItemList</code> as the user proceeds through the quiz</li>
+<li><code>time_total</code> - the total time the user has to take the quiz, in seconds</li>
+<li><code>time_remaining</code> - the time remaining the user has to complete the quiz, max = <code>time_total</code> and min = 0.</li>
+<li><code>timer_running_flag</code> - flag set to False by default, set to True when Timer widget is activated</li>
+<li><code>user_got_right</code> - list of questions the user got right when taking the quiz.</li>
+<li><code>quiz_complete_flag</code> - flag set to False by default, set to true when Quiz complete.</li>
+<li><code>timer</code> - label widget acting as a countdown timer during the quiz.</li>
+<li><code>remaining_quiz_items</code> - label widget listing the current question number and the total number of questions during the quiz.</li>
+<li><code>quiz_corrections_frame</code> - Frame containing any corrections after the quiz is over.</li>
+</ul>
+<p>Methods:</p>
+<ul>
+<li><code>main_menu()</code> - Displays the main menu.</li>
+<li><code>create_quiz()</code> - Creates new quiz object and adds it to the <code>quizzes</code> dictionary.</li>
+<li><code>quiz_menu(quiz_name)</code> - Opens quiz menu for the selected quiz, allows user to add questions, preview questions and take the quiz.</li>
+<li><code>add_question()</code> - Menu with fields to create new quiz item object to be added to the selected quiz object.s</li>
+<li><code>submit_question()</code> - Method to validate the quiz item object created in <code>add_questions</code>.</li>
+<li><code>preview_quiz()</code> - Opens a dialogue box that previews all quiz items in the selected quiz object.</li>
+<li><code>start_quiz()</code> - Begins the interactive quiz program.</li>
+<li><code>display_question()</code> - Starting with the first quiz item object, displays the questions and all choices for the user to select as the answer.</li>
+<li><code>check_answer(user_answer)</code> - When user selects an answer in <code>display_question()</code>, compares it to the correct answer of the question and updates the user’s score accordingly.</li>
+<li><code>update_timer()</code> - Updates the <code>timer</code> to decrement by one every second. Also contains both exit conditions for the quiz: When the user answers every question and when the user runs out of time.</li>
+<li><code>show_results()</code> - Shows the user their score as a percentage and their corrections to incorrectly or unanswered questions, if any.</li>
+<li><code>clear_window()</code> - Clears all widgets off the parent window. This runs every time the user changes menus, and whenever a quiz is started or finished.</li>
+</ul>
 </section>
 </section>
 <section id="user-guide" class="level3">

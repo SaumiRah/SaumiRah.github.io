@@ -1,3 +1,6 @@
+---
+categories: [R, Visualization]
+---
 RAship Code
 ================
 
@@ -11,7 +14,7 @@ data. All categorical variables are aliased, and all numeric fields are
 shuffled at random to preserve confidentiality. File names and headers
 are kept the same.
 
-*<u>Note from the future</u>: If I were to tackle this project today I would approach the task differently: I would employ a more conrete naming convention, and would overall use more functions for DRYer code. I include this project here because it served as an important learning opportunity for me, and showcases my approach to solving a real-world assignment.*
+*<u>Note from the future</u>: If I were to tackle this project today I would approach the task much differently: I would employ a more conrete naming convention for variables and files, use version control, and would overall use more functions for DRYer code. I include this project here because it served as an important learning opportunity for me, and demonstrates that I've solved a real-world assignment.*
 
 # Data Processing
 
@@ -326,59 +329,7 @@ RealfDF[is.na(RealfDF)] <- 0 # Final Dataframe: "fDF"
 
 # Graphs
 
-### Histogram: Mean Tariffs Recategorized
-
-``` r
-reCatLabs <- c("1":"16")
-
-ggplot(fDF , aes(x=Category, y=mean, group=Year)) + 
-  geom_bar(stat="identity", aes(fill=Year), size=2, position="dodge")+
-  #geom_errorbar(aes(fill= Year, ymin= ifelse(mean-sd < 0, 0, mean-sd), ymax=mean+sd), position= "dodge") + #comment this out to remove SD bars.
-  geom_point(size=2, position= position_dodge(width=0.9))+
-  #theme_economist()+
-  scale_x_discrete(labels=reCatLabs)+
-  labs(x="", y="Mean (Fr.)")+
-  ggtitle("Mean Tariffs Recategorized")+ # edit graph title
-  geom_text(data = fDF, aes(label = n), 
-            position = position_dodge(width = 0.9), vjust = -0.25)
-```
-
-![](RAship-Data-Analysis_files/figure-gfm/graph1-1.png)<!-- -->
-
-### Scatterplot: Recategorized: Mean ~ Standard Deviation
-
-``` r
-fDF$ID <- rep(1:16, each = 6)
-
-ggplot(fDF, x=sd, y=mean)+
-  geom_point(stat="identity", aes(color=Year, x=sd, y=mean), size=2)+
-  geom_smooth(aes(color= Year, x=sd, y=mean), method = "lm", alpha = .15)+
-  #theme_economist()+
-  theme(legend.position= "left")+
-  xlim(0,50)+
-  ylim(0, 50)+
-  labs(x="Standard Deviation", y="Mean (Fr.)")+
-  ggtitle("Recategorized: Mean ~ Standard Deviation")+
-  geom_text_repel(aes(color= Year, x=sd, y=mean),
-                   label=paste0(fDF$ID,"^(",fDF$n,")"),
-                   parse=TRUE,
-                   label.padding = unit(0.1, "lines"), # Rectangle size around label
-                   label.size = 0.02,
-                   force=1,
-                   force_pull = 0.1
-  )+
-  facet_zoom(xlim = c(0, 10),
-             zoom.size = 0.75,
-             ylim=c(0,10))
-```
-
-![](RAship-Data-Analysis_files/figure-gfm/graph2-1.png)<!-- -->
-
-lm(mean ~ Category, data=fDF)
-
-## Measuring Change Over Consecutive Years
-
-### The % change of the number of items in each category over consecutive years: \[(n\_(it)-n\_(it-1))/n\_(it-1)\]\*100
+### The % change of the number of items in each category over consecutive years: $\frac{(p_{it}-p_{it-1})}{p_{it-1}}\cdot 100\%$
 
 ``` r
 fDF <- fDF %>%
@@ -406,76 +357,7 @@ ggplot(n_percentage_change_df , aes(x=Category, y=n_Percentage_Change, group=Yea
             position = position_dodge(width = 0.9), vjust = -0.25)
 ```
 
-![](RAship-Data-Analysis_files/figure-gfm/graph3-1.png)<!-- -->
-
-### The % change of the proportions of categories (of all items in that year) over consecutive years: \[(%n\_(it)-%n\_(it-1))/%n\_(it-1)\]\*100
-
-``` r
-# finding totals firsts
-prop_df <- fDF
-prop_df$Year <- as.factor(fDF$Year)
-
-prop_df <- within(prop_df, {
-  year_sum <- ave(n, Year, FUN=sum)
-})
-
-# proportional change over previous year
-n_proportion_change_df <- prop_df %>%
-  arrange(Category, Year) %>%
-  group_by(Year) %>%
-  mutate(n_Proportion = n/year_sum) %>% 
-  mutate(n_prop_change = (n_Proportion - lag(n_Proportion)) / lag(n_Proportion) * 100) %>%
-  mutate(n_prop_change = ifelse(Year == 1849, NA, n_prop_change)) %>% #setting all 1849 rows to NA to be removed later
-  ungroup()
-
-n_proportion_change_df <- na.omit(n_proportion_change_df) #removing all 1849 rows because they have no previous year to be compared to
-
-# Histogram
-ggplot(n_proportion_change_df, aes(x=Category, y=n_prop_change, group=Year)) +
-  geom_bar(stat="identity", aes(fill=Year), size=2, position="dodge")+
-  #geom_errorbar(aes(fill= Year, ymin= ifelse(mean-sd < 0, 0, mean-sd), ymax=mean+sd), position= "dodge") +
-  geom_point(size=2, position= position_dodge(width=0.9))+
-  #theme_economist()+
-  scale_x_discrete(labels=reCatLabs)+
-  labs(x="", y="% Change")+
-  ggtitle(TeX("Proportional difference in Category (i) n-values over consecutive Years (t): $\\frac{(p_{it}-p_{it-1})}{p_{it-1}}\\cdot 100,\\frac{n_{it}}{\\sum_in_{i}}= p_{it}$"))+ # edit graph title
-  geom_text(data = n_proportion_change_df, aes(label = round(n_prop_change, 1)), 
-            position = position_dodge(width = 0.9), vjust = -0.25)
-```
-
-![](RAship-Data-Analysis_files/figure-gfm/graph9-1.png)<!-- -->
-
-### The % change in mean tariffs over consecutive years: \[(T\_(it)-T\_(it-1))/T\_(it-1)\]\*100
-
-(make sure: are you using REAL or NOMINAL tariffs? Change ggplot text
-accordingly)
-
-``` r
-fDF <- fDF %>%
-  arrange(Category, Year) %>%
-  ungroup()
-
-realMean_change_df <- fDF %>%
-  group_by(Category) %>%
-  mutate(realMean_Percentage_Change = (mean - lag(mean)) / lag(mean) * 100) %>%
-  mutate(realMean_Percentage_Change = ifelse(Year == 1849, NA, realMean_Percentage_Change)) %>% #setting all 1849 rows to NA to be removed later
-  ungroup() %>%
-  na.omit(realMean_change_df)
-
-# Histogram
-ggplot(realMean_change_df , aes(x=Category, y=realMean_Percentage_Change, group=Year)) + 
-  geom_bar(stat="identity", aes(fill=Year), size=2, position="dodge")+
-  #geom_errorbar(aes(fill= Year, ymin= ifelse(mean-sd < 0, 0, mean-sd), ymax=mean+sd), position= "dodge") +
-  geom_point(size=2, position= position_dodge(width=0.9))+
-  #theme_economist()+
-  scale_x_discrete(labels=reCatLabs)+
-  labs(x="", y="% Change in Nominal Mean Tariffs")+
-  ggtitle(TeX("Difference in Nominal Mean Tariffs (NT) arranged by Category (i) over consecutive Years (t): $\\frac{(NT_{it}-NT_{it-1})}{NT_{it-1}}\\cdot 100$"))+ # edit graph title
-  geom_text(data = realMean_change_df, aes(label = round(realMean_Percentage_Change, 1)), 
-            position = position_dodge(width = 0.9), vjust = -0.25)
-```
-
-![](RAship-Data-Analysis_files/figure-gfm/graph4-1.png)<!-- -->
+![](<Change over Time Graphs/Observations (n)/Proportional observation differences over consecutive years.jpeg>)
 
 ### The % change in Tariff SDs over consecutive years: \[(SD\_(it)-SD\_(it-1))/SD\_(it-1)\]\*100
 
@@ -507,142 +389,4 @@ ggplot(realSD_change_df , aes(x=Category, y=realSD_Percentage_Change, group=Year
             position = position_dodge(width = 0.9), vjust = -0.25)
 ```
 
-![](RAship-Data-Analysis_files/figure-gfm/graph5-1.png)<!-- -->
-
-## Measuring change over: 1849-1884 & 1884-1902
-
-### The % change of the number of items in each category \[(n\_(it)-n\_(it-1))/n\_(it-1)\]\*100
-
-``` r
-fournine_otwo_n_percentage_change_df <- fDF %>%
-  arrange(Category, Year) %>%
-  group_by(Category) %>%
-  mutate(row = ifelse(Year == 1851| Year == 1887| Year == 1891, NA, 1)) %>% # filtering out unwanted years
-  na.omit(fournine_otwo_n_percentage_change_df) %>% #...
-  select(!(row)) %>% #...
-  mutate(n_Change = (n - lag(n))/ lag(n) * 100) %>% 
-  mutate(n_Change = ifelse(Year == 1849, NA, n_Change))%>% #setting all 1849 rows to NA to be removed later
-  na.omit(fournine_otwo_n_percentage_change_df) %>% #removing all 1849 rows because they have no previous year to be compared to
-  ungroup()
-  
-# Histogram
-ggplot(fournine_otwo_n_percentage_change_df , aes(x=Category, y=n_Change, group=Year)) + 
-  geom_bar(stat="identity", aes(fill=Year), size=2, position="dodge")+
-  #geom_errorbar(aes(fill= Year, ymin= ifelse(mean-sd < 0, 0, mean-sd), ymax=mean+sd), position= "dodge") +
-  geom_point(size=2, position= position_dodge(width=0.9))+
-  #theme_economist()+
-  scale_x_discrete(labels=reCatLabs)+
-  labs(x="", y="% Change in 'n'")+
-  ggtitle(TeX("Difference in Category(i) n-values: 1849-1884 & 1884-1902 (t): $\\frac{(n_{it}-n_{it-1})}{n_{it-1}}\\cdot 100$"))+ # edit graph title
-  geom_text(data = fournine_otwo_n_percentage_change_df, aes(label = round(n_Change, 1)), 
-            position = position_dodge(width = 0.9), vjust = -0.25)
-```
-
-![](RAship-Data-Analysis_files/figure-gfm/graph6-1.png)<!-- -->
-
-### The % change of the proportions of observations per category: \[(%n\_(it)-%n\_(it-1))/%n\_(it-1)\]\*100
-
-``` r
-# finding totals first
-prop_df <- fDF
-prop_df$Year <- as.factor(fDF$Year)
-
-prop_df <- within(prop_df, {
-  year_sum <- ave(n, Year, FUN=sum)
-})
-
-
-# proportional change over previous year
-fournine_otwo_n_proportion_change_df <- prop_df %>%
-  arrange(Category, Year) %>%
-  group_by(Category) %>%
-  mutate(row = ifelse(Year == 1851| Year == 1887| Year == 1891, NA, 1)) %>%
-  na.omit(fournin_otwo_n_proportion_change_df) %>%
-  select(!(row)) %>%
-  mutate(n_Proportion = n/year_sum) %>% 
-  mutate(n_prop_change = (n_Proportion - lag(n_Proportion)) / lag(n_Proportion) * 100) %>%
-  mutate(n_prop_change = ifelse(Year == 1849, NA, n_prop_change)) %>% #setting all 1849 rows to NA to be removed later
-  na.omit(fournin_otwo_n_proportion_change_df) %>% #removing all 1849 rows because they have no previous year to be compared to
-  ungroup()
-
-# Histogram
-ggplot(fournine_otwo_n_proportion_change_df, aes(x=Category, y=n_prop_change, group=Year)) +
-  geom_bar(stat="identity", aes(fill=Year), size=2, position="dodge")+
-  #geom_errorbar(aes(fill= Year, ymin= ifelse(mean-sd < 0, 0, mean-sd), ymax=mean+sd), position= "dodge") +
-  geom_point(size=2, position= position_dodge(width=0.9))+
-  #theme_economist()+
-  scale_x_discrete(labels=reCatLabs)+
-  labs(x="", y="% Change")+
-  ggtitle(TeX("Proportional difference in Category (i) n-values: 1849-1884 & 1884-1902 (t): $\\frac{(p_{it}-p_{it-1})}{p_{it-1}}\\cdot 100,\\frac{n_{it}}{\\sum_in_{i}}= p_{it}$"))+ # edit graph title
-  geom_text(data = fournine_otwo_n_proportion_change_df, aes(label = round(n_prop_change, 1)), 
-            position = position_dodge(width = 0.9), vjust = -0.25)
-```
-
-![](RAship-Data-Analysis_files/figure-gfm/graph12-1.png)<!-- -->
-
-## The % change in mean tariffs: \[(T\_(it)-T\_(it-1))/T\_(it-1)\]\*100
-
-(make sure: are you using REAL or NOMINAL tariffs? Change ggplot text
-accordingly)
-
-``` r
-fournine_otwo_Mean_change_df <- fDF %>%
-  arrange(Category, Year) %>%
-  group_by(Category) %>%
-  mutate(row = ifelse(Year==1851 | Year==1887 | Year==1891, NA, 1)) %>%
-  na.omit(fournine_otwo_Mean_change_df) %>%
-  select(!(row)) %>%
-  mutate(Mean_Percentage_Change = (mean - lag(mean)) / lag(mean) * 100) %>%
-  mutate(Mean_Percentage_Change = ifelse(Year == 1849, NA, Mean_Percentage_Change)) %>% #setting all 1849 rows to NA to be removed later
-  ungroup() %>% 
-  na.omit(fournine_otwo_Mean_change_df) #removing all 1849 rows because they have no previous year to be compared to
-
-reCatLabs <- c("1":"16")
-
-# Histogram
-ggplot(fournine_otwo_Mean_change_df , aes(x=Category, y=Mean_Percentage_Change, group=Year)) + 
-  geom_bar(stat="identity", aes(fill=Year), size=2, position="dodge")+
-  #geom_errorbar(aes(fill= Year, ymin= ifelse(mean-sd < 0, 0, mean-sd), ymax=mean+sd), position= "dodge") +
-  geom_point(size=2, position= position_dodge(width=0.9))+
-  #theme_economist()+
-  scale_x_discrete(labels=reCatLabs)+
-  labs(x="", y="% Change in Real Mean Tariffs")+
-  ggtitle(TeX("Difference in Real Mean Tariffs (RT) arranged by Category (i): 1849-1884 & 1884-1902 (t): $\\frac{(RT_{it}-RT_{it-1})}{RT_{it-1}}\\cdot 100$"))+ # edit graph title
-  geom_text(data = fournine_otwo_Mean_change_df, aes(label = round(Mean_Percentage_Change, 1)), 
-            position = position_dodge(width = 0.9), vjust = -0.25)
-```
-
-![](RAship-Data-Analysis_files/figure-gfm/graph10-1.png)<!-- -->
-
-## The % change in Tariff SDs: \[(T\_(it)-T\_(it-1))/T\_(it-1)\]\*100
-
-(make sure: are you using REAL or NOMINAL tariffs? Change ggplot text
-accordingly)
-
-``` r
-fournine_otwo_SD_change_df <- fDF %>%
-  arrange(Category, Year) %>%
-  group_by(Category) %>%
-  mutate(row = ifelse(Year==1851 | Year==1887 | Year==1891, NA, 1)) %>%
-  na.omit(fournine_otwo_SD_change_df) %>%
-  select(!(row)) %>%
-  mutate(SD_Percentage_Change = (sd - lag(sd)) / lag(sd) * 100) %>%
-  mutate(SD_Percentage_Change = ifelse(Year == 1849, NA, SD_Percentage_Change)) %>% #setting all 1849 rows to NA to be removed later
-  ungroup() %>% 
-  na.omit(fournine_otwo_SD_change_df) #removing all 1849 rows because they have no previous year to be compared to
-
-
-# Histogram
-ggplot(fournine_otwo_SD_change_df , aes(x=Category, y=SD_Percentage_Change, group=Year)) + 
-  geom_bar(stat="identity", aes(fill=Year), size=2, position="dodge")+
-  #geom_errorbar(aes(fill= Year, ymin= ifelse(mean-sd < 0, 0, mean-sd), ymax=mean+sd), position= "dodge") +
-  geom_point(size=2, position= position_dodge(width=0.9))+
-  #theme_economist()+
-  scale_x_discrete(labels=reCatLabs)+
-  labs(x="", y="% Change in Real Tariff SDs ")+
-  ggtitle(TeX("Difference in Real Tariff SDs (SD) arranged by Category (i): 1849-1884 & 1884-1902 (t): $\\frac{(SD_{it}-SD_{it-1})}{SD_{it-1}}\\cdot 100$"))+ # edit graph title
-  geom_text(data = fournine_otwo_SD_change_df, aes(label = round(SD_Percentage_Change, 1)), 
-            position = position_dodge(width = 0.9), vjust = -0.25)
-```
-
-![](RAship-Data-Analysis_files/figure-gfm/graph7-1.png)<!-- -->
+![](<Change over Time Graphs/Mean and SD/Difference in Nominal Tariff SDs arranged by category over consecutive years.jpeg>)

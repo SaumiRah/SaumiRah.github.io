@@ -6,14 +6,12 @@ editor_options:
 output: pdf_document
 ---
 
-# Pizza Delivery Tip-Maxxing Project
+# Optimizing Gratuity
 
 # Preface
 
-This project originally started as an assignment for POL 315 at SFU. I
-returned to it later in 2022 to fully flesh it out. The result is the
-first part of an ongoing project to analyze data surrounding my part
-time job as a pizza delivery driver.
+This is the first part of an ongoing project analyzing the data surrounding my part
+time job as a pizza delivery driver. This project originally started as an assignment for POL 315 at SFU. I returned to it later in 2022 to fully flesh it out.
 
 # Section I. Research Question, Theory, and Hypotheses
 

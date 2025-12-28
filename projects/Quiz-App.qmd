@@ -2,14 +2,12 @@
 categories: [Python]
 ---
 
+This Python GUI project was orignally an assignment for COMP 218 at Athabasca University.
+
 # Assignment 4: A GUI-Based Quiz System
-
-COMP 218 - Intro to Comp Prog w/ Python  
-Saumi Rahnamay  
-SID: 3718069  
-Time to complete: ~40 hours
-
----
+<div style="text-align: center;">
+![](Quiz_app.png)
+</div>
 
 ### Interpretation
 Goal: develop a GUI program that allows the user to create quizzes, add questions to those quizzes, take the quizzes after adding questions and receive a final score at the end of quiz. The Quiz program should also be able to preview the quizzes after creating questions.
@@ -66,15 +64,18 @@ GUI design and program logic:
   - `ttk` module for aesthetically pleasing GUI components
   - `simpledialog` and `messagebox` modules to open asktring and messagebox boxes for the user interface.
 
-#### Classes
+#### Classes:
 #### `Quiz_item` - Models individual quiz items that can be added to quizzes.
 
 Attributes:
+
 - `question` - The string containing the question.
 - `choices` - A variable length argument containing the possible answers to the question.
 - `answer` - The correct answer, validated to be one of the provided possible answers.
 
+
 Methods:
+
 - `set_question(new_question)` - Updates the question description.
 - `set_choices(choice_number, new_choice)` - Updates the specified possible choice.
 - `set_answer(new_answer)` - Sets the correct answer, ensuring validity.
@@ -83,10 +84,12 @@ Methods:
 #### `Quiz` - Models Quizzes, acting like collections of Quiz_item objects with additional methods and functionality.
 
 Attributes: 
+
 - `quizItemList` - A list of `Quiz_item` objects.
 - `title` - The title of the quiz.
 
 Methods:
+
 - `add_question(quizItem)` - Add `Quiz_item` object to the `quizItemList`.
 - `display_questions()` - Returns string of questions, choices and answers for GUI display.
 - `take_quiz` - Executes quiz on user, returns final score calculation and all corrections if any.
@@ -94,6 +97,7 @@ Methods:
 #### `QuizApp` - Provides the GUI and methods for the program.
 
 Attributes:
+
 - `root` - the parent window for the GUI application (which is initialized in the main execution)
 - `quizzes` - a dictionary containing quizzes.
 - `main_menu_quizzes_frame` - Frame widget containing main menu buttons to select quiz
@@ -113,6 +117,7 @@ Attributes:
 - `quiz_corrections_frame` - Frame containing any corrections after the quiz is over.
 
 Methods:
+
 - `main_menu()` - Displays the main menu.
 - `create_quiz()` - Creates new quiz object and adds it to the `quizzes` dictionary.
 - `quiz_menu(quiz_name)` - Opens quiz menu for the selected quiz, allows user to add questions, preview questions and take the quiz.
