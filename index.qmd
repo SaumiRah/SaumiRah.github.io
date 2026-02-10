@@ -48,7 +48,7 @@ EDA performed in SQL.
 :::
 
 ::: {#second-card}
-#### [BPE Tokenizer from scratch](projects/bpe-tokenizer-from-scratch.ipynb)
+#### [BPE Tokenizer from Scratch](projects/bpe-tokenizer-from-scratch.ipynb)
 Coding a Byte-Pair Encoding Tokenizer from scratch; only using numpy. Tokenization is the first step of any machine learning application involving natural language (e.g. LLMs).
 
 ![](projects/bpe-tokenizer.png){width="200px"}
