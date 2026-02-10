@@ -48,12 +48,12 @@ EDA performed in SQL.
 :::
 
 ::: {#second-card}
-#### Forthcoming ML Project...
-<div style="text-align: center;">
-*I am enrolled in several ML courses at UBC and am applying what I'm learning to a Machine Learning/Computational Linguistics project.*
+#### [BPE Tokenizer from scratch](projects/bpe-tokenizer-from-scratch.ipynb)
+Coding a Byte-Pair Encoding Tokenizer from scratch; only using numpy. Tokenization is the first step of any machine learning application involving natural language (e.g. LLMs).
 
-*In the meantime, I encourage you to imagine an impressive ML project here.*
-</div>
+![](projects/bpe-tokenizer.png){width="200px"}
+
+First entry in an ongoing series of 'from scratch' coding projects.
 :::
 
 :::
