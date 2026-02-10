@@ -7,5 +7,59 @@
   },
   "LICENSE.md": {
     "LICENSE.html": "f170054b"
+  },
+  "cv.qmd": {
+    "cv.html": "f1744b7f"
+  },
+  "projects.qmd": {
+    "projects.html": "47b1188e"
+  },
+  "projects/most_streamed_spotify_jn.ipynb": {
+    "most_streamed_spotify_jn.html": "83d80a8a"
+  },
+  "projects/RAship-Data-Analysis.md": {
+    "RAship-Data-Analysis.html": "fbef6782"
+  },
+  "projects/Quiz-App.md": {
+    "Quiz-App.html": "36f4206c"
+  },
+  "projects/Desirability-Maxxing.md": {
+    "Desirability-Maxxing.html": "5e01fc6e"
+  },
+  "projects/Melee-SQL.md": {
+    "Melee-SQL.html": "15989cc7"
+  },
+  "projects/Tip-Maxxing_R.qmd": {
+    "Tip-Maxxing_R.html": "32a5da22"
+  },
+  "projects/Tip-Maxxing_R.md": {
+    "Tip-Maxxing_R.html": "8202cc3e"
+  },
+  "projects/Quiz-App.qmd": {
+    "Quiz-App.html": "6769cb50"
+  },
+  "projects/Optimizing Gratuitiy.qmd": {
+    "Optimizing Gratuitiy.html": "2cfb747c"
+  },
+  "projects/Optimizing_Gratuitiy.qmd": {
+    "Optimizing_Gratuitiy.html": "b5ea801f"
+  },
+  "projects/Desirability_Maxxing.md": {
+    "Desirability_Maxxing.html": "726a013a"
+  },
+  "projects/RAship-Data-Analysis.qmd": {
+    "RAship-Data-Analysis.html": "b93059f1"
+  },
+  "projects/Melee-SQL.qmd": {
+    "Melee-SQL.html": "e034eeae"
+  },
+  "projects/BC_Housing_Endemic.qmd": {
+    "BC_Housing_Endemic.html": "ffab7ad7"
+  },
+  "projects/Google Fiber Customer Service Repeat Calls.qmd": {
+    "Google Fiber Customer Service Repeat Calls.html": "e52e53f1"
+  },
+  "projects/bpe-tokenizer-from-scratch.ipynb": {
+    "bpe-tokenizer-from-scratch.html": "d0f403f6"
   }
 }
