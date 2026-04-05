@@ -61,5 +61,11 @@
   },
   "projects/bpe-tokenizer-from-scratch.ipynb": {
     "bpe-tokenizer-from-scratch.html": "d0f403f6"
+  },
+  "projects/kitchen_agent.ipynb": {
+    "kitchen_agent.html": "7f9d6702"
+  },
+  "projects/MongoDB_Exercise.ipynb": {
+    "MongoDB_Exercise.html": "d33f0ca9"
   }
 }

@@ -1,2 +1,4 @@
 /.quarto/
 todo.txt
+.Rhistory
+.gitignore

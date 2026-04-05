@@ -1,0 +1,1973 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.7.33">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>MongoDB Exercises</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-ea385d0e468b0dd5ea5bf0780b1290d9.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-4d96db332f33ef296d8e0919d4f30bf1.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+
+<link rel="stylesheet" href="../styles.css">
+</head>
+
+<body class="nav-fixed fullcontent quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../index.html"> 
+<span class="menu-text">Home</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../projects.html"> 
+<span class="menu-text">Projects</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../SaumiRahnamay_cv.pdf"> <i class="bi bi-file-pdf" role="img">
+</i> 
+<span class="menu-text">CV</span></a>
+  </li>  
+</ul>
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://www.linkedin.com/in/saumi-rahnamay/"> <i class="bi bi-linkedin" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">MongoDB Exercises</h1>
+  <div class="quarto-categories">
+    <div class="quarto-category">MongoDB</div>
+  </div>
+  </div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p><img src="nosql_cartoon.jpeg" width="500"></p>
+<p>These are some MongoDB exercises I did for DSCI 513 at UBC.</p>
+<div id="1c8f08fb" class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> pymongo <span class="im">import</span> MongoClient</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> json</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> urllib.parse</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> <span class="bu">open</span>(<span class="st">'data/credentials_mongodb.json'</span>) <span class="im">as</span> f:</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>    login <span class="op">=</span> json.load(f)</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>username <span class="op">=</span> login[<span class="st">'username'</span>]</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>password <span class="op">=</span> urllib.parse.quote(login[<span class="st">'password'</span>])</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>host <span class="op">=</span> login[<span class="st">'host'</span>]</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>url <span class="op">=</span> <span class="st">"mongodb+srv://</span><span class="sc">{}</span><span class="st">:</span><span class="sc">{}</span><span class="st">@</span><span class="sc">{}</span><span class="st">/?retryWrites=true&amp;w=majority"</span>.<span class="bu">format</span>(username, password, host)</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>client <span class="op">=</span> MongoClient(url)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<section id="exercise-1-getting-to-know-your-mongodb-databases" class="level2">
+<h2 class="anchored" data-anchor-id="exercise-1-getting-to-know-your-mongodb-databases">## Exercise 1: Getting to know your MongoDB databases</h2>
+<section id="section" class="level3">
+<h3 class="anchored" data-anchor-id="section">1.1</h3>
+<p>rubric={accuracy:1}</p>
+<p>List the databases that exist on your MongoDB Atlas cluster after loading sample databases. You can do this either by checking out the databases using Compass or by using <code>pymongo</code>’s <code>.list_database_names()</code> method.</p>
+<div id="48d0498d" class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>client.list_database_names()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<pre><code>['sample_airbnb',
+ 'sample_analytics',
+ 'sample_geospatial',
+ 'sample_guides',
+ 'sample_mflix',
+ 'sample_restaurants',
+ 'sample_supplies',
+ 'sample_training',
+ 'sample_weatherdata',
+ 'admin',
+ 'local']</code></pre>
+</div>
+</div>
+</section>
+<section id="section-1" class="level3">
+<h3 class="anchored" data-anchor-id="section-1">1.2</h3>
+<p>rubric={accuracy:1}</p>
+<p>List the collections stored in the <code>sample_mflix</code> and <code>sample_airbnb</code> databases. You can do this either by checking out the databases using Compass or by using <code>pymongo</code>’s <code>.list_collection_names()</code> method.</p>
+<div id="a845e414" class="cell">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(client[<span class="st">"sample_mflix"</span>].list_collection_names(), <span class="st">"</span><span class="ch">\n</span><span class="st">"</span>,</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>client[<span class="st">"sample_airbnb"</span>].list_collection_names(), sep<span class="op">=</span><span class="st">""</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>['users', 'sessions', 'comments', 'embedded_movies', 'movies', 'theaters']
+['listingsAndReviews']</code></pre>
+</div>
+</div>
+</section>
+<section id="section-2" class="level3">
+<h3 class="anchored" data-anchor-id="section-2">1.3</h3>
+<p>rubric={accuracy:2}</p>
+<p>We would like to create a summary report to get the number of documents in each collection of each database on our cluster. Write a python loop that produces an output similar to the following:</p>
+<pre><code>Database: sample_airbnb
+(collection, n_docs) =  ('listingsAndReviews', 5555)
+
+Database: sample_analytics
+(collection, n_docs) =  ('transactions', 1746)
+(collection, n_docs) =  ('accounts', 1746)
+(collection, n_docs) =  ('customers', 500)
+.
+.
+.</code></pre>
+<p>In previous questions, you’ve been introduced to the two methods of <code>pymongo</code> which are used to return database and collection names. Moreover, you can use the <code>.count_documents(filter={}))</code> method to count all documents in each collection.</p>
+<div id="b5945e03" class="cell">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> dbs <span class="kw">in</span> client.list_database_names():</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"Database: </span><span class="sc">{</span>dbs<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> coll <span class="kw">in</span> client[dbs].list_collection_names():</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="ss">f"(collection, n_docs) = (</span><span class="sc">{</span>coll<span class="sc">}</span><span class="ss">, </span><span class="sc">{</span>client[dbs][coll]<span class="sc">.</span>count_documents(<span class="bu">filter</span><span class="op">=</span>{})<span class="sc">}</span><span class="ss">)"</span>)</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">""</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Database: sample_airbnb
+(collection, n_docs) = (listingsAndReviews, 5555)
+
+Database: sample_analytics
+(collection, n_docs) = (customers, 500)
+(collection, n_docs) = (accounts, 1746)
+(collection, n_docs) = (transactions, 1746)
+
+Database: sample_geospatial
+(collection, n_docs) = (shipwrecks, 11095)
+
+Database: sample_guides
+(collection, n_docs) = (planets, 8)
+
+Database: sample_mflix
+(collection, n_docs) = (users, 185)
+(collection, n_docs) = (sessions, 1)
+(collection, n_docs) = (comments, 41079)
+(collection, n_docs) = (embedded_movies, 3483)
+(collection, n_docs) = (movies, 21349)
+(collection, n_docs) = (theaters, 1564)
+
+Database: sample_restaurants
+(collection, n_docs) = (neighborhoods, 195)
+(collection, n_docs) = (restaurants, 25359)
+
+Database: sample_supplies
+(collection, n_docs) = (sales, 5000)
+
+Database: sample_training
+(collection, n_docs) = (grades, 100000)
+(collection, n_docs) = (zips, 29470)
+(collection, n_docs) = (companies, 9500)
+(collection, n_docs) = (inspections, 80047)
+(collection, n_docs) = (trips, 10000)
+(collection, n_docs) = (posts, 500)
+(collection, n_docs) = (routes, 66985)
+
+Database: sample_weatherdata
+(collection, n_docs) = (data, 10000)
+
+Database: admin
+
+Database: local
+(collection, n_docs) = (oplog.rs, 0)
+</code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="exercise-2-basic-mongodb-queries" class="level2">
+<h2 class="anchored" data-anchor-id="exercise-2-basic-mongodb-queries">## Exercise 2: Basic MongoDB queries</h2>
+<section id="section-3" class="level3">
+<h3 class="anchored" data-anchor-id="section-3">2.1</h3>
+<p>rubric={accuracy:1}</p>
+<p>Retrieve one (random) document associated with a movie produced in 2015.</p>
+<p>You can use <code>.find_one()</code> method to do this, or use <code>.find()</code> but limit your results to 1 document.</p>
+<div id="3a9d8a6a" class="cell">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>client[<span class="st">"sample_mflix"</span>][<span class="st">"movies"</span>].find_one(<span class="bu">filter</span> <span class="op">=</span> {<span class="st">"year"</span>: <span class="dv">2015</span>})</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<pre><code>{'_id': ObjectId('573a13adf29313caabd2b765'),
+ 'plot': "A new theme park is built on the original site of Jurassic Park. Everything is going well until the park's newest attraction--a genetically modified giant stealth killing machine--escapes containment and goes on a killing spree.",
+ 'genres': ['Action', 'Adventure', 'Sci-Fi'],
+ 'runtime': 124,
+ 'metacritic': 59,
+ 'rated': 'PG-13',
+ 'cast': ['Chris Pratt',
+  'Bryce Dallas Howard',
+  'Irrfan Khan',
+  "Vincent D'Onofrio"],
+ 'num_mflix_comments': 0,
+ 'poster': 'https://m.media-amazon.com/images/M/MV5BNzQ3OTY4NjAtNzM5OS00N2ZhLWJlOWUtYzYwZjNmOWRiMzcyXkEyXkFqcGdeQXVyMTMxODk2OTU@._V1_SY1000_SX677_AL_.jpg',
+ 'title': 'Jurassic World',
+ 'fullplot': '22 years after the original Jurassic Park failed, the new park (also known as Jurassic World) is open for business. After years of studying genetics the scientists on the park genetically engineer a new breed of dinosaur. When everything goes horribly wrong, will our heroes make it off the island?',
+ 'languages': ['English'],
+ 'released': datetime.datetime(2015, 6, 12, 0, 0),
+ 'directors': ['Colin Trevorrow'],
+ 'writers': ['Rick Jaffa (screenplay)',
+  'Amanda Silver (screenplay)',
+  'Colin Trevorrow (screenplay)',
+  'Derek Connolly (screenplay)',
+  'Rick Jaffa (story)',
+  'Amanda Silver (story)',
+  'Michael Crichton (characters)'],
+ 'awards': {'wins': 0, 'nominations': 5, 'text': '5 nominations.'},
+ 'lastupdated': '2015-09-11 00:21:41.630000000',
+ 'year': 2015,
+ 'imdb': {'rating': 7.3, 'votes': 252556, 'id': 369610},
+ 'countries': ['USA', 'China'],
+ 'type': 'movie'}</code></pre>
+</div>
+</div>
+</section>
+<section id="section-4" class="level3">
+<h3 class="anchored" data-anchor-id="section-4">2.2</h3>
+<p>rubric={accuracy:1}</p>
+<p>Retrieve all TV series produced in 1995.</p>
+<blockquote class="blockquote">
+<p><strong>Hint:</strong> Inspect possible values for the <code>type</code> field.</p>
+</blockquote>
+<div id="be3d72f4" class="cell">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="bu">list</span>(client[<span class="st">"sample_mflix"</span>][<span class="st">"movies"</span>].find(<span class="bu">filter</span> <span class="op">=</span> {<span class="st">"year"</span>: <span class="dv">1995</span>, <span class="st">"type"</span>:<span class="st">"TV"</span>}))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<pre><code>[]</code></pre>
+</div>
+</div>
+</section>
+<section id="section-5" class="level3">
+<h3 class="anchored" data-anchor-id="section-5">2.3</h3>
+<p>rubric={accuracy:2}</p>
+<p>Retrieve the title and cast of movies produced in 2010, but limit your results to 5 documents.</p>
+<blockquote class="blockquote">
+<p><strong>Note:</strong> Don’t forget to exclude the <code>_id</code> field from your returned documents.</p>
+</blockquote>
+<blockquote class="blockquote">
+<p><strong>Note:</strong> The exact returned documents returned by <code>pymongo</code> might be different in different sessions and on different computers. This is perfectly fine.</p>
+</blockquote>
+<div id="37d9a54b" class="cell">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="bu">list</span>(client[<span class="st">"sample_mflix"</span>][<span class="st">"movies"</span>].find(</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>    <span class="bu">filter</span> <span class="op">=</span> {<span class="st">"year"</span>: <span class="dv">2010</span>},</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>    projection <span class="op">=</span> {<span class="st">'_id'</span>:<span class="dv">0</span>, <span class="st">'title'</span>:<span class="dv">1</span>, <span class="st">'cast'</span>:<span class="dv">1</span>},</span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>    limit <span class="op">=</span> <span class="dv">5</span></span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<pre><code>[{'cast': ['èva Gèbor', 'Istvèn Znamenèk', 'èkos Horvèth', 'Lia Pokorny'],
+  'title': 'Pèl Adrienn'},
+ {'title': 'In My Sleep',
+  'cast': ['Philip Winchester',
+   'Tim Draxl',
+   'Lacey Chabert',
+   'Abigail Spencer']},
+ {'cast': ['James Badge Dale',
+   'Joseph Mazzello',
+   'Jon Seda',
+   'Sebastian Bertoli'],
+  'title': 'The Pacific'},
+ {'cast': ['Mandy Moore', 'Zachary Levi', 'Donna Murphy', 'Ron Perlman'],
+  'title': 'Tangled'},
+ {'cast': ['Nikita Mikhalkov',
+   'Oleg Menshikov',
+   'Nadezhda Mikhalkova',
+   'Sergey Makovetskiy'],
+  'title': 'Utomlyonnye solntsem 2: Predstoyanie'}]</code></pre>
+</div>
+</div>
+</section>
+<section id="section-6" class="level3">
+<h3 class="anchored" data-anchor-id="section-6">2.4</h3>
+<p>rubric={accuracy:2}</p>
+<p>Retrieve the top 15 movies produced in 2010 that have the longest duration. Exclude TV series from your results. The returned documents should only contain the <code>title</code> and <code>runtime</code> fields (exclude the <code>_id</code> field).</p>
+<blockquote class="blockquote">
+<p><strong>Note:</strong> It’s ok if your results contain duplicate movies.</p>
+</blockquote>
+<div id="1b671f3a" class="cell">
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="bu">list</span>(client[<span class="st">"sample_mflix"</span>][<span class="st">"movies"</span>].find(</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>    <span class="bu">filter</span> <span class="op">=</span> {<span class="st">'year'</span>: <span class="dv">2010</span>, <span class="st">'type'</span>:{<span class="st">"$ne"</span>:<span class="st">"TV"</span>}},</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>    projection <span class="op">=</span> {<span class="st">'_id'</span>:<span class="dv">0</span>, <span class="st">'title'</span>:<span class="dv">1</span>, <span class="st">'runtime'</span>:<span class="dv">1</span>, <span class="st">'metacritic'</span>:<span class="dv">1</span>},</span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>    sort<span class="op">=</span>[(<span class="st">'runtime'</span>, <span class="op">-</span><span class="dv">1</span>), (<span class="st">'metacritic'</span>, <span class="op">-</span><span class="dv">1</span>)]</span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<pre><code>[{'runtime': 272, 'metacritic': 82, 'title': 'Mysteries of Lisbon'},
+ {'runtime': 185, 'title': 'Going Postal'},
+ {'runtime': 181, 'metacritic': 63, 'title': 'Aurora'},
+ {'runtime': 181, 'title': 'Utomlyonnye solntsem 2: Predstoyanie'},
+ {'runtime': 180,
+  'metacritic': 87,
+  'title': 'The Autobiography of Nicolae Ceausescu'},
+ {'runtime': 180, 'title': 'Thorne: Sleepyhead'},
+ {'runtime': 178, 'title': 'Riverworld'},
+ {'runtime': 174, 'title': 'Enthiran'},
+ {'runtime': 170, 'title': 'We Believed'},
+ {'runtime': 170, 'title': 'Khaleja'},
+ {'metacritic': 50, 'title': 'My Name Is Khan', 'runtime': 165},
+ {'runtime': 163, 'title': 'Moss'},
+ {'runtime': 163, 'title': 'Raajneeti'},
+ {'runtime': 160, 'title': 'Singam'},
+ {'runtime': 159, 'title': 'Black Venus'},
+ {'runtime': 157, 'title': 'Will You Cross the Skies for Me?'},
+ {'runtime': 157, 'title': 'Will You Cross the Skies for Me?'},
+ {'runtime': 152, 'title': 'Sketches of Kaitan City'},
+ {'runtime': 151, 'title': 'Anjaana Anjaani'},
+ {'runtime': 150, 'title': 'Adhurs'},
+ {'metacritic': 74, 'title': 'Inception', 'runtime': 148},
+ {'metacritic': 58, 'title': 'Biutiful', 'runtime': 148},
+ {'runtime': 146,
+  'metacritic': 65,
+  'title': 'Harry Potter and the Deathly Hallows: Part 1'},
+ {'runtime': 146, 'metacritic': 27, 'title': 'Sex and the City 2'},
+ {'runtime': 145, 'title': 'Beck'},
+ {'runtime': 145, 'title': 'Lahore'},
+ {'runtime': 144, 'title': 'Housefull'},
+ {'runtime': 142, 'title': 'Badmaa$h Company'},
+ {'runtime': 141, 'metacritic': 87, 'title': '13 Assassins'},
+ {'metacritic': 61, 'title': 'The Karate Kid', 'runtime': 140},
+ {'runtime': 140, 'metacritic': 53, 'title': 'Robin Hood'},
+ {'runtime': 140, 'title': 'Monga'},
+ {'runtime': 140, 'title': 'Montevideo: Taste of a Dream'},
+ {'metacritic': 82, 'title': 'Incendies', 'runtime': 139},
+ {'runtime': 139, 'metacritic': 78, 'title': 'The Princess of Montpensier'},
+ {'runtime': 139, 'title': 'Kiss Me Again'},
+ {'runtime': 139, 'title': 'Wedding Planners'},
+ {'runtime': 139, 'title': 'Villain'},
+ {'metacritic': 63, 'title': 'Shutter Island', 'runtime': 138},
+ {'runtime': 138, 'title': 'Tèèllè Pohjantèhden alla II'},
+ {'runtime': 138, 'title': 'Space Battleship Yamato'},
+ {'runtime': 138, 'title': 'The Brest Fortress'},
+ {'metacritic': 78, 'title': 'The Yellow Sea', 'runtime': 136},
+ {'metacritic': 78, 'title': 'The Yellow Sea', 'runtime': 136},
+ {'runtime': 136, 'title': 'Pèl Adrienn'},
+ {'runtime': 135, 'metacritic': 58, 'title': 'Gainsbourg: A Heroic Life'},
+ {'runtime': 135, 'title': 'Karthik Calling Karthik'},
+ {'runtime': 135, 'title': 'Khan the Con'},
+ {'runtime': 135, 'title': 'Aftershock'},
+ {'metacritic': 67, 'title': "Barney's Version", 'runtime': 134},
+ {'runtime': 134, 'title': "You Don't Know Jack"},
+ {'runtime': 134, 'title': 'Once Upon a Time in Mumbai'},
+ {'runtime': 133, 'metacritic': 66, 'title': 'The Way Back'},
+ {'metacritic': 59,
+  'title': 'Wall Street: Money Never Sleeps',
+  'runtime': 133},
+ {'runtime': 133, 'metacritic': 52, 'title': 'The Next Three Days'},
+ {'metacritic': 50, 'title': 'Eat Pray Love', 'runtime': 133},
+ {'metacritic': 50, 'title': 'For Colored Girls', 'runtime': 133},
+ {'runtime': 133, 'title': 'Saigo no Chèshingura'},
+ {'runtime': 130, 'metacritic': 74, 'title': 'How I Ended This Summer'},
+ {'runtime': 130, 'title': 'Raavan'},
+ {'runtime': 130, 'title': 'Red Eagle'},
+ {'runtime': 130, 'title': 'Hello Stranger'},
+ {'metacritic': 80, 'title': 'Another Year', 'runtime': 129},
+ {'metacritic': 56, 'title': 'Hereafter', 'runtime': 129},
+ {'runtime': 129, 'title': 'Young Bruce Lee'},
+ {'runtime': 129, 'title': 'The Poll Diaries'},
+ {'runtime': 129, 'title': 'I Hate Luv Storys'},
+ {'metacritic': 77, 'title': 'The Ghost Writer', 'runtime': 128},
+ {'metacritic': 49, 'title': 'Blood Done Sign My Name', 'runtime': 128},
+ {'runtime': 127, 'metacritic': 78, 'title': 'My Joy'},
+ {'runtime': 127, 'metacritic': 78, 'title': 'My Joy'},
+ {'runtime': 127, 'title': 'Natarang'},
+ {'runtime': 126, 'metacritic': 61, 'title': 'Come Undone'},
+ {'runtime': 126, 'title': 'Dabangg'},
+ {'runtime': 126, 'title': 'Colourful'},
+ {'runtime': 126, 'title': 'Guzaarish'},
+ {'metacritic': 74, 'title': 'The Town', 'runtime': 125},
+ {'runtime': 125, 'metacritic': 74, 'title': 'The Town'},
+ {'runtime': 125, 'metacritic': 49, 'title': 'TRON: Legacy'},
+ {'metacritic': 49, 'title': 'TRON: Legacy', 'runtime': 125},
+ {'metacritic': 34, 'title': "Valentine's Day", 'runtime': 125},
+ {'runtime': 125, 'title': 'The Coming Days'},
+ {'runtime': 125, 'title': 'Confucius'},
+ {'runtime': 125, 'title': 'I Wish I Knew'},
+ {'runtime': 125, 'title': 'Rakhta Charitra'},
+ {'runtime': 124, 'metacritic': 75, 'title': 'Easy Money'},
+ {'runtime': 124, 'metacritic': 63, 'title': 'Amigo'},
+ {'runtime': 124, 'metacritic': 58, 'title': 'The Twilight Saga: Eclipse'},
+ {'runtime': 124, 'metacritic': 57, 'title': 'Iron Man 2'},
+ {'runtime': 124, 'title': 'Neds'},
+ {'runtime': 124, 'title': 'Chico Xavier'},
+ {'runtime': 124, 'title': 'The Edge'},
+ {'metacritic': 64, 'title': 'The Way', 'runtime': 123},
+ {'runtime': 123, 'metacritic': 61, 'title': 'Secretariat'},
+ {'runtime': 122, 'metacritic': 86, 'title': 'Of Gods and Men'},
+ {'runtime': 122, 'metacritic': 62, 'title': 'The First Beautiful Thing'},
+ {'metacritic': 57, 'title': 'Sacrifice', 'runtime': 122},
+ {'runtime': 122, 'metacritic': 55, 'title': 'The Conspirator'},
+ {'runtime': 122, 'title': 'Beneath Hill 60'},
+ {'runtime': 122, 'title': 'Kosmos'},
+ {'runtime': 122, 'title': 'Paper Birds'},
+ {'runtime': 122, 'title': 'Time Traveller'},
+ {'runtime': 121, 'metacritic': 60, 'title': 'Mr. Nice'},
+ {'runtime': 121, 'metacritic': 59, 'title': 'Road to Nowhere'},
+ {'metacritic': 46, 'title': 'How Do You Know', 'runtime': 121},
+ {'metacritic': 43, 'title': 'Why Did I Get Married Too?', 'runtime': 121},
+ {'runtime': 121, 'title': 'A Barefoot Dream'},
+ {'metacritic': 95, 'title': 'The Social Network', 'runtime': 120},
+ {'runtime': 120, 'metacritic': 71, 'title': "Mozart's Sister"},
+ {'runtime': 120, 'title': 'Microphone'},
+ {'runtime': 120, 'title': '71: Into the Fire'},
+ {'metacritic': 75,
+  'title': 'Detective Dee: Mystery of the Phantom Flame',
+  'runtime': 119},
+ {'metacritic': 75,
+  'title': 'Detective Dee: Mystery of the Phantom Flame',
+  'runtime': 119},
+ {'runtime': 119, 'metacritic': 65, 'title': 'In a Better World'},
+ {'metacritic': 47, 'title': 'Burlesque', 'runtime': 119},
+ {'runtime': 119, 'title': 'Gang de qin'},
+ {'runtime': 119, 'title': 'The Man from Nowhere'},
+ {'runtime': 119, 'title': 'Bandage'},
+ {'runtime': 119, 'title': 'The Unjust'},
+ {'runtime': 119, 'title': 'Cyrano Agency'},
+ {'metacritic': 88, 'title': "The King's Speech", 'runtime': 118},
+ {'metacritic': 68,
+  'title': 'Casino Jack and the United States of Money',
+  'runtime': 118},
+ {'metacritic': 53, 'title': 'The Book of Eli', 'runtime': 118},
+ {'runtime': 118, 'metacritic': 53, 'title': 'The Book of Eli'},
+ {'metacritic': 47,
+  'title': 'Percy Jackson &amp; the Olympians: The Lightning Thief',
+  'runtime': 118},
+ {'runtime': 118,
+  'metacritic': 47,
+  'title': 'Percy Jackson &amp; the Olympians: The Lightning Thief'},
+ {'runtime': 118, 'title': 'Ishqiya'},
+ {'runtime': 118, 'title': 'The Solitude of Prime Numbers'},
+ {'runtime': 118, 'title': 'A Little Thing Called Love'},
+ {'runtime': 118, 'title': 'Three Steps Above Heaven'},
+ {'runtime': 118, 'title': 'Triple Tap'},
+ {'runtime': 117,
+  'metacritic': 68,
+  'title': 'Client 9: The Rise and Fall of Eliot Spitzer'},
+ {'metacritic': 66, 'title': 'Kick-Ass', 'runtime': 117},
+ {'metacritic': 55, 'title': 'Edge of Darkness', 'runtime': 117},
+ {'runtime': 117, 'metacritic': 47, 'title': 'The A-Team'},
+ {'metacritic': 45, 'title': 'Country Strong', 'runtime': 117},
+ {'runtime': 117, 'metacritic': 37, 'title': 'Love Ranch'},
+ {'runtime': 117, 'title': 'Bestseller'},
+ {'runtime': 117, 'title': 'Echoes of the Rainbow'},
+ {'runtime': 117, 'title': 'Josè and Pilar'},
+ {'runtime': 117, 'title': 'The Good Herbs'},
+ {'runtime': 117, 'title': 'Reign of Assassins'},
+ {'runtime': 117, 'title': 'Freedom Riders'},
+ {'runtime': 117, 'title': 'Echoes of the Rainbow'},
+ {'metacritic': 79, 'title': 'Let Me In', 'runtime': 116},
+ {'metacritic': 79, 'title': 'The Fighter', 'runtime': 116},
+ {'runtime': 116,
+  'metacritic': 68,
+  'title': "Who Is Harry Nilsson (And Why Is Everybody Talkin' About Him?)"},
+ {'runtime': 116,
+  'metacritic': 68,
+  'title': "Who Is Harry Nilsson (And Why Is Everybody Talkin' About Him?)"},
+ {'runtime': 116, 'metacritic': 64, 'title': 'Lemmy'},
+ {'runtime': 116,
+  'metacritic': 50,
+  'title': 'Prince of Persia: The Sands of Time'},
+ {'runtime': 116, 'title': 'Man-choo'},
+ {'runtime': 116, 'title': 'Bleak Night'},
+ {'runtime': 115, 'metacritic': 84, 'title': 'Position Among the Stars'},
+ {'metacritic': 63, 'title': 'Green Zone', 'runtime': 115},
+ {'metacritic': 62, 'title': 'True Legend', 'runtime': 115},
+ {'runtime': 115, 'metacritic': 57, 'title': 'Sex &amp; Drugs &amp; Rock &amp; Roll'},
+ {'runtime': 115, 'title': 'Bedevilled'},
+ {'runtime': 115, 'title': 'When the Dragon Swallowed the Sun'},
+ {'runtime': 115, 'title': 'Ghost'},
+ {'runtime': 115, 'title': 'Ghost'},
+ {'runtime': 115, 'title': 'Bedevilled'},
+ {'runtime': 114, 'metacritic': 82, 'title': 'Archipelago'},
+ {'metacritic': 56, 'title': 'Dinner for Schmucks', 'runtime': 114},
+ {'runtime': 114, 'metacritic': 52, 'title': 'Janie Jones'},
+ {'metacritic': 50, 'title': '14 Blades', 'runtime': 114},
+ {'runtime': 114, 'metacritic': 39, 'title': 'Life as We Know It'},
+ {'runtime': 114, 'title': 'Under the Hawthorn Tree'},
+ {'runtime': 114, 'title': 'Postcard'},
+ {'runtime': 114, 'title': 'Sword of Desperation'},
+ {'metacritic': 83, 'title': 'Animal Kingdom', 'runtime': 113},
+ {'runtime': 113, 'metacritic': 68, 'title': 'A Somewhat Gentle Man'},
+ {'runtime': 113, 'metacritic': 65, 'title': 'Made in Dagenham'},
+ {'metacritic': 65, 'title': 'The Debt', 'runtime': 113},
+ {'metacritic': 53,
+  'title': 'The Chronicles of Narnia: The Voyage of the Dawn Treader',
+  'runtime': 113},
+ {'metacritic': 40, 'title': 'Remember Me', 'runtime': 113},
+ {'runtime': 113, 'title': 'The Stool Pigeon'},
+ {'runtime': 113, 'title': 'Among Wolves'},
+ {'runtime': 113, 'title': 'Men Vs Women'},
+ {'runtime': 113,
+  'title': 'The Unintentional Kidnapping of Mrs. Elfriede Ott'},
+ {'runtime': 112, 'metacritic': 69, 'title': 'The Matchmaker'},
+ {'runtime': 112, 'metacritic': 69, 'title': 'Scott Pilgrim vs. the World'},
+ {'metacritic': 59, 'title': 'The Whistleblower', 'runtime': 112},
+ {'metacritic': 55, 'title': 'Love &amp; Other Drugs', 'runtime': 112},
+ {'runtime': 112, 'metacritic': 54, 'title': 'The Forgotten Space'},
+ {'metacritic': 45, 'title': 'Miral', 'runtime': 112},
+ {'runtime': 112, 'title': 'Pure Country 2: The Gift'},
+ {'runtime': 112, 'title': 'Amador'},
+ {'runtime': 112, 'title': 'The Ditch'},
+ {'runtime': 112, 'title': 'Run Sister Run!'},
+ {'runtime': 112, 'title': 'Run If You Can'},
+ {'metacritic': 81, 'title': "Waiting for 'Superman'", 'runtime': 111},
+ {'runtime': 111, 'metacritic': 60, 'title': 'RED'},
+ {'runtime': 111, 'metacritic': 59, 'title': "Sarah's Key"},
+ {'runtime': 111, 'metacritic': 57, 'title': 'Brighton Rock'},
+ {'metacritic': 32, 'title': 'Repo Men', 'runtime': 111},
+ {'runtime': 111, 'title': 'What If...'},
+ {'runtime': 111, 'title': 'On Tour'},
+ {'runtime': 111, 'title': 'Eastern Drift'},
+ {'runtime': 111, 'title': 'Earthling'},
+ {'runtime': 111, 'title': 'Majority'},
+ {'runtime': 111, 'title': 'Hello Ghost'},
+ {'metacritic': 80, 'title': 'True Grit', 'runtime': 110},
+ {'runtime': 110, 'metacritic': 50, 'title': 'Welcome to the Rileys'},
+ {'runtime': 110, 'metacritic': 49, 'title': 'Beyond the Black Rainbow'},
+ {'runtime': 110, 'metacritic': 43, 'title': 'The Tempest'},
+ {'metacritic': 31, 'title': 'Letters to God', 'runtime': 110},
+ {'metacritic': 22, 'title': 'The Bounty Hunter', 'runtime': 110},
+ {'metacritic': 18, 'title': 'The Nutcracker in 3D', 'runtime': 110},
+ {'runtime': 110, 'title': 'El mural'},
+ {'runtime': 110, 'title': 'Sennentuntschi: Curse of the Alps'},
+ {'runtime': 110, 'title': 'City Under Siege'},
+ {'runtime': 110, 'title': 'The Kingdom of Solomon'},
+ {'runtime': 110, 'title': "Preacher's Kid"},
+ {'runtime': 110, 'title': 'Intimate Grammar'},
+ {'runtime': 110, 'title': 'Secrets of the Tribe'},
+ {'runtime': 110, 'title': 'Dreamkiller'},
+ {'runtime': 110, 'title': 'Friendship!'},
+ {'runtime': 110, 'title': 'Loose Cannons'},
+ {'runtime': 110, 'title': 'The Father and the Foreigner'},
+ {'runtime': 110, 'title': 'Behind Blue Skies'},
+ {'runtime': 110, 'title': 'Snow &amp; Ashes'},
+ {'runtime': 110, 'title': 'Top Floor Left Wing'},
+ {'runtime': 110, 'title': 'Joanna'},
+ {'runtime': 110, 'title': "Genitori &amp; figli:) - Agitare bene prima dell'uso"},
+ {'metacritic': 67, 'title': 'Outrage', 'runtime': 109},
+ {'metacritic': 65, 'title': 'Get Him to the Greek', 'runtime': 109},
+ {'metacritic': 54, 'title': 'A Little Help', 'runtime': 109},
+ {'runtime': 109, 'metacritic': 53, 'title': 'The Killer Inside Me'},
+ {'metacritic': 52, 'title': 'Nanny McPhee Returns', 'runtime': 109},
+ {'metacritic': 51, 'title': 'White Irish Drinkers', 'runtime': 109},
+ {'metacritic': 46, 'title': 'Knight and Day', 'runtime': 109},
+ {'metacritic': 46, 'title': "The Sorcerer's Apprentice", 'runtime': 109},
+ {'runtime': 109, 'title': 'As If I Am Not There'},
+ {'runtime': 109, 'title': 'Tender Son: The Frankenstein Project'},
+ {'runtime': 109, 'title': 'Route Irish'},
+ {'runtime': 109, 'title': 'Surviving Life (Theory and Practice)'},
+ {'metacritic': 79, 'title': 'Black Swan', 'runtime': 108},
+ {'runtime': 108, 'metacritic': 69, 'title': 'Fair Game'},
+ {'metacritic': 67, 'title': 'Ip Man 2', 'runtime': 108},
+ {'runtime': 108, 'metacritic': 53, 'title': 'Alice in Wonderland'},
+ {'metacritic': 51, 'title': 'Casino Jack', 'runtime': 108},
+ {'metacritic': 48, 'title': "I'm Still Here", 'runtime': 108},
+ {'metacritic': 48, 'title': "I'm Still Here", 'runtime': 108},
+ {'metacritic': 43, 'title': 'Dear John', 'runtime': 108},
+ {'metacritic': 27, 'title': 'I Spit on Your Grave', 'runtime': 108},
+ {'runtime': 108, 'metacritic': 24, 'title': 'Burzynski'},
+ {'runtime': 108, 'title': 'Blades of Blood'},
+ {'runtime': 108, 'title': 'Loft'},
+ {'runtime': 108, 'title': 'The Hammer'},
+ {'runtime': 108, 'title': 'Igualita a mi'},
+ {'runtime': 107, 'metacritic': 76, 'title': 'Greenberg'},
+ {'runtime': 107, 'metacritic': 76, 'title': 'Greenberg'},
+ {'metacritic': 70, 'title': 'The Last Circus', 'runtime': 107},
+ {'runtime': 107,
+  'metacritic': 69,
+  'title': 'Everyday Sunshine: The Story of Fishbone'},
+ {'runtime': 107, 'metacritic': 64, 'title': 'The Other Guys'},
+ {'metacritic': 64, 'title': 'Tamara Drewe', 'runtime': 107},
+ {'runtime': 107, 'metacritic': 61, 'title': 'Conviction'},
+ {'metacritic': 57, 'title': 'Morning Glory', 'runtime': 107},
+ {'metacritic': 51, 'title': 'Predators', 'runtime': 107},
+ {'runtime': 107, 'metacritic': 49, 'title': "Jane's Journey"},
+ {'metacritic': 45, 'title': 'Takers', 'runtime': 107},
+ {'runtime': 107, 'metacritic': 45, 'title': 'Step Up 3D'},
+ {'metacritic': 39, 'title': 'Legendary', 'runtime': 107},
+ {'runtime': 107, 'metacritic': 33, 'title': 'The Last Song'},
+ {'metacritic': 31, 'title': 'Cop Out', 'runtime': 107},
+ {'metacritic': 31, 'title': 'Dylan Dog: Dead of Night', 'runtime': 107},
+ {'runtime': 107, 'metacritic': 25, 'title': 'My Soul to Take'},
+ {'metacritic': 25, 'title': 'My Soul to Take', 'runtime': 107},
+ {'runtime': 107, 'title': 'Temple Grandin'},
+ {'runtime': 107, 'title': 'Rush: Beyond the Lighted Stage'},
+ {'runtime': 107, 'title': 'Sensation'},
+ {'runtime': 107, 'title': 'GasLand'},
+ {'runtime': 107, 'title': 'The Extraordinary Adventures of Adèle Blanc-Sec'},
+ {'runtime': 107, 'title': 'Love &amp; Slaps'},
+ {'runtime': 107, 'title': 'For the Good of Others'},
+ {'metacritic': 86, 'title': 'The Kids Are All Right', 'runtime': 106},
+ {'runtime': 106, 'metacritic': 79, 'title': 'Senna'},
+ {'metacritic': 65, 'title': 'The Runaways', 'runtime': 106},
+ {'metacritic': 60, 'title': 'Trust', 'runtime': 106},
+ {'runtime': 106,
+  'metacritic': 49,
+  'title': 'Legend of the Fist: The Return of Chen Zhen'},
+ {'metacritic': 48, 'title': 'The Bang Bang Club', 'runtime': 106},
+ {'metacritic': 45, 'title': 'Hesher', 'runtime': 106},
+ {'metacritic': 39, 'title': 'Clash of the Titans', 'runtime': 106},
+ {'metacritic': 34, 'title': 'The Back-up Plan', 'runtime': 106},
+ {'runtime': 106, 'title': 'Time of Eve'},
+ {'runtime': 106, 'title': 'The Outlaw'},
+ {'runtime': 106, 'title': 'The Great Vazquez'},
+ {'runtime': 106, 'title': 'Fire of Conscience'},
+ {'runtime': 106, 'title': 'Midnight FM'},
+ {'runtime': 106, 'title': 'Priest of Evil'},
+ {'runtime': 106, 'title': 'Beauty and the Paparazzo'},
+ {'runtime': 105, 'metacritic': 88, 'title': 'Inside Job'},
+ {'metacritic': 81, 'title': 'Beginners', 'runtime': 105},
+ {'runtime': 105, 'metacritic': 72, 'title': 'Armadillo'},
+ {'runtime': 105,
+  'metacritic': 66,
+  'title': 'Over Your Cities Grass Will Grow'},
+ {'metacritic': 61, 'title': 'The American', 'runtime': 105},
+ {'metacritic': 60, 'title': 'Oranges and Sunshine', 'runtime': 105},
+ {'metacritic': 60, 'title': 'Machete', 'runtime': 105},
+ {'runtime': 105, 'metacritic': 59, 'title': 'Heartbreaker'},
+ {'metacritic': 59, 'title': 'The Dead', 'runtime': 105},
+ {'runtime': 105, 'metacritic': 57, 'title': 'The Infidel'},
+ {'metacritic': 50, 'title': 'Letters to Juliet', 'runtime': 105},
+ {'metacritic': 28, 'title': 'You Again', 'runtime': 105},
+ {'runtime': 105, 'title': '7 Days'},
+ {'runtime': 105, 'title': 'Agnosia'},
+ {'runtime': 105, 'title': 'A Quiet Life'},
+ {'runtime': 105, 'title': 'Elvis &amp; Madona'},
+ {'runtime': 105, 'title': 'Submarino'},
+ {'runtime': 105, 'title': 'Buddha Mountain'},
+ {'runtime': 105, 'title': 'Basilicata Coast to Coast'},
+ {'runtime': 105, 'title': 'Unter dir die Stadt'},
+ {'runtime': 105, 'title': 'Sorelle Mai'},
+ {'runtime': 105, 'title': 'Hello! How Are You?'},
+ {'metacritic': 85, 'title': "Meek's Cutoff", 'runtime': 104},
+ {'metacritic': 69, 'title': 'The Company Men', 'runtime': 104},
+ {'metacritic': 46, 'title': "She's Out of My League", 'runtime': 104},
+ {'metacritic': 33, 'title': 'In My Sleep', 'runtime': 104},
+ {'runtime': 104, 'title': 'Love in a Puff'},
+ {'runtime': 104, 'title': 'Nanga Parbat'},
+ {'runtime': 104, 'title': 'No Distance Left to Run'},
+ {'runtime': 104, 'title': 'Better Mus Come'},
+ {'runtime': 104, 'title': 'Princess'},
+ {'runtime': 104, 'title': 'No Return'},
+ {'runtime': 103, 'metacritic': 92, 'title': 'Toy Story 3'},
+ {'runtime': 103, 'metacritic': 81, 'title': 'Red White &amp; Blue'},
+ {'runtime': 103, 'metacritic': 70, 'title': 'Honey'},
+ {'runtime': 103, 'metacritic': 69, 'title': 'Never Let Me Go'},
+ {'metacritic': 68, 'title': 'Potiche', 'runtime': 103},
+ {'runtime': 103, 'metacritic': 62, 'title': 'The Human Resources Manager'},
+ {'runtime': 103, 'metacritic': 61, 'title': 'Trollhunter'},
+ {'runtime': 103, 'metacritic': 56, 'title': 'Ramona and Beezus'},
+ {'metacritic': 56, 'title': 'The First Grader', 'runtime': 103},
+ {'runtime': 103, 'metacritic': 54, 'title': 'Tomorrow, When the War Began'},
+ {'metacritic': 52, 'title': 'London Boulevard', 'runtime': 103},
+ {'runtime': 103, 'metacritic': 52, 'title': 'Insidious'},
+ {'metacritic': 45, 'title': 'The Expendables', 'runtime': 103},
+ {'metacritic': 43, 'title': 'The Wolfman', 'runtime': 103},
+ {'runtime': 103, 'metacritic': 39, 'title': 'Four Lovers'},
+ {'metacritic': 38, 'title': 'Our Family Wedding', 'runtime': 103},
+ {'metacritic': 37, 'title': 'The Tourist', 'runtime': 103},
+ {'runtime': 103, 'metacritic': 20, 'title': 'The Last Airbender'},
+ {'runtime': 103, 'title': 'Bereavement'},
+ {'runtime': 103, 'title': 'Saya-zamurai'},
+ {'runtime': 103, 'title': 'Astral City: A Spiritual Journey'},
+ {'runtime': 103, 'title': 'Lily Sometimes'},
+ {'runtime': 103, 'title': 'Groupies bleiben nicht zum Frèhstèck'},
+ {'runtime': 103, 'title': 'Six Shooters'},
+ {'metacritic': 72, 'title': 'Sound of Noise', 'runtime': 102},
+ {'runtime': 102, 'metacritic': 71, 'title': 'Black Death'},
+ {'metacritic': 61, 'title': 'Harvest', 'runtime': 102},
+ {'runtime': 102, 'metacritic': 52, 'title': 'The Women on the 6th Floor'},
+ {'runtime': 102, 'metacritic': 30, 'title': 'Grown Ups'},
+ {'runtime': 102, 'title': 'Welcome to the South'},
+ {'runtime': 102, 'title': 'Listen to Your Heart'},
+ {'runtime': 102, 'title': 'The Kings of Mykonos'},
+ {'runtime': 102, 'title': 'Unlikely Revolutionaries'},
+ {'runtime': 102, 'title': 'A Family'},
+ {'runtime': 102, 'title': 'Ay Lav Yu'},
+ {'runtime': 102, 'title': 'Yes or No'},
+ {'runtime': 102, 'title': 'Tracker'},
+ {'runtime': 101, 'metacritic': 70, 'title': 'Heartbeats'},
+ {'runtime': 101, 'metacritic': 65, 'title': 'The Robber'},
+ {'metacritic': 63, 'title': "It's Kind of a Funny Story", 'runtime': 101},
+ {'runtime': 101, 'metacritic': 63, 'title': 'Hot Tub Time Machine'},
+ {'runtime': 101, 'metacritic': 58, 'title': 'Gabi on the Roof in July'},
+ {'runtime': 101, 'metacritic': 57, 'title': 'All Good Things'},
+ {'runtime': 101, 'metacritic': 55, 'title': 'The Crazies'},
+ {'metacritic': 52, 'title': 'The Switch', 'runtime': 101},
+ {'metacritic': 47, 'title': 'Frankie &amp; Alice', 'runtime': 101},
+ {'metacritic': 36, 'title': 'Tooth Fairy', 'runtime': 101},
+ {'runtime': 101, 'title': '18 Meals'},
+ {'runtime': 101, 'title': 'Head Over Heels'},
+ {'runtime': 101, 'title': 'Cornelis'},
+ {'runtime': 101, 'title': 'Upside Down: The Creation Records Story'},
+ {'runtime': 101, 'title': 'The Runway'},
+ {'runtime': 101, 'title': 'Todo lo que tè quieras'},
+ {'runtime': 101, 'title': 'Arthur 3: The War of the Two Worlds'},
+ {'runtime': 101, 'title': 'The River Why'},
+ {'runtime': 100, 'metacritic': 90, 'title': "Winter's Bone"},
+ {'runtime': 100, 'metacritic': 73, 'title': 'Four Days Inside Guantanamo'},
+ {'runtime': 100, 'metacritic': 71, 'title': 'Tangled'},
+ {'runtime': 100, 'metacritic': 65, 'title': 'Life, Above All'},
+ {'metacritic': 65, 'title': 'Salt', 'runtime': 100},
+ {'runtime': 100, 'metacritic': 65, 'title': 'Life 2.0'},
+ {'runtime': 100, 'metacritic': 62, 'title': 'The Names of Love'},
+ {'metacritic': 62, 'title': 'Beautiful Boy', 'runtime': 100},
+ {'runtime': 100, 'metacritic': 58, 'title': 'The Tree'},
+ {'runtime': 100, 'metacritic': 55, 'title': 'Mumbai Diaries'},
+ {'runtime': 100, 'metacritic': 51, 'title': 'Just Wright'},
+ {'metacritic': 50, 'title': 'Elektra Luxx', 'runtime': 100},
+ {'runtime': 100, 'metacritic': 47, 'title': 'Lebanon, Pa.'},
+ {'metacritic': 45, 'title': 'Happythankyoumoreplease', 'runtime': 100},
+ {'runtime': 100, 'metacritic': 40, 'title': "It's a Wonderful Afterlife"},
+ {'metacritic': 21, 'title': 'Killers', 'runtime': 100},
+ {'runtime': 100, 'title': 'The Santa Claus Gang'},
+ {'runtime': 100, 'title': 'The Samurai of Ayothaya'},
+ {'runtime': 100, 'title': 'Cinema Komunisto'},
+ {'runtime': 100, 'title': '18 Years Later'},
+ {'runtime': 100, 'title': 'Tout ce qui brille'},
+ {'runtime': 100, 'title': 'Morgen'},
+ {'runtime': 100, 'title': 'Majesty'},
+ {'runtime': 100, 'title': 'Haunters'},
+ {'runtime': 100, 'title': 'I Want to Be a Soldier'},
+ {'runtime': 100, 'title': 'The Youngest Son'},
+ {'runtime': 100, 'title': 'Bo'},
+ {'runtime': 100, 'title': 'The Greatest Ears in Town: The Arif Mardin Story'},
+ {'runtime': 100, 'title': 'The Best Things in the World'},
+ {'runtime': 100, 'title': 'So Hard to Forget'},
+ {'runtime': 100, 'title': 'Boca'},
+ {'runtime': 99, 'metacritic': 78, 'title': 'Waste Land'},
+ {'runtime': 99, 'metacritic': 67, 'title': 'R'},
+ {'metacritic': 60, 'title': 'Good Neighbors', 'runtime': 99},
+ {'metacritic': 60, 'title': 'Norman', 'runtime': 99},
+ {'metacritic': 56, 'title': "Don't Be Afraid of the Dark", 'runtime': 99},
+ {'runtime': 99, 'metacritic': 48, 'title': 'Mooz-Lum'},
+ {'runtime': 99, 'metacritic': 38, 'title': 'Ong-bak 3'},
+ {'runtime': 99, 'metacritic': 37, 'title': 'Charlie St. Cloud'},
+ {'runtime': 99, 'title': 'Beyond'},
+ {'runtime': 99, 'title': 'Cherry'},
+ {'runtime': 99, 'title': '72 ga cho hak'},
+ {'runtime': 99, 'title': 'Matching Jack'},
+ {'runtime': 99, 'title': 'Double Tide'},
+ {'metacritic': 74, 'title': 'How to Train Your Dragon', 'runtime': 98},
+ {'metacritic': 69, 'title': 'Unstoppable', 'runtime': 98},
+ {'metacritic': 66, 'title': 'Stake Land', 'runtime': 98},
+ {'metacritic': 65, 'title': 'Viva Riva!', 'runtime': 98},
+ {'runtime': 98, 'metacritic': 57, 'title': 'Daydream Nation'},
+ {'metacritic': 52, 'title': 'Yellowbrickroad', 'runtime': 98},
+ {'runtime': 98, 'metacritic': 51, 'title': 'A Marine Story'},
+ {'metacritic': 51,
+  'title': 'You Will Meet a Tall Dark Stranger',
+  'runtime': 98},
+ {'metacritic': 51, 'title': 'Meet Monica Velour', 'runtime': 98},
+ {'metacritic': 44, 'title': 'Faster', 'runtime': 98},
+ {'metacritic': 27, 'title': 'Little Fockers', 'runtime': 98},
+ {'runtime': 98, 'title': 'Shameless'},
+ {'runtime': 98, 'title': 'La nostra vita'},
+ {'runtime': 98, 'title': 'Memory Lane'},
+ {'runtime': 98, 'title': 'Gallants'},
+ {'runtime': 98, 'title': 'Drones'},
+ {'runtime': 98, 'title': 'A Second Childhood'},
+ {'runtime': 98, 'title': 'Mahler on the Couch'},
+ {'runtime': 98, 'title': 'Love in Disguise'},
+ {'runtime': 98, 'title': 'Marathon Boy'},
+ {'runtime': 98, 'title': 'Quartier lointain'},
+ {'runtime': 98, 'title': 'StreetDance 3D'},
+ {'runtime': 98, 'title': 'Oxygen'},
+ {'runtime': 97, 'metacritic': 76, 'title': 'Submarine'},
+ {'runtime': 97, 'metacritic': 68, 'title': 'Four Lions'},
+ {'metacritic': 67, 'title': 'Somewhere', 'runtime': 97},
+ {'runtime': 97, 'metacritic': 62, 'title': 'Centurion'},
+ {'runtime': 97, 'metacritic': 60, 'title': 'Behind the Burly Q'},
+ {'runtime': 97,
+  'metacritic': 53,
+  'title': "Legend of the Guardians: The Owls of Ga'Hoole"},
+ {'metacritic': 44, 'title': 'The Losers', 'runtime': 97},
+ {'runtime': 97, 'metacritic': 37, 'title': 'Resident Evil: Afterlife'},
+ {'runtime': 97, 'title': 'Wasted on the Young'},
+ {'runtime': 97, 'title': 'Chatroom'},
+ {'runtime': 97, 'title': 'Camp Rock 2: The Final Jam'},
+ {'runtime': 97, 'title': 'The Invisible Eye'},
+ {'runtime': 96, 'metacritic': 69, 'title': 'The Elephant in the Living Room'},
+ {'runtime': 96, 'metacritic': 57, 'title': 'Toast'},
+ {'metacritic': 51, 'title': 'Skateland', 'runtime': 96},
+ {'metacritic': 50, 'title': 'Super', 'runtime': 96},
+ {'metacritic': 44, 'title': 'Sympathy for Delicious', 'runtime': 96},
+ {'runtime': 96, 'metacritic': 39, 'title': 'Vincent Wants to Sea'},
+ {'metacritic': 23, 'title': 'An Invisible Sign', 'runtime': 96},
+ {'runtime': 96, 'title': 'The Search for Santa Paws'},
+ {'runtime': 96, 'title': 'Hospitalitè'},
+ {'runtime': 96, 'title': 'Pink Saris'},
+ {'runtime': 96, 'title': 'Flicka 2'},
+ {'runtime': 96, 'title': 'Baseline'},
+ {'runtime': 96, 'title': 'The Traveler'},
+ {'runtime': 96, 'title': 'Plans for Tomorrow'},
+ {'runtime': 96, 'title': 'Hier kommt: Lola'},
+ {'runtime': 96, 'title': 'Ocean Heaven'},
+ {'runtime': 96, 'title': 'Undisputed 3: Redemption'},
+ {'runtime': 96, 'title': 'Bicicleta, cullera, poma'},
+ {'runtime': 96, 'title': 'Suicide Club'},
+ {'runtime': 96, 'title': 'David Wants to Fly'},
+ {'runtime': 96, 'title': 'The New Year'},
+ {'runtime': 95, 'metacritic': 75, 'title': "Anton Chekhov's The Duel"},
+ {'metacritic': 72, 'title': 'Despicable Me', 'runtime': 95},
+ {'runtime': 95, 'metacritic': 69, 'title': 'Peepli (Live)'},
+ {'metacritic': 65, 'title': 'Buried', 'runtime': 95},
+ {'metacritic': 63, 'title': 'Megamind', 'runtime': 95},
+ {'metacritic': 62, 'title': 'Red Hill', 'runtime': 95},
+ {'metacritic': 51, 'title': 'Due Date', 'runtime': 95},
+ {'runtime': 95, 'metacritic': 50, 'title': 'Shit Year'},
+ {'metacritic': 35, 'title': 'A Nightmare on Elm Street', 'runtime': 95},
+ {'metacritic': 28, 'title': 'Barry Munday', 'runtime': 95},
+ {'runtime': 95, 'metacritic': 26, 'title': 'Waiting for Forever'},
+ {'runtime': 95, 'title': 'Cemetery Junction'},
+ {'runtime': 95, 'title': 'Auk Nr. 8'},
+ {'runtime': 95, 'title': 'Bitter Feast'},
+ {'runtime': 95, 'title': 'Once a Gangster'},
+ {'runtime': 95, 'title': 'The Mosquito Net'},
+ {'runtime': 95, 'title': 'Kill Me Please'},
+ {'runtime': 95, 'title': "At Ellen's Age"},
+ {'runtime': 95, 'title': 'Bad Family'},
+ {'runtime': 95, 'title': 'Revenge of the Bridesmaids'},
+ {'runtime': 95, 'title': '3faltig'},
+ {'runtime': 95, 'title': 'Dark Souls'},
+ {'runtime': 95, 'title': 'Pete Smalls Is Dead'},
+ {'runtime': 95, 'title': 'Kooky'},
+ {'runtime': 95, 'title': 'VIPs'},
+ {'runtime': 95, 'title': 'Bes Sehir'},
+ {'runtime': 95, 'title': 'Le jeu de la mort'},
+ {'metacritic': 86, 'title': 'The Tillman Story', 'runtime': 94},
+ {'runtime': 94, 'metacritic': 82, 'title': '127 Hours'},
+ {'runtime': 94, 'metacritic': 80, 'title': 'The Secret World of Arrietty'},
+ {'metacritic': 80, 'title': 'The Secret World of Arrietty', 'runtime': 94},
+ {'metacritic': 63, 'title': 'Monsters', 'runtime': 94},
+ {'runtime': 94, 'metacritic': 57, 'title': 'The Wildest Dream'},
+ {'runtime': 94, 'metacritic': 56, 'title': 'Diary of a Wimpy Kid'},
+ {'metacritic': 56, 'title': 'Jackass 3D', 'runtime': 94},
+ {'runtime': 94, 'metacritic': 47, 'title': 'Parked'},
+ {'metacritic': 27, 'title': 'The Spy Next Door', 'runtime': 94},
+ {'runtime': 94, 'title': 'The Day I Was Not Born'},
+ {'runtime': 94, 'title': 'Logan'},
+ {'runtime': 94, 'title': 'Mad Bastards'},
+ {'runtime': 94, 'title': 'Skeletons'},
+ {'runtime': 94, 'title': 'Teenage Paparazzo'},
+ {'runtime': 94, 'title': 'The Clinic'},
+ {'runtime': 94, 'title': 'Jack and the Beanstalk'},
+ {'runtime': 93, 'metacritic': 85, 'title': 'Restrepo'},
+ {'runtime': 93, 'metacritic': 72, 'title': 'Lovers of Hate'},
+ {'metacritic': 62, 'title': 'Klown', 'runtime': 93},
+ {'runtime': 93, 'metacritic': 58, 'title': 'Hello Lonesome'},
+ {'runtime': 93, 'metacritic': 58, 'title': 'Shrek Forever After'},
+ {'runtime': 93,
+  'metacritic': 53,
+  'title': 'Some Days Are Better Than Others'},
+ {'metacritic': 50, 'title': 'Last Night', 'runtime': 93},
+ {'metacritic': 48, 'title': 'The Perfect Host', 'runtime': 93},
+ {'metacritic': 43, 'title': 'Frozen', 'runtime': 93},
+ {'metacritic': 22, 'title': 'Twelve', 'runtime': 93},
+ {'runtime': 93, 'title': "Nothing's All Bad"},
+ {'runtime': 93, 'title': 'Forget Me Not'},
+ {'runtime': 93, 'title': 'The Special Relationship'},
+ {'runtime': 93, 'title': 'Score: A Hockey Musical'},
+ {'runtime': 93, 'title': 'Once Fallen'},
+ {'runtime': 93, 'title': 'Jitters'},
+ {'runtime': 93, 'title': "A Beginner's Guide to Endings"},
+ {'runtime': 93, 'title': 'Legacy: Black Ops'},
+ {'runtime': 93, 'title': "You're So Cupid!"},
+ {'runtime': 93, 'title': 'The Bannen Way'},
+ {'runtime': 93, 'title': 'Boy Wonder'},
+ {'runtime': 93, 'title': 'Animals United'},
+ {'runtime': 93, 'title': 'Transfer'},
+ {'runtime': 93, 'title': '72 days'},
+ {'runtime': 93, 'title': "Draquila - L'Italia che trema"},
+ {'runtime': 93, 'title': 'The Final'},
+ {'runtime': 93, 'title': 'Caught Inside'},
+ {'runtime': 92, 'metacritic': 72, 'title': 'A Screaming Man'},
+ {'metacritic': 72, 'title': 'Easy A', 'runtime': 92},
+ {'runtime': 92, 'metacritic': 51, 'title': 'Death at a Funeral'},
+ {'runtime': 92, 'metacritic': 49, 'title': 'The High Cost of Living'},
+ {'metacritic': 47, 'title': 'The Dry Land', 'runtime': 92},
+ {'runtime': 92, 'metacritic': 47, 'title': 'Mammuth'},
+ {'runtime': 92, 'metacritic': 28, 'title': 'Immigration Tango'},
+ {'metacritic': 25,
+  'title': 'The Butcher, the Chef, and the Swordsman',
+  'runtime': 92},
+ {'metacritic': 23, 'title': 'Furry Vengeance', 'runtime': 92},
+ {'runtime': 92, 'title': 'Miss Nobody'},
+ {'runtime': 92, 'title': 'Metrobranding'},
+ {'runtime': 92, 'title': 'Lapland Odyssey'},
+ {'runtime': 92, 'title': 'The Final Storm'},
+ {'runtime': 92, 'title': "Devil's Playground"},
+ {'runtime': 92, 'title': '30 Days of Night: Dark Days'},
+ {'runtime': 92, 'title': 'Third Star'},
+ {'runtime': 92, 'title': 'Goblin'},
+ {'runtime': 92, 'title': 'Love Like Poison'},
+ {'runtime': 92, 'title': 'Main Street'},
+ {'runtime': 91, 'metacritic': 76, 'title': 'Rabbit Hole'},
+ {'runtime': 91, 'metacritic': 74, 'title': 'Cyrus'},
+ {'metacritic': 70, 'title': 'Countdown to Zero', 'runtime': 91},
+ {'metacritic': 53, 'title': 'Paranormal Activity 2', 'runtime': 91},
+ {'metacritic': 29, 'title': '13', 'runtime': 91},
+ {'metacritic': 25, 'title': 'When in Rome', 'runtime': 91},
+ {'runtime': 91, 'title': 'Jackboots on Whitehall'},
+ {'runtime': 91, 'title': 'Retratos en un mar de mentiras'},
+ {'runtime': 91, 'title': "Bi, Don't Be Afraid"},
+ {'runtime': 91, 'title': 'King of Triads'},
+ {'runtime': 91, 'title': 'Robert Mitchum Is Dead'},
+ {'runtime': 91, 'title': 'Die'},
+ {'runtime': 91, 'title': 'The Stranger'},
+ {'runtime': 91, 'title': 'Pulsar'},
+ {'runtime': 91, 'title': 'Thirst'},
+ {'runtime': 91, 'title': 'Bon appètit'},
+ {'runtime': 90, 'metacritic': 86, 'title': 'Cave of Forgotten Dreams'},
+ {'runtime': 90, 'metacritic': 85, 'title': 'Nostalgia for the Light'},
+ {'runtime': 90, 'metacritic': 78, 'title': 'Please Give'},
+ {'runtime': 90, 'metacritic': 76, 'title': 'The Hunter'},
+ {'metacritic': 65, 'title': 'Night Catches Us', 'runtime': 90},
+ {'metacritic': 59, 'title': 'Ways to Live Forever', 'runtime': 90},
+ {'runtime': 90, 'metacritic': 54, 'title': 'Illègal'},
+ {'runtime': 90, 'metacritic': 49, 'title': 'Griff the Invisible'},
+ {'runtime': 90, 'metacritic': 45, 'title': 'Flipped'},
+ {'metacritic': 43, 'title': 'MacGruber', 'runtime': 90},
+ {'runtime': 90, 'metacritic': 40, 'title': 'Our Day Will Come'},
+ {'metacritic': 24, 'title': 'Saw 3D: The Final Chapter', 'runtime': 90},
+ {'runtime': 90, 'title': '16 Wishes'},
+ {'runtime': 90, 'title': 'Zohi Sdom'},
+ {'runtime': 90, 'title': 'Everything Will be Fine'},
+ {'runtime': 90, 'title': 'Altitude'},
+ {'runtime': 90, 'title': 'Le mac'},
+ {'runtime': 90, 'title': 'The House of Suh'},
+ {'runtime': 90, 'title': 'Happy Family'},
+ {'runtime': 90, 'title': 'Zero 2'},
+ {'runtime': 90, 'title': 'My Good Enemy'},
+ {'runtime': 90, 'title': 'Prey'},
+ {'runtime': 90, 'title': 'Ganavim Ba Hok'},
+ {'runtime': 90, 'title': 'Dooman River'},
+ {'runtime': 90, 'title': 'Smoorverliefd'},
+ {'runtime': 90, 'title': 'Hands Up'},
+ {'runtime': 90, 'title': 'A Night for Dying Tigers'},
+ {'runtime': 90, 'title': 'Needle'},
+ {'runtime': 90, 'title': '12th &amp; Delaware'},
+ {'runtime': 90, 'title': 'The First Assignment'},
+ {'runtime': 90, 'title': 'Prey'},
+ {'runtime': 90, 'title': 'Saturday Night'},
+ {'runtime': 90, 'title': 'StarStruck'},
+ {'runtime': 90, 'title': 'Bare Knuckles'},
+ {'runtime': 90, 'title': 'Mars'},
+ {'runtime': 90, 'title': 'Zohi Sdom'},
+ {'runtime': 90, 'title': 'Kalevet'},
+ {'runtime': 90, 'title': 'Te presento a Laura'},
+ {'runtime': 90, 'title': 'Home for Christmas'},
+ {'runtime': 90, 'title': 'Sweet Evil'},
+ {'runtime': 90, 'title': 'Neue Vahr Sèd'},
+ {'runtime': 90, 'title': 'The Colors of the Mountain'},
+ {'runtime': 90, 'title': 'Wake Wood'},
+ {'runtime': 90, 'title': 'Backlight'},
+ {'runtime': 89,
+  'metacritic': 66,
+  'title': 'Strange Powers: Stephin Merritt and the Magnetic Fields'},
+ {'metacritic': 65, 'title': 'Tucker and Dale vs. Evil', 'runtime': 89},
+ {'metacritic': 64, 'title': 'Jack Goes Boating', 'runtime': 89},
+ {'metacritic': 51, 'title': 'Holy Rollers', 'runtime': 89},
+ {'runtime': 89, 'metacritic': 49, 'title': 'Helena from the Wedding'},
+ {'runtime': 89, 'title': 'Repeaters'},
+ {'runtime': 89, 'title': 'Nice Guy Johnny'},
+ {'runtime': 89, 'title': 'Street Days'},
+ {'runtime': 89, 'title': 'Gunless'},
+ {'runtime': 89, 'title': 'Secrets in the Walls'},
+ {'runtime': 88, 'metacritic': 90, 'title': 'My Perestroika'},
+ {'runtime': 88, 'metacritic': 80, 'title': 'Le Quattro Volte'},
+ {'runtime': 88,
+  'metacritic': 74,
+  'title': 'Jean-Michel Basquiat: The Radiant Child'},
+ {'runtime': 88, 'metacritic': 69, 'title': '3 Backyards'},
+ {'metacritic': 63,
+  'title': 'Under the Boardwalk: The Monopoly Story',
+  'runtime': 88},
+ {'runtime': 88, 'metacritic': 59, 'title': 'Make Believe'},
+ {'metacritic': 56, 'title': 'Date Night', 'runtime': 88},
+ {'metacritic': 53, 'title': 'Piranha 3D', 'runtime': 88},
+ {'metacritic': 36, 'title': 'Alpha and Omega', 'runtime': 88},
+ {'runtime': 88, 'metacritic': 24, 'title': 'Happiness Runs'},
+ {'runtime': 88, 'title': 'A Small Act'},
+ {'runtime': 88, 'title': 'Africa United'},
+ {'runtime': 88, 'title': 'Amish Grace'},
+ {'runtime': 88, 'title': 'You Should Meet My Son!'},
+ {'runtime': 88, 'title': 'Trek Nation'},
+ {'runtime': 88, 'title': 'White Lion'},
+ {'runtime': 88, 'title': 'The Battle for Marjah'},
+ {'runtime': 88, 'title': 'Open House'},
+ {'runtime': 88, 'title': "A Turtle's Tale: Sammy's Adventures"},
+ {'runtime': 88, 'title': 'It Begins with the End'},
+ {'runtime': 88, 'title': 'Double Wedding'},
+ {'runtime': 88, 'title': 'The Client List'},
+ {'runtime': 87, 'metacritic': 85, 'title': 'Exit Through the Gift Shop'},
+ {'runtime': 87, 'metacritic': 74, 'title': 'Tabloid'},
+ {'runtime': 87, 'metacritic': 69, 'title': 'Fire in Babylon'},
+ {'runtime': 87, 'metacritic': 68, 'title': 'Smash His Camera'},
+ {'runtime': 87, 'metacritic': 65, 'title': 'Catfish'},
+ {'runtime': 87, 'metacritic': 63, 'title': 'The Last Exorcism'},
+ {'metacritic': 61, 'title': 'Cool It', 'runtime': 87},
+ {'runtime': 87, 'metacritic': 52, 'title': 'A Horrible Way to Die'},
+ {'metacritic': 30, 'title': 'Marmaduke', 'runtime': 87},
+ {'runtime': 87, 'title': 'The Stoker'},
+ {'runtime': 87, 'title': 'Road Kill'},
+ {'runtime': 87, 'title': 'The Clink of Ice'},
+ {'runtime': 87, 'title': 'Lights Out'},
+ {'runtime': 87, 'title': 'Outbound'},
+ {'runtime': 87, 'title': 'Nokas'},
+ {'runtime': 87, 'title': 'The Presence'},
+ {'runtime': 87, 'title': 'Just Between Us'},
+ {'runtime': 87, 'title': 'Apnea'},
+ {'runtime': 87, 'title': 'Pregnancy Pact'},
+ {'runtime': 87, 'title': 'Cancel Christmas'},
+ {'runtime': 86, 'metacritic': 54, 'title': 'Spork'},
+ {'runtime': 86, 'metacritic': 44, 'title': 'Carbon Nation'},
+ {'runtime': 86, 'title': 'The Reeds'},
+ {'runtime': 86, 'title': 'Chosin'},
+ {'runtime': 86, 'title': 'Climate of Change'},
+ {'runtime': 85, 'metacritic': 75, 'title': 'Caterpillar'},
+ {'runtime': 85, 'metacritic': 60, 'title': 'Happy, Happy'},
+ {'metacritic': 58, 'title': 'Freakonomics', 'runtime': 85},
+ {'metacritic': 49, 'title': 'Hatchet II', 'runtime': 85},
+ {'metacritic': 33, 'title': "Gulliver's Travels", 'runtime': 85},
+ {'runtime': 85, 'title': 'Bruc, the Manhunt'},
+ {'runtime': 85, 'title': 'Father'},
+ {'runtime': 85, 'title': 'The Violent Kind'},
+ {'runtime': 85, 'title': 'Au revoir Taipei'},
+ {'runtime': 85, 'title': 'Sons of Perdition'},
+ {'runtime': 85, 'title': 'Magic &amp; Bird: A Courtship of Rivals'},
+ {'runtime': 85, 'title': 'Simple Simon'},
+ {'runtime': 85, 'title': 'Der letzte schène Herbsttag'},
+ {'runtime': 85, 'title': "My Babysitter's a Vampire"},
+ {'runtime': 85, 'title': 'Fubar: Balls to the Wall'},
+ {'runtime': 85, 'title': 'The Erotic Man'},
+ {'runtime': 85, 'title': 'This Movie Is Broken'},
+ {'runtime': 85, 'title': '2012: Time for Change'},
+ {'runtime': 85, 'title': 'Some Dogs Bite'},
+ {'runtime': 85, 'title': 'Trader Games'},
+ {'metacritic': 79, 'title': 'Joan Rivers: A Piece of Work', 'runtime': 84},
+ {'metacritic': 75, 'title': 'Point Blank', 'runtime': 84},
+ {'metacritic': 71, 'title': 'Rare Exports: A Christmas Tale', 'runtime': 84},
+ {'runtime': 84, 'metacritic': 71, 'title': 'One Lucky Elephant'},
+ {'runtime': 84, 'metacritic': 64, 'title': 'Jean Gentil'},
+ {'metacritic': 63, 'title': 'Howl', 'runtime': 84},
+ {'runtime': 84,
+  'metacritic': 45,
+  'title': 'Reindeerspotting - Escape from Santaland'},
+ {'runtime': 84, 'title': 'Public Speaking'},
+ {'runtime': 84, 'title': 'New Kids Turbo'},
+ {'runtime': 84, 'title': 'The Pack'},
+ {'runtime': 83, 'metacritic': 83, 'title': 'Marwencol'},
+ {'runtime': 83, 'metacritic': 81, 'title': 'Thunder Soul'},
+ {'runtime': 83, 'metacritic': 70, 'title': '!Women Art Revolution'},
+ {'runtime': 83,
+  'metacritic': 67,
+  'title': 'Queen of the Sun: What Are the Bees Telling Us?'},
+ {'runtime': 83, 'metacritic': 66, 'title': 'Littlerock'},
+ {'runtime': 83, 'title': 'War Don Don'},
+ {'runtime': 83, 'title': 'My Kidnapper'},
+ {'runtime': 83, 'title': "The Good Witch's Gift"},
+ {'runtime': 83, 'title': 'School Is Over'},
+ {'runtime': 83, 'title': 'Angel &amp; Tony'},
+ {'runtime': 83, 'title': 'Bloomington'},
+ {'runtime': 83, 'title': 'Paradox'},
+ {'runtime': 83, 'title': 'The Boy Who Cried Werewolf'},
+ {'runtime': 83, 'title': 'Essential Killing'},
+ {'runtime': 83, 'title': 'Beauty &amp; the Briefcase'},
+ {'runtime': 82, 'metacritic': 59, 'title': 'My Afternoons with Margueritte'},
+ {'runtime': 82, 'metacritic': 59, 'title': 'Rubber'},
+ {'metacritic': 30,
+  'title': 'Cats &amp; Dogs: The Revenge of Kitty Galore',
+  'runtime': 82},
+ {'runtime': 82, 'metacritic': 18, 'title': 'Vampires Suck'},
+ {'runtime': 82, 'title': 'I Am Slave'},
+ {'runtime': 82, 'title': 'Ride the Divide'},
+ {'runtime': 82, 'title': 'Taipei Exchanges'},
+ {'runtime': 82, 'title': 'The Ah of Life'},
+ {'runtime': 82, 'title': 'Treacle Jr.'},
+ {'runtime': 82, 'title': 'La èltima cima'},
+ {'runtime': 82, 'title': 'Oliver Sherman'},
+ {'runtime': 81, 'metacritic': 78, 'title': 'Foreign Parts'},
+ {'runtime': 81, 'metacritic': 72, 'title': 'The Lottery'},
+ {'metacritic': 33, 'title': 'Jonah Hex', 'runtime': 81},
+ {'runtime': 81, 'title': 'ReGeneration'},
+ {'runtime': 81, 'title': 'Steam of Life'},
+ {'runtime': 81, 'title': 'Jo pour Jonathan'},
+ {'runtime': 81, 'title': 'Lost Boys: The Thirst'},
+ {'runtime': 81, 'title': 'Being in the World'},
+ {'metacritic': 82, 'title': 'The Illusionist', 'runtime': 80},
+ {'runtime': 80, 'metacritic': 78, 'title': "Oki's Movie"},
+ {'runtime': 80, 'metacritic': 75, 'title': 'The Desert of Forbidden Art'},
+ {'runtime': 80, 'metacritic': 71, 'title': 'I Will Follow'},
+ {'runtime': 80, 'metacritic': 69, 'title': 'Romantics Anonymous'},
+ {'runtime': 80, 'metacritic': 65, 'title': 'Family Affair'},
+ {'runtime': 80, 'metacritic': 55, 'title': '8: The Mormon Proposition'},
+ {'runtime': 80, 'metacritic': 44, 'title': 'Devil'},
+ {'metacritic': 35, 'title': 'Yogi Bear', 'runtime': 80},
+ {'runtime': 80, 'title': 'Finisterrae'},
+ {'runtime': 80, 'title': 'Reflexèes de um Liquidificador'},
+ {'runtime': 80, 'title': 'SoulBoy'},
+ {'runtime': 80, 'title': 'Van Gogh: Painted with Words'},
+ {'runtime': 80, 'title': 'Kapitalism: Our Improved Formula'},
+ {'runtime': 80, 'title': 'Belle èpine'},
+ {'runtime': 80, 'title': 'With Great Power: The Stan Lee Story'},
+ {'runtime': 80, 'title': 'The Light Thief'},
+ {'runtime': 80, 'title': "Santa's Apprentice"},
+ {'metacritic': 63, 'title': 'Babies', 'runtime': 79},
+ {'runtime': 79, 'title': 'Sebbe'},
+ {'runtime': 79, 'title': "Bill Maher... But I'm Not Wrong"},
+ {'runtime': 79, 'title': 'Barbie: A Fashion Fairytale'},
+ {'runtime': 78, 'metacritic': 76, 'title': 'Silent Souls'},
+ {'runtime': 78, 'metacritic': 49, 'title': 'Summer of Goliath'},
+ {'runtime': 78, 'title': 'Lego: The Adventures of Clutch Powers'},
+ {'runtime': 77, 'title': 'Silent Sonata'},
+ {'metacritic': 52, 'title': 'Brotherhood', 'runtime': 76},
+ {'runtime': 76, 'title': 'Space Chimps 2: Zartog Strikes Back'},
+ {'runtime': 76, 'title': 'Tinker Bell and the Great Fairy Rescue'},
+ {'runtime': 76, 'title': 'Kawa'},
+ {'runtime': 75,
+  'metacritic': 68,
+  'title': 'Into Eternity: A Film for the Future'},
+ {'metacritic': 66, 'title': 'Small Town Murder Songs', 'runtime': 75},
+ {'runtime': 75, 'title': 'Barbie in a Mermaid Tale'},
+ {'runtime': 75, 'title': 'The Light Bulb Conspiracy'},
+ {'runtime': 75, 'title': 'The Ugly Duckling'},
+ {'runtime': 75, 'title': 'Batman: Under the Red Hood'},
+ {'runtime': 75, 'title': 'Joy'},
+ {'runtime': 74, 'title': 'Bag It'},
+ {'runtime': 71, 'metacritic': 62, 'title': 'Rubble Kings'},
+ {'runtime': 71, 'title': 'Dad'},
+ {'metacritic': 63, 'title': 'A Cat in Paris', 'runtime': 70},
+ {'runtime': 70, 'title': 'Salla: Selling the Silence'},
+ {'runtime': 68, 'title': 'Spark of Being'},
+ {'runtime': 67, 'title': 'Fry and Laurie Reunited'},
+ {'runtime': 63, 'title': 'Rammbock'},
+ {'runtime': 60, 'title': 'A Letter to Elia'},
+ {'runtime': 60, 'title': 'Food Stamped'},
+ {'runtime': 60, 'title': 'A Letter to Elia'},
+ {'runtime': 60, 'title': 'The Pillars of the Earth'},
+ {'runtime': 59, 'title': 'Erasing David'},
+ {'runtime': 58, 'title': 'The Painting Sellers'},
+ {'runtime': 52, 'title': 'Ayahuasca: Vine of the Soul'},
+ {'runtime': 52, 'title': 'The Pacific'},
+ {'runtime': 51, 'title': 'Sharunas Bartas: An Army of One'},
+ {'runtime': 50, 'title': 'Tom and Jerry Meet Sherlock Holmes'},
+ {'runtime': 46, 'title': 'The Dark Side of Chocolate'},
+ {'runtime': 45, 'title': 'Great Migrations'},
+ {'runtime': 45, 'title': 'Great Migrations'},
+ {'runtime': 45, 'title': 'Dive!'},
+ {'runtime': 40, 'metacritic': 79, 'title': 'Hubble 3D'},
+ {'runtime': 29, 'title': 'Kinbaku'},
+ {'runtime': 26, 'title': 'Scared Shrekless'},
+ {'runtime': 25, 'title': 'Successful Alcoholics'},
+ {'runtime': 24,
+  'title': 'Higglety Pigglety Pop! or There Must Be More to Life'},
+ {'runtime': 22, 'title': 'Cat Shit One'},
+ {'runtime': 21, 'title': 'Kung Fu Panda Holiday'},
+ {'runtime': 18, 'title': 'God of Love'},
+ {'runtime': 17, 'title': "I Don't Want to Go Back Alone"},
+ {'runtime': 15, 'title': 'Brutal Relax'},
+ {'runtime': 15, 'title': 'Into the Middle of Nowhere'},
+ {'runtime': 15, 'title': 'The Lost Thing'},
+ {'runtime': 14, 'title': 'The Piano Tuner'},
+ {'runtime': 14, 'title': 'Sintel'},
+ {'runtime': 13, 'title': 'DC Showcase: Jonah Hex'},
+ {'runtime': 13, 'title': 'Les bessones del carrer de Ponent'},
+ {'runtime': 11, 'title': 'Casus belli'},
+ {'runtime': 11, 'title': 'Majoritè opprimèe'},
+ {'runtime': 10, 'title': 'Paths of Hate'},
+ {'runtime': 9, 'title': '8'},
+ {'runtime': 7, 'title': 'Millhaven'},
+ {'runtime': 6, 'title': 'Day &amp; Night'},
+ {'runtime': 6, 'title': 'Tick Tock Tale'},
+ {'runtime': 5, 'title': 'Dock Ellis &amp; The LSD No-No'},
+ {'runtime': 2, 'title': 'Pixels'},
+ {'metacritic': 76,
+  'title': "Ain't in It for My Health: A Film About Levon Helm"},
+ {'title': 'Vedam'},
+ {'title': 'A Heartland Christmas'},
+ {'title': 'When Love Is Not Enough: The Lois Wilson Story'},
+ {'title': 'Harriet the Spy: Blog Wars'},
+ {'title': 'Lincz'},
+ {'title': 'LSD: Love, Sex Aur Dhokha'},
+ {'title': '10 Mountains 10 Years'},
+ {'title': 'Leader'},
+ {'title': 'Avalon High'},
+ {'title': 'No Tomorrow'},
+ {'title': "King's Road"},
+ {'title': 'Win/Win'},
+ {'title': 'The Sinking of the Laconia'},
+ {'title': 'Hèroes'},
+ {'title': 'Golmaal 3'},
+ {'title': 'Darling'},
+ {'title': 'Wartorn: 1861-2010'},
+ {'title': 'Dear Guest, When Will You Leave?'},
+ {'title': 'Between Two Fires'},
+ {'title': 'No Problem'},
+ {'title': 'Pyaar Impossible!'},
+ {'title': 'Frits en Freddy'},
+ {'title': 'The Scientist'},
+ {'title': 'Turn the Beat Around'},
+ {'title': 'Eva'},
+ {'title': 'Aung San Suu Kyi'},
+ {'title': 'Hong Kong Confidential'},
+ {'title': 'Railways'},
+ {'title': 'Another Harvest Moon'},
+ {'title': 'Do Dooni Chaar'},
+ {'title': 'The Last Rites of Ransom Pride'},
+ {'title': 'Khichdi: The Movie'}]</code></pre>
+</div>
+</div>
+</section>
+<section id="section-7" class="level3">
+<h3 class="anchored" data-anchor-id="section-7">2.5</h3>
+<p>rubric={accuracy:2}</p>
+<p>For year 2015, return the number of movies with a metacritic rating of exactly 90.</p>
+<div id="2d82e92b" class="cell">
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>movies <span class="op">=</span> client[<span class="st">"sample_mflix"</span>][<span class="st">"movies"</span>]</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>movies.count_documents(</span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>    <span class="bu">filter</span><span class="op">=</span>{<span class="st">'metacritic'</span>:<span class="dv">90</span>}</span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<pre><code>40</code></pre>
+</div>
+</div>
+</section>
+<section id="section-8" class="level3">
+<h3 class="anchored" data-anchor-id="section-8">2.6</h3>
+<p>rubric={accuracy:2}</p>
+<p>Retrieve the title and runtime of the 10 shortest movies in the <code>movies</code> collection.</p>
+<p>For this exercise, you need to make sure that the field <code>runtime</code> exists in the returned documents, otherwise by default those documents would appear first which don’t have a <code>runtime</code> field at all!</p>
+<blockquote class="blockquote">
+<p><strong>Hint:</strong> You need the <code>$exists</code> operator (see <a href="https://docs.mongodb.com/manual/reference/operator/query/exists/">here</a> for help).</p>
+</blockquote>
+<div id="7409f758" class="cell">
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="bu">list</span>(movies.find(</span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>    <span class="bu">filter</span> <span class="op">=</span> {<span class="st">'runtime'</span> :{<span class="st">'$exists'</span>:<span class="dv">1</span>}},</span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>    sort <span class="op">=</span> [(<span class="st">'runtime'</span>, <span class="dv">1</span>)],</span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>    projection <span class="op">=</span> {<span class="st">'_id'</span>:<span class="dv">0</span>, <span class="st">'title'</span>:<span class="dv">1</span>, <span class="st">'runtime'</span>:<span class="dv">1</span>},</span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>    limit <span class="op">=</span> <span class="dv">10</span></span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<pre><code>[{'runtime': 1, 'title': 'Neko no shukai'},
+ {'runtime': 1, 'title': 'The Kiss'},
+ {'runtime': 1, 'title': 'The Kiss'},
+ {'runtime': 2, 'title': 'Fresh Guacamole'},
+ {'runtime': 2, 'title': 'Pixels'},
+ {'runtime': 2, 'title': 'Game Over'},
+ {'runtime': 2, 'title': 'Andrè and Wally B.'},
+ {'runtime': 2, 'title': 'Luxo Jr.'},
+ {'runtime': 3, 'title': 'Sisyphus'},
+ {'runtime': 3, 'title': 'Gagarin'}]</code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="exercise-3-conditionals-embedded-documents-arrays" class="level2">
+<h2 class="anchored" data-anchor-id="exercise-3-conditionals-embedded-documents-arrays">## Exercise 3: Conditionals, embedded documents &amp; arrays</h2>
+<section id="section-9" class="level3">
+<h3 class="anchored" data-anchor-id="section-9">3.1</h3>
+<p>rubric={accuracy:2}</p>
+<p>Retrieve the title, production year, and number of awards of all movies that</p>
+<ul>
+<li>have been produced between 1950 and 2000 (inclusive)</li>
+<li>have an IMDB rating of 8.5 or better</li>
+<li>won at least 30 awards.</li>
+</ul>
+<p>Sort the results by production year in descending order.</p>
+<div id="869c1eba" class="cell">
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="bu">list</span>(</span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>    movies.find(</span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>        <span class="bu">filter</span> <span class="op">=</span> {<span class="st">'year'</span>: {<span class="st">"$gte"</span>: <span class="dv">1905</span>, <span class="st">"$lte"</span>: <span class="dv">2000</span>},</span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>                  <span class="st">'awards.wins'</span>: {<span class="st">'$gte'</span>: <span class="dv">30</span>},</span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>                  <span class="st">'imdb.rating'</span>: {<span class="st">'$gte'</span>: <span class="fl">8.5</span>},</span>
+<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a>                  },</span>
+<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a>        projection <span class="op">=</span> {<span class="st">'_id'</span>:<span class="dv">0</span>, <span class="st">'title'</span>:<span class="dv">1</span>, <span class="st">'year'</span>:<span class="dv">1</span>, <span class="st">'awards.wins'</span>: <span class="dv">1</span>},</span>
+<span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a>        sort <span class="op">=</span> {<span class="st">'year'</span>:<span class="op">-</span><span class="dv">1</span>}</span>
+<span id="cb21-9"><a href="#cb21-9" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb21-10"><a href="#cb21-10" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<pre><code>[{'year': 2000, 'title': 'Memento', 'awards': {'wins': 54}},
+ {'year': 2000, 'title': 'Gladiator', 'awards': {'wins': 63}},
+ {'year': 1999, 'title': 'The Matrix', 'awards': {'wins': 37}},
+ {'year': 1998, 'title': 'Saving Private Ryan', 'awards': {'wins': 83}},
+ {'title': 'Life Is Beautiful', 'awards': {'wins': 66}, 'year': 1997},
+ {'year': 1997, 'title': 'Life Is Beautiful', 'awards': {'wins': 66}},
+ {'year': 1995, 'title': 'The Usual Suspects', 'awards': {'wins': 36}},
+ {'year': 1995, 'title': 'Se7en', 'awards': {'wins': 32}},
+ {'year': 1994, 'title': 'Pulp Fiction', 'awards': {'wins': 64}},
+ {'year': 1994, 'title': 'Forrest Gump', 'awards': {'wins': 46}},
+ {'title': "Schindler's List", 'awards': {'wins': 81}, 'year': 1993},
+ {'year': 1991, 'title': 'The Silence of the Lambs', 'awards': {'wins': 56}},
+ {'year': 1990, 'title': 'Goodfellas', 'awards': {'wins': 43}},
+ {'year': 1981, 'title': 'Raiders of the Lost Ark', 'awards': {'wins': 32}},
+ {'year': 1977,
+  'title': 'Star Wars: Episode IV - A New Hope',
+  'awards': {'wins': 44}},
+ {'year': 1975,
+  'title': "One Flew Over the Cuckoo's Nest",
+  'awards': {'wins': 36}},
+ {'year': 1972, 'title': 'The Godfather', 'awards': {'wins': 33}}]</code></pre>
+</div>
+</div>
+</section>
+<section id="section-10" class="level3">
+<h3 class="anchored" data-anchor-id="section-10">3.2</h3>
+<p>rubric={accuracy:2}</p>
+<p>Find the top 15 highest-rated movies according to IMDB for movies that have at least 100,000 votes. Your returned documents should only contain the <code>title</code>, <code>year</code>, and <code>imdb.rating</code> fields.</p>
+<blockquote class="blockquote">
+<p><strong>Hint:</strong> Be careful about documents which have a blank space in their <code>imdb.rating</code> field!</p>
+</blockquote>
+<blockquote class="blockquote">
+<p><strong>Note:</strong> It’s ok if your results contain duplicates. Return 15 documents in any case.</p>
+</blockquote>
+<div id="ea6cc243" class="cell">
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="bu">list</span>(</span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>    movies.find(</span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>        <span class="bu">filter</span> <span class="op">=</span> {</span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a>            <span class="st">"imdb.votes"</span>: {<span class="st">"$gte"</span>: <span class="dv">100000</span>, <span class="st">"$exists"</span>: <span class="dv">1</span>}</span>
+<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a>        },</span>
+<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a>        projection <span class="op">=</span> {<span class="st">"_id"</span>:<span class="dv">0</span>, <span class="st">"title"</span>:<span class="dv">1</span>, <span class="st">"year"</span>:<span class="dv">1</span>, <span class="st">"imdb.rating"</span>:<span class="dv">1</span>},</span>
+<span id="cb23-7"><a href="#cb23-7" aria-hidden="true" tabindex="-1"></a>        sort <span class="op">=</span> [(<span class="st">"imdb.rating"</span>, <span class="op">-</span><span class="dv">1</span>)],</span>
+<span id="cb23-8"><a href="#cb23-8" aria-hidden="true" tabindex="-1"></a>        limit<span class="op">=</span><span class="dv">15</span></span>
+<span id="cb23-9"><a href="#cb23-9" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb23-10"><a href="#cb23-10" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<pre><code>[{'title': 'Band of Brothers', 'year': 2001, 'imdb': {'rating': 9.6}},
+ {'imdb': {'rating': 9.3}, 'year': 1994, 'title': 'The Shawshank Redemption'},
+ {'imdb': {'rating': 9.3}, 'year': 1994, 'title': 'The Shawshank Redemption'},
+ {'imdb': {'rating': 9.2}, 'year': 1972, 'title': 'The Godfather'},
+ {'imdb': {'rating': 9.1}, 'year': 1974, 'title': 'The Godfather: Part II'},
+ {'imdb': {'rating': 9.0}, 'year': 2008, 'title': 'The Dark Knight'},
+ {'imdb': {'rating': 8.9}, 'year': 1999, 'title': 'Fight Club'},
+ {'imdb': {'rating': 8.9}, 'year': 1994, 'title': 'Pulp Fiction'},
+ {'imdb': {'rating': 8.9},
+  'year': 2003,
+  'title': 'The Lord of the Rings: The Return of the King'},
+ {'title': "Schindler's List", 'year': 1993, 'imdb': {'rating': 8.9}},
+ {'imdb': {'rating': 8.8},
+  'year': 1980,
+  'title': 'Star Wars: Episode V - The Empire Strikes Back'},
+ {'imdb': {'rating': 8.8},
+  'year': 2001,
+  'title': 'The Lord of the Rings: The Fellowship of the Ring'},
+ {'imdb': {'rating': 8.8}, 'year': 2010, 'title': 'Inception'},
+ {'imdb': {'rating': 8.8}, 'year': 1994, 'title': 'Forrest Gump'},
+ {'imdb': {'rating': 8.7}, 'year': 1990, 'title': 'Goodfellas'}]</code></pre>
+</div>
+</div>
+</section>
+<section id="section-11" class="level3">
+<h3 class="anchored" data-anchor-id="section-11">3.3</h3>
+<p>rubric={accuracy:1}</p>
+<p>Retrieve the title, production year, and IMDB rating of movies in which both <strong>Morgan Freeman</strong> and <strong>Clint Eastwood</strong> played a role (among other actors in those movies). Sort the returned documents by year in descending order.</p>
+<div id="3d1b02c7" class="cell">
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="bu">list</span>(</span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>    movies.find(</span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>        <span class="bu">filter</span> <span class="op">=</span> {<span class="st">"cast"</span>:{<span class="st">"$all"</span>:[<span class="st">"Morgan Freeman"</span>, <span class="st">"Clint Eastwood"</span>]}},</span>
+<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a>        projection <span class="op">=</span> {<span class="st">'_id'</span>:<span class="dv">0</span>, <span class="st">'title'</span>:<span class="dv">1</span>, <span class="st">'year'</span>:<span class="dv">1</span>, <span class="st">'imdb.rating'</span>:<span class="dv">1</span>, <span class="st">"cast"</span>:<span class="dv">1</span>},</span>
+<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a>        sort <span class="op">=</span> {<span class="st">"year"</span>:<span class="op">-</span><span class="dv">1</span>}</span>
+<span id="cb25-6"><a href="#cb25-6" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb25-7"><a href="#cb25-7" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<pre><code>[{'imdb': {'rating': 8.1},
+  'year': 2004,
+  'title': 'Million Dollar Baby',
+  'cast': ['Clint Eastwood',
+   'Hilary Swank',
+   'Morgan Freeman',
+   'Jay Baruchel']},
+ {'imdb': {'rating': 8.3},
+  'year': 1992,
+  'title': 'Unforgiven',
+  'cast': ['Clint Eastwood',
+   'Gene Hackman',
+   'Morgan Freeman',
+   'Richard Harris']}]</code></pre>
+</div>
+</div>
+</section>
+<section id="section-12" class="level3">
+<h3 class="anchored" data-anchor-id="section-12">3.4</h3>
+<p>rubric={accuracy:3}</p>
+<p>Retrieve documents associated with movies which:</p>
+<ul>
+<li>are available in both German and French (among other languages), but not in English,</li>
+<li>are either rated above 8 according to IMDB, or above 7.5 according to the critic ratings of <a href="https://www.rottentomatoes.com/">Rotten Tomatoes</a> (inspect the <code>tomatoes</code> field),</li>
+<li>have at least 50 Rotten Tomatoes critic reviews.</li>
+</ul>
+<p>The returned documents should include the title, year, IMDB rating, Rotten Tomatoes critic rating and country of production fields. Sort the results by IMDB rating in descending order.</p>
+<p><strong>Note:</strong> Duplicates in the results are ok.</p>
+<div id="76177b87" class="cell">
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="bu">list</span>(movies.find(</span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>    <span class="bu">filter</span> <span class="op">=</span> {<span class="st">"languages"</span>: {<span class="st">"$all"</span>:[<span class="st">"German"</span>, <span class="st">"French"</span>], <span class="st">"$nin"</span>: [<span class="st">"English"</span>]},</span>
+<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a>              <span class="st">"$or"</span>: [</span>
+<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a>                  {<span class="st">'imdb.rating'</span>: {<span class="st">"$gt"</span>: <span class="dv">8</span>}},</span>
+<span id="cb27-5"><a href="#cb27-5" aria-hidden="true" tabindex="-1"></a>                  {<span class="st">'tomatoes.critic.rating'</span>: {<span class="st">"$gt"</span>: <span class="fl">7.5</span>}}],</span>
+<span id="cb27-6"><a href="#cb27-6" aria-hidden="true" tabindex="-1"></a>                <span class="st">"tomatoes.critic.numReviews"</span>: {<span class="st">"$gte"</span>: <span class="dv">50</span>}</span>
+<span id="cb27-7"><a href="#cb27-7" aria-hidden="true" tabindex="-1"></a>              },</span>
+<span id="cb27-8"><a href="#cb27-8" aria-hidden="true" tabindex="-1"></a>    projection <span class="op">=</span> {<span class="st">"_id"</span>:<span class="dv">0</span>, <span class="st">"title"</span>:<span class="dv">1</span>, <span class="st">"year"</span>:<span class="dv">1</span>, <span class="st">"imdb.rating"</span>:<span class="dv">1</span>, <span class="st">"tomatoes.critic.rating"</span>: <span class="dv">1</span>, <span class="st">"countries"</span>:<span class="dv">1</span>},</span>
+<span id="cb27-9"><a href="#cb27-9" aria-hidden="true" tabindex="-1"></a>    sort <span class="op">=</span> [(<span class="st">"imdb.rating"</span>, <span class="op">-</span><span class="dv">1</span>)]</span>
+<span id="cb27-10"><a href="#cb27-10" aria-hidden="true" tabindex="-1"></a>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<pre><code>[{'imdb': {'rating': 7.8},
+  'year': 2013,
+  'title': 'The Wind Rises',
+  'tomatoes': {'critic': {'rating': 7.9}},
+  'countries': ['Japan']},
+ {'title': 'The Wind Rises',
+  'year': 2013,
+  'imdb': {'rating': 7.8},
+  'countries': ['Japan'],
+  'tomatoes': {'critic': {'rating': 7.9}}}]</code></pre>
+</div>
+</div>
+</section>
+<section id="section-13" class="level3">
+<h3 class="anchored" data-anchor-id="section-13">3.5</h3>
+<p>rubric={accuracy:2}</p>
+<p>Find the title and production year of the top 20 award-winning movies which have <strong>not</strong> been produced in USA, Canada, UK, or Australia.</p>
+<p><strong>Note:</strong> Duplicates are ok. Return 20 documents in any case.</p>
+<div id="e053d79a" class="cell">
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="bu">list</span>(movies.find(</span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>    <span class="bu">filter</span> <span class="op">=</span> {<span class="st">"countries"</span>: {<span class="st">"$nin"</span>: [<span class="st">"USA"</span>, <span class="st">"Canada"</span>, <span class="st">"UK"</span>, <span class="st">"Australia"</span>]}},</span>
+<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a>    limit<span class="op">=</span><span class="dv">20</span>,</span>
+<span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a>    projection <span class="op">=</span> {<span class="st">"_id"</span>:<span class="dv">0</span>, <span class="st">"title"</span>:<span class="dv">1</span>, <span class="st">"year"</span>:<span class="dv">1</span>},</span>
+<span id="cb29-5"><a href="#cb29-5" aria-hidden="true" tabindex="-1"></a>    sort<span class="op">=</span>[(<span class="st">"awards.wins"</span>, <span class="op">-</span><span class="dv">1</span>)]</span>
+<span id="cb29-6"><a href="#cb29-6" aria-hidden="true" tabindex="-1"></a>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<pre><code>[{'title': 'The Artist', 'year': 2011},
+ {'title': 'Amour', 'year': 2012},
+ {'title': 'Amour', 'year': 2012},
+ {'title': 'A Separation', 'year': 2011},
+ {'year': 2006, 'title': 'The Lives of Others'},
+ {'title': 'Let the Right One In', 'year': 2008},
+ {'year': 2002, 'title': 'City of God'},
+ {'year': 2006, 'title': 'Volver'},
+ {'title': 'Life Is Beautiful', 'year': 1997},
+ {'title': 'The Sea Inside', 'year': 2004},
+ {'year': 1997, 'title': 'Life Is Beautiful'},
+ {'year': 2009, 'title': 'The White Ribbon'},
+ {'year': 2001, 'title': 'Amèlie'},
+ {'year': 2000, 'title': 'Amores Perros'},
+ {'title': 'Shall We Dance?', 'year': 1996},
+ {'title': 'Shall We Dance?', 'year': 1996},
+ {'year': 2013, 'title': 'The Grandmaster'},
+ {'year': 1999, 'title': 'All About My Mother'},
+ {'year': 2001, 'title': 'Spirited Away'},
+ {'year': 2009, 'title': 'The Secret in Their Eyes'}]</code></pre>
+</div>
+</div>
+
+
+</section>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+        const codeEl = trigger.previousElementSibling.cloneNode(true);
+        for (const childEl of codeEl.children) {
+          if (isCodeAnnotation(childEl)) {
+            childEl.remove();
+          }
+        }
+        return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>
