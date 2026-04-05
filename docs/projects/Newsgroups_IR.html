@@ -1,0 +1,994 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.7.33">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>Information Retrieval: Newsgroups</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-ea385d0e468b0dd5ea5bf0780b1290d9.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-4d96db332f33ef296d8e0919d4f30bf1.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+<link rel="stylesheet" href="../styles.css">
+</head>
+
+<body class="nav-fixed fullcontent quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../index.html"> 
+<span class="menu-text">Home</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../projects.html"> 
+<span class="menu-text">Projects</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../SaumiRahnamay_cv.pdf"> <i class="bi bi-file-pdf" role="img">
+</i> 
+<span class="menu-text">CV</span></a>
+  </li>  
+</ul>
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://www.linkedin.com/in/saumi-rahnamay/"> <i class="bi bi-linkedin" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Information Retrieval: Newsgroups</h1>
+  <div class="quarto-categories">
+    <div class="quarto-category">Python</div>
+    <div class="quarto-category">IR</div>
+  </div>
+  </div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p><img src="IR.jpg" width="600"></p>
+<p>Information Retrieval methods performed on the classic <a href="https://scikit-learn.org/0.19/datasets/twenty_newsgroups.html">20 newsgroups text dataset</a>. Originally completed for DSCI 563 at UBC.</p>
+<p>Methods: - Whoosh index - Boolean IR - Okapi BM25</p>
+<div id="f6b184f9" class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> math <span class="im">import</span> log</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> scipy.spatial.distance <span class="im">import</span> pdist,squareform</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> collections <span class="im">import</span> defaultdict,Counter</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.datasets <span class="im">import</span> fetch_20newsgroups</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> nltk.stem <span class="im">import</span> PorterStemmer</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> nltk <span class="im">import</span> word_tokenize</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> nltk.corpus <span class="im">import</span> stopwords</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.feature_extraction <span class="im">import</span> DictVectorizer</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> whoosh.qparser <span class="im">import</span> <span class="op">*</span></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> whoosh.fields <span class="im">import</span> Schema, TEXT, KEYWORD, NUMERIC</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> whoosh.analysis <span class="im">import</span> RegexTokenizer, LowercaseFilter, StopFilter, StemFilter</span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> whoosh <span class="im">import</span> index </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<section id="exercise-1-whoosh-index" class="level3">
+<h3 class="anchored" data-anchor-id="exercise-1-whoosh-index">Exercise 1: Whoosh index</h3>
+<p>In this lab, we will be using a classic IR corpus, the “20 newsgroups” dataset which consists of over 11k posts from 20 newsgroups, <a href="https://scikit-learn.org/0.19/datasets/twenty_newsgroups.html">accessible through sklearn</a>. The provided code below extracts the information from the original plaintext format into a list of dictionaries <code>newsgroup_info_dicts</code>, where the dictionary for each post includes not just the <code>Text</code> body, but also the <code>Newsgroup</code>, the original poster (<code>From</code>), their organization (<code>Organization</code>) and the <code>Subject</code> of the post. Before moving on to the later parts of the lab, take a look at what the post looks like - you’ll be indexing specific information in the post, so it is important that you understand how the data looks.</p>
+<div id="1710f54d" class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> get_post_info_dict(full_text):</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">'''given a newsgroup post in typical format, extracts the header as a </span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="co">    dict, including the body of the text in the "text" field'''</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>    info_dict <span class="op">=</span> {}</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>    header_boundary <span class="op">=</span> full_text.find(<span class="st">"</span><span class="ch">\n\n</span><span class="st">"</span>)  <span class="co">### Header is separated by 2 newlines</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> line <span class="kw">in</span> full_text[:header_boundary].split(<span class="st">"</span><span class="ch">\n</span><span class="st">"</span>): <span class="co">### Split the header by lines</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>        first_colon <span class="op">=</span> line.find(<span class="st">": "</span>) <span class="co">### Everything before the colon is a topic (ie, author, subject, etc.); everything after is more information</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>        info_dict[line[:first_colon]] <span class="op">=</span> line[first_colon <span class="op">+</span><span class="dv">2</span>:]</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>    info_dict[<span class="st">"Text"</span>] <span class="op">=</span> full_text[header_boundary <span class="op">+</span> <span class="dv">2</span>:].strip()</span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> info_dict</span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>newsgroups <span class="op">=</span> fetch_20newsgroups(remove<span class="op">=</span>(<span class="st">'footers'</span>, <span class="st">'quotes'</span>))</span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>newsgroup_info_dicts <span class="op">=</span> []</span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"LENGTH: "</span>, <span class="bu">len</span>(newsgroups.data))</span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="bu">len</span>(newsgroups.data)):</span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>    info_dict <span class="op">=</span>  get_post_info_dict(newsgroups.data[i])</span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>    info_dict[<span class="st">"Newsgroup"</span>] <span class="op">=</span> newsgroups.target_names[newsgroups.target[i]]</span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="dv">20</span> <span class="op">&lt;</span> <span class="bu">len</span>(info_dict[<span class="st">"Text"</span>]) <span class="op">&lt;</span> <span class="dv">50000</span>: <span class="co"># get rid of very big or very small texts</span></span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a>        newsgroup_info_dicts.append(info_dict)</span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a>newsgroup_info_dicts[<span class="dv">0</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>LENGTH:  11314</code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<pre><code>{'From': "lerxst@wam.umd.edu (where's my thing)",
+ 'Subject': 'WHAT car is this!?',
+ 'Nntp-Posting-Host': 'rac3.wam.umd.edu',
+ 'Organization': 'University of Maryland, College Park',
+ 'Lines': '15',
+ 'Text': 'I was wondering if anyone out there could enlighten me on this car I saw\nthe other day. It was a 2-door sports car, looked to be from the late 60s/\nearly 70s. It was called a Bricklin. The doors were really small. In addition,\nthe front bumper was separate from the rest of the body. This is \nall I know. If anyone can tellme a model name, engine specs, years\nof production, where this car is made, history, or whatever info you\nhave on this funky looking car, please e-mail.',
+ 'Newsgroup': 'rec.autos'}</code></pre>
+</div>
+</div>
+<section id="exercise-1.1" class="level4">
+<h4 class="anchored" data-anchor-id="exercise-1.1">Exercise 1.1</h4>
+<p>rubric={accuracy:2}</p>
+<p>First, you’re going to define two different analyzers:</p>
+<ol type="1">
+<li>An analyzer for the text and subject fields which tokenizes, lowercases, removes stopwords, and stems, in that order (if you put the stemmer first, it will block some stopword removal! Think a bit about why this happens.).</li>
+<li>An analyzer for the newsgroup fields which tokenizes on “.”. This will tokenize newsgroups such as “comp.os.ms-windows.misc” into “comp”, “os”, “ms-windows”, “misc”. No filters needed for this analyzer. Hint: The regex tokenizer is looking for a pattern to match in each of its words - not the pattern to split on. How will you write a regex that captures everything <em>except</em> the period?</li>
+</ol>
+<p>You will then create a schema that contains the analyzers for the text, subject, author, and organization fields.</p>
+<p>You will not be tokenizing the author or organization fields, so you can use the KEYWORD analyzer (This is very similar to how we stored the “genre” type in class - by specifying KEYWORD, you’re telling the index not to do any special parsing).</p>
+<p>I recommend that you create a QueryParser for the text, group, author, and organization, and test that they are parsing correctly.</p>
+<p>“We are testing the parser” in the text should return (text:test AND text:parser), while “comp.os.ms-windows.misc” in the group should return (group:comp AND group:os AND group:ms-windows AND group:misc). The author and organization should only split by word.</p>
+<p>If you’re curious, test queries that have “OR”, and “NOT”, as well.</p>
+<div id="3a9e528e" class="cell">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>text_analyzer <span class="op">=</span> RegexTokenizer() <span class="op">|</span> LowercaseFilter() <span class="op">|</span> StopFilter() <span class="op">|</span> StemFilter()</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>newsgroup_analyzer <span class="op">=</span> RegexTokenizer(expression<span class="op">=</span><span class="st">"</span><span class="er">\</span><span class="st">."</span>, gaps<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>text_schema <span class="op">=</span> Schema(Text<span class="op">=</span>TEXT(analyzer<span class="op">=</span>text_analyzer, stored<span class="op">=</span><span class="va">True</span>), </span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>                    Subject<span class="op">=</span>TEXT(analyzer<span class="op">=</span>text_analyzer, stored<span class="op">=</span><span class="va">True</span>),</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>                    Newsgroup<span class="op">=</span>TEXT(analyzer<span class="op">=</span>newsgroup_analyzer, stored<span class="op">=</span><span class="va">True</span>),</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>                    From<span class="op">=</span>KEYWORD(stored<span class="op">=</span><span class="va">True</span>),</span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>                    Organization<span class="op">=</span>KEYWORD(stored<span class="op">=</span><span class="va">True</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>&lt;&gt;:2: SyntaxWarning: invalid escape sequence '\.'
+&lt;&gt;:2: SyntaxWarning: invalid escape sequence '\.'
+/tmp/ipykernel_899515/507795809.py:2: SyntaxWarning: invalid escape sequence '\.'
+  newsgroup_analyzer = RegexTokenizer(expression="\.", gaps=True)</code></pre>
+</div>
+</div>
+<div id="4990754b" class="cell">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>TextParser <span class="op">=</span> QueryParser(<span class="st">"Text"</span>, text_schema)</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(TextParser.parse(newsgroup_info_dicts[<span class="dv">0</span>][<span class="st">"Text"</span>]))</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>AuthorParser <span class="op">=</span> QueryParser(<span class="st">"Author"</span>, text_schema)</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(AuthorParser.parse(newsgroup_info_dicts[<span class="dv">0</span>][<span class="st">"From"</span>]))</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>OrganizationParser <span class="op">=</span> QueryParser(<span class="st">"Organization"</span>, text_schema)</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(OrganizationParser.parse(newsgroup_info_dicts[<span class="dv">0</span>][<span class="st">"Organization"</span>]))</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>GroupParser <span class="op">=</span> QueryParser(<span class="st">"Newsgroup"</span>, text_schema)</span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(GroupParser.parse(newsgroup_info_dicts[<span class="dv">0</span>][<span class="st">"Newsgroup"</span>]))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>(Text:wa AND Text:wonder AND Text:anyone AND Text:out AND Text:there AND Text:could AND Text:enlighten AND Text:me AND Text:car AND Text:saw AND Text:other AND Text:dai AND Text:door AND Text:sport AND Text:look AND Text:late AND Text:60 AND Text:earli AND Text:70 AND Text:call AND Text:bricklin AND Text:were AND Text:realli AND Text:small AND Text:addit AND Text:front AND Text:bumper AND Text:separ AND Text:rest AND Text:bodi AND Text:all AND Text:know AND Text:tellm AND Text:model AND Text:name AND Text:engin AND Text:spec AND Text:year AND Text:product AND Text:where AND Text:made AND Text:histori AND Text:whatev AND Text:info AND Text:funki AND Text:pleas AND Text:mail)
+(Author:lerxst@wam.umd.edu AND Author:where's AND Author:my AND Author:thing)
+(Organization:University AND Organization:of AND Organization:Maryland, AND Organization:College AND Organization:Park)
+(Newsgroup:rec AND Newsgroup:autos)</code></pre>
+</div>
+</div>
+</section>
+<section id="exercise-1.2" class="level4">
+<h4 class="anchored" data-anchor-id="exercise-1.2">Exercise 1.2</h4>
+<p>rubric={accuracy:2}</p>
+<p>Now, create the index for your posts and iterate over the <code>newsgroup_info_dicts</code> to add each post to your index. You should give each of the posts an<code>id</code> equal to its index in <code>newsgroup_info_dicts</code>. The index creates an index in the specified directory. Make sure to call writer.commit() after adding the documents to the index! If you don’t, and you lock the index, you can usually reset things by restartng your kernel. Keep in mind that every time you call create_in, it will overwrite your old index. The newsgroup_info_dicts from the last part has ~11K entries, so you might want to create a status-tracker.</p>
+<div id="7245fad8" class="cell">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> os.path</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> whoosh.index <span class="im">import</span> create_in</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>text_schema <span class="op">=</span> Schema(Text<span class="op">=</span>TEXT(analyzer<span class="op">=</span>text_analyzer, stored<span class="op">=</span><span class="va">True</span>), </span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>                    Subject<span class="op">=</span>TEXT(analyzer<span class="op">=</span>text_analyzer, stored<span class="op">=</span><span class="va">True</span>),</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>                    Newsgroup<span class="op">=</span>TEXT(analyzer<span class="op">=</span>newsgroup_analyzer, stored<span class="op">=</span><span class="va">True</span>),</span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>                    From<span class="op">=</span>KEYWORD(stored<span class="op">=</span><span class="va">True</span>),</span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>                    Organization<span class="op">=</span>KEYWORD(stored<span class="op">=</span><span class="va">True</span>),</span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>                    <span class="bu">id</span><span class="op">=</span>NUMERIC(stored<span class="op">=</span><span class="va">True</span>))</span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="kw">not</span> os.path.exists(<span class="st">"index"</span>):</span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>    os.mkdir(<span class="st">"index"</span>)</span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>ix <span class="op">=</span> create_in(<span class="st">"index"</span>, text_schema)</span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a>writer <span class="op">=</span> ix.writer()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div id="42b3c9aa" class="cell">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>newsgroup_info_dicts[<span class="dv">3</span>][<span class="st">"Organization"</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<pre><code>'Harris Computer Systems Division'</code></pre>
+</div>
+</div>
+<div id="d1ac3f08" class="cell">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="bu">len</span>(newsgroup_info_dicts)):</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>    writer.add_document(</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>        <span class="bu">id</span><span class="op">=</span>i,</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>        From<span class="op">=</span>newsgroup_info_dicts[i].get(<span class="st">"From"</span>, <span class="st">""</span>),</span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>        Subject<span class="op">=</span>newsgroup_info_dicts[i].get(<span class="st">"Subject"</span>, <span class="st">""</span>),</span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>        Organization<span class="op">=</span>newsgroup_info_dicts[i].get(<span class="st">"Organization"</span>, <span class="st">""</span>),</span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>        Text<span class="op">=</span>newsgroup_info_dicts[i].get(<span class="st">"Text"</span>, <span class="st">""</span>),</span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>        Newsgroup<span class="op">=</span>newsgroup_info_dicts[i].get(<span class="st">"Newsgroup"</span>, <span class="st">""</span>),</span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a>writer.commit()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="exercise-1.3" class="level4">
+<h4 class="anchored" data-anchor-id="exercise-1.3">Exercise 1.3</h4>
+<p>rubric={accuracy:1}</p>
+<p>Test your index by printing out all the authors of posts in one of the “comp” newsgroups (there are more than one) whose subject contains the word <em>floppy</em>. There should be 10 of them, and one of them is named <em>Stig</em>.</p>
+<div id="265bcbea" class="cell">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>query<span class="op">=</span>QueryParser(<span class="st">""</span>,schema<span class="op">=</span>text_schema).parse(<span class="st">"Newsgroup:comp* AND Subject:floppy"</span>)</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> ix.searcher() <span class="im">as</span> searcher:</span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>    results<span class="op">=</span>searcher.search(query, limit<span class="op">=</span><span class="va">None</span>) <span class="co">#The Results object acts like a list of the matched documents.</span></span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span> (results)</span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> i <span class="kw">in</span> results:</span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(i[<span class="st">"From"</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>&lt;Top 10 Results for And([Prefix('Newsgroup', 'comp'), Term('Subject', 'floppi')]) runtime=0.0015020550054032356&gt;
+limagen@hpwala.wal.hp.com
+jdresser@altair.tymnet.com (Jay Dresser)
+towwang@statler.engin.umich.edu (Tow Wang Hui)
+venaas@flipper.pvv.unit.no (Stig Venaas)
+balog@eniac.seas.upenn.edu (Eric J Balog)
+tcking@uswnvg.com (Tim King)
+jtrascap@nyx.cs.du.edu (Jim Trascapoulos)
+bagels@gotham.East.Sun.COM (Alex Beigelman - NYC SE)
+flyboy@spf.trw.com (Jeff Wright)
+cctr132@csc.canterbury.ac.nz (Nick FitzGerald, PC Software Consultant, CSC, UoC, NZ)</code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="exercise-2-boolean-ir" class="level3">
+<h3 class="anchored" data-anchor-id="exercise-2-boolean-ir">Exercise 2: Boolean IR</h3>
+<p>In this exercise, you will create your own boolean IR system and make sure it works the same way (or at least similarly) as Whoosh.</p>
+<section id="section" class="level4">
+<h4 class="anchored" data-anchor-id="section">2.1</h4>
+<p>rubric={accuracy:2}</p>
+<p>First, create an inverted index for the 20 newsgroup corpus using a Python (default)dict. As you did above, use the index in newsgroup_info_dicts. In order to make the preprocessing consistent with Whoosh, you will need to use the analyzer you created in 1.1.</p>
+<div id="a1dfd47e" class="cell">
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>newsgroup_info_dicts[<span class="dv">0</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<pre><code>{'From': "lerxst@wam.umd.edu (where's my thing)",
+ 'Subject': 'WHAT car is this!?',
+ 'Nntp-Posting-Host': 'rac3.wam.umd.edu',
+ 'Organization': 'University of Maryland, College Park',
+ 'Lines': '15',
+ 'Text': 'I was wondering if anyone out there could enlighten me on this car I saw\nthe other day. It was a 2-door sports car, looked to be from the late 60s/\nearly 70s. It was called a Bricklin. The doors were really small. In addition,\nthe front bumper was separate from the rest of the body. This is \nall I know. If anyone can tellme a model name, engine specs, years\nof production, where this car is made, history, or whatever info you\nhave on this funky looking car, please e-mail.',
+ 'Newsgroup': 'rec.autos'}</code></pre>
+</div>
+</div>
+<div id="3f18e426" class="cell">
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>inverted_index <span class="op">=</span> defaultdict(<span class="bu">set</span>)</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i, post <span class="kw">in</span> <span class="bu">enumerate</span>(newsgroup_info_dicts):</span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>    text_tokens <span class="op">=</span> [t.text <span class="cf">for</span> t <span class="kw">in</span> text_analyzer(post[<span class="st">"Text"</span>])]</span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>    tokens <span class="op">=</span> text_tokens</span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> t <span class="kw">in</span> tokens:</span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>        inverted_index[t].add(i)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div id="cf436827" class="cell">
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> <span class="st">"the"</span> <span class="kw">not</span> <span class="kw">in</span> inverted_index</span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> <span class="bu">len</span>(inverted_index[<span class="st">"dog"</span>]) <span class="op">==</span> <span class="dv">70</span></span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> <span class="dv">94</span> <span class="kw">in</span> inverted_index[<span class="st">"dog"</span>]</span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Success!"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Success!</code></pre>
+</div>
+</div>
+</section>
+<section id="section-1" class="level4">
+<h4 class="anchored" data-anchor-id="section-1">2.2</h4>
+<p>rubric={accuracy:3,efficiency:1}</p>
+<p>Now you’re going to create a boolean IR engine. You should complete the recursive <code>get_docs</code> function which takes your inverted index and a search “expression” and returns a set of all document ids which satisfy the expression. An expression is either a string (a single word), or a 2-tuple where the first element is a boolean operator (“or”,“and”,or “not”) and the second is either another tuple of expressions (if the operator is “or” or “and”) or a single expression if the operator is “not” (HINT: for “not”, a set consisting of all the document ids will be useful, and is provided below). For example, the following call to get_docs:</p>
+<p><code>get_docs(inverted_index,("and",("hit",("not", ("or", ("base","ball", "run")))))))</code></p>
+<p>Means that you want documents that contain the word <em>hit</em> and not any of the words <em>base</em>, <em>ball</em>, or <em>run</em>.</p>
+<p>The base case which gets the relevant documents for a single word using your inverted index is provided for you. You’ll want to use set operators extensively here.</p>
+<p>Recursion can be difficult to get your head around. Try a test case for each logical operation - what happens when you have an “and”? What about an “or”? What about “not”?</p>
+<div id="e1352e17" class="cell">
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>all_docs <span class="op">=</span> <span class="bu">set</span>(<span class="bu">range</span>(<span class="bu">len</span>(newsgroup_info_dicts)))</span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> get_docs(inverted_index,expression):</span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>    <span class="co">'''given an inverted index which provides a mapping from words to documents in a collection, evaluates expression according</span></span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a><span class="co">    to boolean logic and returns a list of documents for which the expression holds</span></span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a><span class="co">    '''</span></span>
+<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="bu">isinstance</span>(expression, <span class="bu">str</span>):</span>
+<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> inverted_index.get(expression, <span class="bu">set</span>())</span>
+<span id="cb20-9"><a href="#cb20-9" aria-hidden="true" tabindex="-1"></a>    <span class="cf">else</span>:</span>
+<span id="cb20-10"><a href="#cb20-10" aria-hidden="true" tabindex="-1"></a>        operator_type,operands <span class="op">=</span> expression</span>
+<span id="cb20-11"><a href="#cb20-11" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> operator_type <span class="op">==</span> <span class="st">"not"</span>:</span>
+<span id="cb20-12"><a href="#cb20-12" aria-hidden="true" tabindex="-1"></a>            <span class="cf">return</span> all_docs.difference(get_docs(inverted_index, operands))</span>
+<span id="cb20-13"><a href="#cb20-13" aria-hidden="true" tabindex="-1"></a>            </span>
+<span id="cb20-14"><a href="#cb20-14" aria-hidden="true" tabindex="-1"></a>        <span class="cf">elif</span> operator_type <span class="op">==</span> <span class="st">"and"</span>:</span>
+<span id="cb20-15"><a href="#cb20-15" aria-hidden="true" tabindex="-1"></a>            child_sets <span class="op">=</span> [get_docs(inverted_index, op) <span class="cf">for</span> op <span class="kw">in</span> operands]</span>
+<span id="cb20-16"><a href="#cb20-16" aria-hidden="true" tabindex="-1"></a>            <span class="cf">return</span> <span class="bu">set</span>.intersection(<span class="op">*</span>child_sets)</span>
+<span id="cb20-17"><a href="#cb20-17" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb20-18"><a href="#cb20-18" aria-hidden="true" tabindex="-1"></a>        <span class="cf">elif</span> operator_type <span class="op">==</span> <span class="st">"or"</span>:</span>
+<span id="cb20-19"><a href="#cb20-19" aria-hidden="true" tabindex="-1"></a>            child_sets <span class="op">=</span> [get_docs(inverted_index, op) <span class="cf">for</span> op <span class="kw">in</span> operands]</span>
+<span id="cb20-20"><a href="#cb20-20" aria-hidden="true" tabindex="-1"></a>            <span class="cf">return</span> <span class="bu">set</span>.union(<span class="op">*</span>child_sets)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="section-2" class="level4">
+<h4 class="anchored" data-anchor-id="section-2">2.3</h4>
+<p>rubric={accuracy:1,quality:1}</p>
+<p>Here, you will create tests which assert that the output of your boolean IR system is the same as Whoosh. You should have at least three tests:</p>
+<ol type="1">
+<li>Documents that contain the word <em>hit</em></li>
+<li>Documents that contain the words <em>hit</em>, <em>home</em>, and <em>run</em></li>
+<li>Documents that contain the word <em>hit</em> and not any of the words <em>base</em>, <em>ball</em>, or <em>run</em>.</li>
+</ol>
+<p>You should write a function that takes a Whoosh search and returns a set of document ids, the same output as <code>get_docs</code> (so it is easy to compare). Remember that you’ll need to increase the default number of returned hits for Whoosh.</p>
+<div id="5c1e1782" class="cell">
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> whoosh_docs(query):</span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>    query<span class="op">=</span>QueryParser(<span class="st">" "</span>,schema<span class="op">=</span>text_schema).parse(query)</span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">with</span> ix.searcher() <span class="im">as</span> searcher:</span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>        results<span class="op">=</span>searcher.search(query, limit<span class="op">=</span><span class="va">None</span>)<span class="co">#The Results object acts like a list of the matched documents.</span></span>
+<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> {r[<span class="st">"id"</span>] <span class="cf">for</span> r <span class="kw">in</span> results}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div id="533b0ca4" class="cell">
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>wquery1 <span class="op">=</span> <span class="st">"Text:hit"</span></span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>wquery2 <span class="op">=</span> <span class="st">"Text:hit AND Text:home AND Text:run"</span></span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>wquery3 <span class="op">=</span> <span class="st">"Text:hit AND NOT (Text:base OR Text:ball OR Text:run)"</span></span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>bquery1 <span class="op">=</span> <span class="st">"hit"</span></span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a>bquery2 <span class="op">=</span> (<span class="st">"and"</span>, (<span class="st">"hit"</span>, <span class="st">"home"</span>, <span class="st">"run"</span>))</span>
+<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a>bquery3 <span class="op">=</span> (<span class="st">"and"</span>, (<span class="st">"hit"</span>, (<span class="st">"not"</span>, (<span class="st">"or"</span>, (<span class="st">"base"</span>, <span class="st">"ball"</span>, <span class="st">"run"</span>)))))</span>
+<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-8"><a href="#cb22-8" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> whoosh_docs(wquery1) <span class="op">==</span> get_docs(inverted_index, bquery1)</span>
+<span id="cb22-9"><a href="#cb22-9" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> whoosh_docs(wquery2) <span class="op">==</span> get_docs(inverted_index, bquery2)</span>
+<span id="cb22-10"><a href="#cb22-10" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> whoosh_docs(wquery3) <span class="op">==</span> get_docs(inverted_index, bquery3)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+</section>
+<section id="exercise-3-document-relevance-with-okapi-bm25" class="level3">
+<h3 class="anchored" data-anchor-id="exercise-3-document-relevance-with-okapi-bm25">Exercise 3: Document relevance with Okapi BM25</h3>
+<p>In this exercise, you are again going to mimic the output of Whoosh by implementing <a href="https://en.wikipedia.org/wiki/Okapi_BM25">Okapi BM25 document relevance</a>, which is a special version of tf-idf that we will discuss in class (not the same used in sklearn!), as well as a simplified version of the vector-space model.</p>
+<section id="section-3" class="level4">
+<h4 class="anchored" data-anchor-id="section-3">3.1</h4>
+<p>rubric={accuracy:2,quality:1}</p>
+<p>First you are going to calculate the <em>idf</em> part of the equation, as well as the average length of the texts (after preprocessing) which will be used in 3.2. First iterate over the corpus (<code>newsgroup_info_dicts</code>) and, after again using <code>simulate</code> for the Elasticsearch text analyzer, calculate an initial document frequency for each term, as well as the average length. Then, iterate over your df dict and create an corresponding idf dict. For Okapi BM25, idf is calculated as follows:</p>
+<p><span class="math display">\[\text{IDF}(q_i) = \ln (\frac{N - n(q_i) + 0.5}{n(q_i) + 0.5}+1)\]</span></p>
+<p>where <span class="math inline">\(q_i\)</span> is the term (word type), <span class="math inline">\(n(q_i)\)</span> its document frequency (ie, how many documents it appears in), and <span class="math inline">\(N\)</span> the total number of documents. For quality, it’s a good idea to have a function which calculates this idf.</p>
+<div id="b0877919" class="cell">
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> calculate_idf(n, N):</span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">'''calculates Okapi BM25 idf based on the df n and the total number of</span></span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a><span class="co">    documents N'''</span></span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> log((<span class="dv">1</span> <span class="op">+</span> (N <span class="op">-</span> n <span class="op">+</span> <span class="fl">0.5</span>)<span class="op">/</span>(n<span class="op">+</span><span class="fl">0.5</span>)))</span>
+<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(calculate_idf(<span class="dv">2</span>, <span class="dv">2</span>))  <span class="co">### Should be 0.1823215567939546</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>0.1823215567939546</code></pre>
+</div>
+</div>
+<div id="29ed7e90" class="cell">
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="co">### Document frequency and avg length</span></span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>N <span class="op">=</span> <span class="bu">len</span>(newsgroup_info_dicts)</span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>doc_freq <span class="op">=</span> Counter()</span>
+<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a>avg_doc_len <span class="op">=</span> defaultdict(<span class="bu">int</span>)</span>
+<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a>avg_len <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb25-6"><a href="#cb25-6" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(N):</span>
+<span id="cb25-7"><a href="#cb25-7" aria-hidden="true" tabindex="-1"></a>    tokens <span class="op">=</span> [r.text <span class="cf">for</span> r <span class="kw">in</span> text_analyzer(newsgroup_info_dicts[i][<span class="st">"Text"</span>])]</span>
+<span id="cb25-8"><a href="#cb25-8" aria-hidden="true" tabindex="-1"></a>    avg_len <span class="op">+=</span> <span class="bu">len</span>(tokens)</span>
+<span id="cb25-9"><a href="#cb25-9" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> t <span class="kw">in</span> <span class="bu">set</span>(tokens):</span>
+<span id="cb25-10"><a href="#cb25-10" aria-hidden="true" tabindex="-1"></a>        doc_freq[t] <span class="op">+=</span> <span class="dv">1</span></span>
+<span id="cb25-11"><a href="#cb25-11" aria-hidden="true" tabindex="-1"></a>avg_len <span class="op">/=</span> N</span>
+<span id="cb25-12"><a href="#cb25-12" aria-hidden="true" tabindex="-1"></a><span class="co">### IDF</span></span>
+<span id="cb25-13"><a href="#cb25-13" aria-hidden="true" tabindex="-1"></a>idf <span class="op">=</span> {}</span>
+<span id="cb25-14"><a href="#cb25-14" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> term, nq <span class="kw">in</span> doc_freq.items():</span>
+<span id="cb25-15"><a href="#cb25-15" aria-hidden="true" tabindex="-1"></a>    idf[term] <span class="op">=</span> calculate_idf(nq, N)</span>
+<span id="cb25-16"><a href="#cb25-16" aria-hidden="true" tabindex="-1"></a>avg_len</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<pre><code>116.5888778550149</code></pre>
+</div>
+</div>
+</section>
+<section id="section-4" class="level4">
+<h4 class="anchored" data-anchor-id="section-4">3.2</h4>
+<p>rubric={accuracy:2,quality:1}</p>
+<p>Now for the <em>tf</em> part, which will need to be calculated for each document. Iterate through the corpus again, and, for each document, first build a tf dictionary (a count of terms in the document), and then use that and the document frequencies you calculated in 3.1 to assign a tf-idf value for each term in each document. You are not using the raw term frequency, but a special term frequency calculated as follows:</p>
+<p><span class="math display">\[\text{BM25-tf}(D,Q) = \frac{f(q_i, D)}{f(q_i, D) + k_1 \cdot (1 - b + b \cdot \frac{|D|}{\text{avgdl}})}\]</span></p>
+<p>Where <span class="math inline">\(q_i\)</span> is the current term, f(q_i, D) is its frequency in the current document (the term frequency you have calculated), k_1 is the term saturation parameter with a (default) value of 1.2, b is the length normalization parameter with a (default) value of 0.75 (you can just use these values directly, you don’t need to make them parameters here), <span class="math inline">\(|D|\)</span> is the token length of the current document, and <span class="math inline">\(avg_dl\)</span> is the average document length you calculated in 3.1. Then you should multiply it by the idf for that term you calculated in <strong>3.1</strong> to get a tf-idf score for that term in that document. When you have created a dictionary of all tf-idf scores in a document, append that dictionary to a list.</p>
+<p>When calculating the tokens, you can use the <code>get_tokens</code> function you created earlier. This will ensure that you are still tokenizing and filtering in the same way as before.</p>
+<div id="c1709c26" class="cell">
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> BM25_tf(tf, doc_length, avg_length):</span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> tf<span class="op">/</span>(tf <span class="op">+</span> <span class="fl">1.2</span><span class="op">*</span>(<span class="dv">1</span> <span class="op">-</span><span class="fl">0.75</span> <span class="op">+</span> <span class="fl">0.75</span><span class="op">*</span>(doc_length<span class="op">/</span>avg_length)))</span>
+<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a>BM25_tf(<span class="dv">2</span>,<span class="dv">9</span>,<span class="dv">9</span>) <span class="co">### Should be 0.625</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<pre><code>0.625</code></pre>
+</div>
+</div>
+<div id="f614501c" class="cell">
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="co">### Document frequency</span></span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>N <span class="op">=</span> <span class="bu">len</span>(newsgroup_info_dicts)</span>
+<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a>tf <span class="op">=</span> defaultdict(Counter)</span>
+<span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a>tf_idf <span class="op">=</span> defaultdict(defaultdict)</span>
+<span id="cb29-5"><a href="#cb29-5" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(N):</span>
+<span id="cb29-6"><a href="#cb29-6" aria-hidden="true" tabindex="-1"></a>    tokens <span class="op">=</span> [r.text <span class="cf">for</span> r <span class="kw">in</span> text_analyzer(newsgroup_info_dicts[i][<span class="st">"Text"</span>])]</span>
+<span id="cb29-7"><a href="#cb29-7" aria-hidden="true" tabindex="-1"></a>    doc_length <span class="op">=</span> <span class="bu">len</span>(tokens)</span>
+<span id="cb29-8"><a href="#cb29-8" aria-hidden="true" tabindex="-1"></a>    tf[i].update(tokens)</span>
+<span id="cb29-9"><a href="#cb29-9" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> t <span class="kw">in</span> tokens:</span>
+<span id="cb29-10"><a href="#cb29-10" aria-hidden="true" tabindex="-1"></a>        bm_i <span class="op">=</span> BM25_tf(tf[i][t], doc_length, avg_len)</span>
+<span id="cb29-11"><a href="#cb29-11" aria-hidden="true" tabindex="-1"></a>        tf_idf[i][t] <span class="op">=</span> bm_i <span class="op">*</span> idf[t]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="section-5" class="level4">
+<h4 class="anchored" data-anchor-id="section-5">3.3</h4>
+<p>rubric={accuracy:2,quality:1}</p>
+<p>Now you are going to built a relevance ranking search engine. Create a function which takes a raw English query, the TFIDF corpus you just created, and the token analyzer. Then, iterate over the corpus and, for each term in the query, sum the corresponding tf-idf values from the document (if a term does not appear, its tf-idf defaults to 0) to get a relevance score for each document. Then rank all the documents in your corpus and return an ordered list of the top 10 ids, highest ranked first.</p>
+<div id="91af6eb6" class="cell">
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> BM25IR(query, analyzer, tfidfed_corpus):</span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>    rankings <span class="op">=</span> []</span>
+<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a>    relevance <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="bu">len</span>(tfidfed_corpus)):</span>
+<span id="cb30-5"><a href="#cb30-5" aria-hidden="true" tabindex="-1"></a>        tokens <span class="op">=</span> [r.text <span class="cf">for</span> r <span class="kw">in</span> text_analyzer(query)]</span>
+<span id="cb30-6"><a href="#cb30-6" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> t <span class="kw">in</span> tokens:</span>
+<span id="cb30-7"><a href="#cb30-7" aria-hidden="true" tabindex="-1"></a>            <span class="co"># print(t)</span></span>
+<span id="cb30-8"><a href="#cb30-8" aria-hidden="true" tabindex="-1"></a>            relevance <span class="op">+=</span> tfidfed_corpus[i].get(t, <span class="dv">0</span>)</span>
+<span id="cb30-9"><a href="#cb30-9" aria-hidden="true" tabindex="-1"></a>        rankings.append((i, relevance))</span>
+<span id="cb30-10"><a href="#cb30-10" aria-hidden="true" tabindex="-1"></a>    rankings <span class="op">=</span> <span class="bu">sorted</span>(rankings, key<span class="op">=</span><span class="kw">lambda</span> x: x[<span class="dv">1</span>], reverse<span class="op">=</span><span class="va">True</span>)[:<span class="dv">10</span>]</span>
+<span id="cb30-11"><a href="#cb30-11" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="bu">list</span>(<span class="bu">map</span>(<span class="kw">lambda</span> x: x[<span class="dv">0</span>], rankings))</span>
+<span id="cb30-12"><a href="#cb30-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-13"><a href="#cb30-13" aria-hidden="true" tabindex="-1"></a>BM25IR(<span class="st">"Let's test this function!"</span>, text_analyzer, tf_idf)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<pre><code>[11068, 11069, 11070, 11071, 11072, 11073, 11074, 11075, 11076, 11045]</code></pre>
+</div>
+</div>
+</section>
+<section id="section-6" class="level4">
+<h4 class="anchored" data-anchor-id="section-6">3.4</h4>
+<p>rubric={accuracy:1,quality:1}</p>
+<p>Create at least 3 example queries that are relevant to topic matters in the corpus and have at least 3 interesting (not stop) words. Print out the top document for each query as determined by your system, and show that your output is <em>almost</em> the same as the results of Whoosh using your index from Exercise 1 by comparing the two using P@10 (i.e., consider documents in the top 10 ranked results of Whoosh to be the “relevant” documents for this calculation); if you have done the rest of this problem correctly, you should get 1 or 0.9 for nearly all queries.</p>
+<p>Be careful! Your search engine should be using the text_analyzer you created above, but the Whoosh engine should take the result of the TextParser. It’s a fine distinction, but the Parser produces a generator, while the analyzer produces a list.</p>
+<p>FYI, the reason your results may not be exactly the same as Whoosh is because Whoosh stores only approximations for some values. That is, your implementation of Okapi BM25 is in fact more accurate! You will note that it is also quite fast (and could be made even faster with the inverted index from Exercise 2), the main efficiency issue here is that you’re using quite a lot of memory with all those Python dicts. Generally, this approach would not scale well to millions of documents.</p>
+<div id="64e5e033" class="cell">
+<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>test_sents <span class="op">=</span> [<span class="st">"job listings government"</span>, </span>
+<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a>              <span class="st">"danger in my area"</span>,</span>
+<span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a>              <span class="st">"university jobs internet"</span>]</span>
+<span id="cb32-4"><a href="#cb32-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-5"><a href="#cb32-5" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> sent <span class="kw">in</span> test_sents:</span>
+<span id="cb32-6"><a href="#cb32-6" aria-hidden="true" tabindex="-1"></a>    retrieved <span class="op">=</span> BM25IR(sent, text_analyzer, tf_idf)</span>
+<span id="cb32-7"><a href="#cb32-7" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb32-8"><a href="#cb32-8" aria-hidden="true" tabindex="-1"></a>    parsed_query <span class="op">=</span> TextParser.parse(sent)</span>
+<span id="cb32-9"><a href="#cb32-9" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb32-10"><a href="#cb32-10" aria-hidden="true" tabindex="-1"></a>    <span class="cf">with</span> ix.searcher() <span class="im">as</span> searcher:</span>
+<span id="cb32-11"><a href="#cb32-11" aria-hidden="true" tabindex="-1"></a>        whoosh_results <span class="op">=</span> searcher.search(parsed_query, limit<span class="op">=</span><span class="dv">10</span>)</span>
+<span id="cb32-12"><a href="#cb32-12" aria-hidden="true" tabindex="-1"></a>        whoosh_ids <span class="op">=</span> {r[<span class="st">"id"</span>] <span class="cf">for</span> r <span class="kw">in</span> whoosh_results}</span>
+<span id="cb32-13"><a href="#cb32-13" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb32-14"><a href="#cb32-14" aria-hidden="true" tabindex="-1"></a>    <span class="co"># calculate P@10</span></span>
+<span id="cb32-15"><a href="#cb32-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-16"><a href="#cb32-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-17"><a href="#cb32-17" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"</span><span class="sc">{</span>sent<span class="sc">}</span><span class="ss">, P@10: </span><span class="sc">{</span><span class="bu">len</span>(whoosh_ids.difference(retrieved))<span class="op">/</span><span class="dv">10</span><span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb32-18"><a href="#cb32-18" aria-hidden="true" tabindex="-1"></a>    </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>job listings government, P@10: 1.0
+danger in my area, P@10: 1.0
+university jobs internet, P@10: 0.7</code></pre>
+</div>
+</div>
+
+
+</section>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+        const codeEl = trigger.previousElementSibling.cloneNode(true);
+        for (const childEl of codeEl.children) {
+          if (isCodeAnnotation(childEl)) {
+            childEl.remove();
+          }
+        }
+        return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>
