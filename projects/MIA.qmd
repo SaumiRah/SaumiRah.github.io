@@ -1,0 +1,854 @@
+---
+title: "Membership Inference Attack on LLMs and VLMs."
+description: "Final assignment for COLX 585 at UBC. A group project where I and 3 peers performed membership inference attack on an LLM and VLM. Whitebox privileges were assumed, with a provided shadow dataset. Achieved remarkable results: AUC of 0.83."
+image: MIA_UBC.PNG
+categories: [Python, Huggingface (🤗), PyTorch]
+---
+```{=html}
+<embed src="585-Final-Report.pdf" width="800px" height="600px" />
+```
+```python 
+"""
+Membership Inference Attack (MIA) on Vision-Language Models
+============================================================
+Kaggle Competition: UBC-SLIME / colx_585_vlm
+
+New signals in this version:
+  - Reference model comparison (fine-tuned loss - base model loss)
+  - Multiple text perturbations averaged (5x, less noisy)
+  - Token rank feature (how often is correct token rank-1?)
+  - Attention entropy (members have more focused attention)
+  - Min-K++ score (normalised variant, more robust than plain Min-K%)
+  - Fixed per-type diagnostic scoping bug
+"""
+
+import subprocess
+subprocess.run(["pip", "install", "num2words", "xgboost", "-q"], check=True)
+
+import sys
+for key in list(sys.modules.keys()):
+    if "transformers" in key or "smolvlm" in key:
+        del sys.modules[key]
+
+import csv
+import io
+import math
+import random
+import zlib
+from collections import defaultdict, deque
+from pathlib import Path
+
+import numpy as np
+import torch
+import torch.nn.functional as F
+from PIL import Image
+from datasets import load_dataset
+from sklearn.metrics import roc_auc_score, roc_curve
+from sklearn.pipeline import Pipeline
+from sklearn.preprocessing import StandardScaler
+from xgboost import XGBClassifier
+from transformers import AutoProcessor, SmolVLMForConditionalGeneration
+
+# ─────────────────────────────────────────────
+#  CONFIG
+# ─────────────────────────────────────────────
+MODEL_ID      = "UBC-SLIME/colx_585_vlm"
+BASE_MODEL_ID = "HuggingFaceTB/SmolVLM-256M-Instruct"  # base before fine-tuning
+DATASET_ID    = "UBC-SLIME/colx585_group_project_data"
+MAX_LENGTH    = 512
+MINK_K        = 0.2
+DEVICE        = "cuda" if torch.cuda.is_available() else "cpu"
+N_TRAIN       = None  # None = all training examples
+
+DISTRACTOR_POOL_SIZE = 10
+EARLY_N_TOKENS       = 10
+N_TEXT_PERTURBATIONS = 5   # average over this many word-swap perturbations
+
+
+# ─────────────────────────────────────────────
+#  MODEL LOADING
+# ─────────────────────────────────────────────
+def load_model_and_processor():
+    print(f"Loading fine-tuned model on {DEVICE} …")
+    processor = AutoProcessor.from_pretrained(MODEL_ID)
+    processor.image_processor.do_image_splitting = False
+    processor.image_processor.size               = {"longest_edge": 512}
+    processor.image_processor.max_image_size     = {"longest_edge": 512}
+
+    model = SmolVLMForConditionalGeneration.from_pretrained(
+        MODEL_ID,
+        torch_dtype=torch.float16,
+        _attn_implementation="eager",
+        trust_remote_code=True,
+        output_hidden_states=True,
+        output_attentions=True,
+    ).to(DEVICE)
+    model.eval()
+
+    print(f"Loading base reference model …")
+    base_model = SmolVLMForConditionalGeneration.from_pretrained(
+        BASE_MODEL_ID,
+        torch_dtype=torch.float16,
+        _attn_implementation="eager",
+        trust_remote_code=True,
+    ).to(DEVICE)
+    base_model.eval()
+
+    print("Models loaded.")
+    return model, base_model, processor
+
+
+# ─────────────────────────────────────────────
+#  HELPERS
+# ─────────────────────────────────────────────
+def cast_inputs(inputs):
+    if DEVICE == "cuda":
+        return {k: (v.to(torch.float16) if v.dtype == torch.float32 else v)
+                for k, v in inputs.items()}
+    return inputs
+
+
+def load_image(raw_image):
+    if isinstance(raw_image, dict):
+        if raw_image.get("bytes"):
+            return Image.open(io.BytesIO(raw_image["bytes"])).convert("RGB")
+        elif raw_image.get("path"):
+            return Image.open(raw_image["path"]).convert("RGB")
+        return None
+    elif isinstance(raw_image, bytes):
+        return Image.open(io.BytesIO(raw_image)).convert("RGB")
+    elif isinstance(raw_image, Image.Image):
+        return raw_image.convert("RGB")
+    return raw_image
+
+
+def parse_id_prefix(example_id: str) -> dict:
+    """
+    mix_UI_ST   → unseen image, seen text
+    mix_SI_UT   → seen image, unseen text
+    cauldron_ln → seen/unseen both (no pattern in ID)
+    """
+    eid = str(example_id) if example_id is not None else ""
+    is_ui_st    = int(eid.startswith("mix_UI_ST"))
+    is_si_ut    = int(eid.startswith("mix_SI_UT"))
+    is_cauldron = int(eid.startswith("cauldron_ln"))
+    id_prior    = 0.65 if (is_ui_st or is_si_ut) else 0.50
+    return {
+        "id_is_ui_st":    float(is_ui_st),
+        "id_is_si_ut":    float(is_si_ut),
+        "id_is_cauldron": float(is_cauldron),
+        "id_prior":       id_prior,
+    }
+
+
+def get_assistant_mask(labels):
+    mask = (labels[0, 1:] != -100)
+    if mask.sum() == 0:
+        mask = torch.ones_like(mask, dtype=torch.bool)
+    return mask
+
+
+def compute_loss_from_logits(logits, labels):
+    shift_logits = logits[..., :-1, :].float().squeeze(0)
+    shift_labels = labels[..., 1:].squeeze(0)
+    mask         = shift_labels != -100
+    losses = F.cross_entropy(shift_logits[mask], shift_labels[mask], reduction="none")
+    return losses
+
+
+def perturb_text(text: str) -> str:
+    """Randomly swap two adjacent words."""
+    words = text.split()
+    if len(words) < 4:
+        return text
+    idx = random.randint(1, len(words) - 3)
+    words[idx], words[idx + 1] = words[idx + 1], words[idx]
+    return " ".join(words)
+
+
+def get_model_loss(model, inputs, labels):
+    """Quick scalar loss from a model given pre-built inputs and labels."""
+    with torch.no_grad():
+        out = model(**inputs, labels=labels)
+    return out.loss.item()
+
+
+# ─────────────────────────────────────────────
+#  FEATURE EXTRACTION
+# ─────────────────────────────────────────────
+def extract_features(
+    model, base_model, processor,
+    image: Image.Image,
+    text_row: str,
+    distractor_pool: deque = None,
+) -> dict:
+
+    parts     = text_row.split('\n', 1)
+    user_text = parts[0]
+    assistant = parts[1] if len(parts) > 1 else ""
+
+    messages = [
+        {"role": "user",      "content": [{"type": "image"}, {"type": "text", "text": user_text}]},
+        {"role": "assistant", "content": [{"type": "text", "text": assistant}]},
+    ]
+    templated = processor.apply_chat_template(messages, tokenize=False)
+
+    inputs = cast_inputs(processor(
+        text=templated, images=[image],
+        return_tensors="pt", max_length=MAX_LENGTH, truncation=True
+    ).to(DEVICE))
+
+    # ── Label masking: assistant tokens only ───────────────────────
+    labels = inputs["input_ids"].clone()
+    labels[labels == processor.tokenizer.pad_token_id] = -100
+    n_prefix = 0
+    if assistant:
+        prefix     = templated[: templated.rfind(assistant)]
+        prefix_ids = processor.tokenizer(
+            prefix, return_tensors="pt", add_special_tokens=False
+        )["input_ids"]
+        n_prefix = prefix_ids.shape[1]
+        if n_prefix < labels.shape[1]:
+            labels[0, :n_prefix] = -100
+
+    # ── 1. GRADIENT PASS (fine-tuned model) ────────────────────────
+    model.train()
+    model.zero_grad()
+    outputs  = model(**inputs, labels=labels, output_hidden_states=True, output_attentions=True)
+    loss_val = outputs.loss.item()
+
+    grad_norm = grad_norm_early = 0.0
+    try:
+        outputs.loss.backward(retain_graph=True)
+        target = None
+        for attr in ["language_model", "model", "lm_head"]:
+            if hasattr(model, attr):
+                target = getattr(model, attr)
+                break
+        if target:
+            grads     = [p.grad.detach().norm(2).item() for p in target.parameters() if p.grad is not None]
+            grad_norm = sum(grads) / len(grads) if grads else 0.0
+        for attr in ["embed_tokens", "shared", "word_embeddings"]:
+            emb = None
+            for submod in model.modules():
+                if hasattr(submod, attr):
+                    emb = getattr(submod, attr)
+                    break
+            if emb is not None and emb.weight.grad is not None:
+                grad_norm_early = emb.weight.grad.detach().norm(2).item()
+                break
+    except Exception:
+        pass
+
+    # ── 2. INFERENCE PASS ──────────────────────────────────────────
+    model.eval()
+    with torch.no_grad():
+        logits         = outputs.logits
+        hidden         = outputs.hidden_states
+        attentions     = outputs.attentions          # tuple of (B, heads, T, T)
+        assistant_mask = get_assistant_mask(labels)
+
+        # ── Per-token losses ────────────────────────────────────────
+        per_token_losses = compute_loss_from_logits(logits, labels)
+        T                = per_token_losses.shape[0]
+
+        loss_mean = per_token_losses.mean().item()
+        loss_var  = per_token_losses.var().item()  if T > 1 else 0.0
+        loss_std  = per_token_losses.std().item()  if T > 1 else 0.0
+
+        n_early               = min(EARLY_N_TOKENS, T // 2)
+        loss_early            = per_token_losses[:n_early].mean().item() if n_early > 0 else loss_mean
+        loss_late             = per_token_losses[n_early:].mean().item() if T > n_early else loss_mean
+        loss_early_late_ratio = loss_early / (loss_late + 1e-9)
+
+        # ── Token probabilities & ranks ─────────────────────────────
+        shift_logits  = logits[..., :-1, :].float()
+        shift_labels  = inputs["input_ids"][..., 1:]
+        token_probs   = F.softmax(shift_logits, dim=-1)
+        actual_probs  = token_probs.gather(2, shift_labels.unsqueeze(-1)).squeeze(-1)
+        probs_1d      = actual_probs.squeeze(0)[assistant_mask]
+
+        mean_token_prob = probs_1d.mean().item() if T > 0 else 0.0
+        low_conf_ratio  = (probs_1d < 0.1).float().mean().item() if T > 0 else 0.0
+
+        # Token rank: position of correct token when logits sorted descending
+        # rank=0 means model's top prediction was correct
+        asst_logits_full = shift_logits.squeeze(0)[assistant_mask]   # (T_asst, vocab)
+        asst_labels_1d   = shift_labels.squeeze(0)[assistant_mask]   # (T_asst,)
+        ranks = (asst_logits_full > asst_logits_full.gather(1, asst_labels_1d.unsqueeze(1))).sum(dim=1)
+        mean_rank      = ranks.float().mean().item()        if T > 0 else 0.0
+        rank1_ratio    = (ranks == 0).float().mean().item() if T > 0 else 0.0  # fraction where model was right
+
+        # ── Logit gap ───────────────────────────────────────────────
+        top2_p, _     = torch.topk(F.softmax(asst_logits_full, dim=-1), k=2, dim=-1)
+        logit_gap     = (top2_p[:, 0] - top2_p[:, 1]).mean().item()
+        logit_gap_std = (top2_p[:, 0] - top2_p[:, 1]).std().item() if T > 1 else 0.0
+
+        # ── Min-K% ──────────────────────────────────────────────────
+        log_probs_1d = torch.log(probs_1d + 1e-10)
+        k_count      = max(1, int(MINK_K * T))
+        sorted_lp, _ = torch.sort(log_probs_1d)
+        mink_score   = sorted_lp[:k_count].mean().item()
+
+        # ── Min-K++ (normalised by per-token mean log-prob) ─────────
+        # For each token position, subtract the mean log-prob across the full vocab.
+        # This normalises out the model's overall confidence at each position,
+        # leaving only the signal specific to the chosen token.
+        all_log_probs    = F.log_softmax(shift_logits.squeeze(0), dim=-1)  # (T-1, vocab)
+        mu_log_probs     = all_log_probs.mean(dim=-1)                       # (T-1,)
+        chosen_log_probs = all_log_probs.gather(1, shift_labels.squeeze(0).unsqueeze(1)).squeeze(1)
+        normalised_lp    = chosen_log_probs - mu_log_probs                  # (T-1,)
+        asst_norm_lp     = normalised_lp[assistant_mask]
+        sorted_norm, _   = torch.sort(asst_norm_lp)
+        minkpp_score     = sorted_norm[:k_count].mean().item() if T > 0 else 0.0
+
+        # ── Zlib ratio ──────────────────────────────────────────────
+        zlib_bits      = len(zlib.compress(assistant.encode("utf-8"))) * 8
+        zlib_per_token = zlib_bits / max(T, 1)
+        zlib_ratio     = loss_val / (zlib_per_token + 1e-9)
+
+        # ── Attention entropy ────────────────────────────────────────
+        # Lower entropy = more focused attention = member signal.
+        # Average over last 2 layers and all heads for the assistant tokens.
+        attn_entropy = 0.0
+        if attentions is not None and len(attentions) >= 2:
+            try:
+                last_attns = attentions[-2:]   # last 2 layers
+                entropies  = []
+                for layer_attn in last_attns:
+                    # layer_attn: (B, heads, T_q, T_k)
+                    a = layer_attn.squeeze(0).float()  # (heads, T_q, T_k)
+                    # Only look at rows corresponding to assistant token positions
+                    asst_idx = assistant_mask.nonzero(as_tuple=True)[0]
+                    if len(asst_idx) == 0:
+                        continue
+                    asst_attn = a[:, asst_idx, :]    # (heads, T_asst, T_k)
+                    # Entropy per head per position, then average
+                    eps = 1e-10
+                    ent = -(asst_attn * (asst_attn + eps).log()).sum(dim=-1)  # (heads, T_asst)
+                    entropies.append(ent.mean().item())
+                attn_entropy = float(np.mean(entropies)) if entropies else 0.0
+            except Exception:
+                attn_entropy = 0.0
+
+        # ── Hidden state trajectory (KCMP) ──────────────────────────
+        n_layers    = min(4, len(hidden) - 1)
+        last_layers = [h.squeeze(0).float() for h in hidden[-n_layers:]]
+
+        def pool_asst(h):
+            idx     = assistant_mask.nonzero(as_tuple=True)[0]
+            shifted = idx + 1
+            shifted = shifted[shifted < h.shape[0]]
+            h_a     = h[shifted] if len(shifted) > 0 else h[-1:]
+            return h_a.mean(dim=0)
+
+        pooled   = [pool_asst(h) for h in last_layers]
+        cos_sims = [
+            F.cosine_similarity(p1.unsqueeze(0), p2.unsqueeze(0)).item()
+            for p1, p2 in zip(pooled[:-1], pooled[1:])
+        ]
+        hidden_state_norm = pooled[-1].norm().item()
+
+        # ── Reference model comparison ──────────────────────────────
+        # The key MIA signal: members should have MUCH lower loss on the
+        # fine-tuned model vs the base model. Non-members should be similar.
+        # ref_delta = base_loss - finetuned_loss  →  large positive = member
+        ref_delta = 0.0
+        try:
+            base_loss = get_model_loss(base_model, inputs, labels)
+            ref_delta = base_loss - loss_val
+        except Exception:
+            ref_delta = 0.0
+
+        # ── Image sensitivity (blank image) ─────────────────────────
+        blank_image  = Image.new("RGB", image.size, color=(128, 128, 128))
+        blank_inputs = cast_inputs(processor(
+            text=templated, images=[blank_image],
+            return_tensors="pt", max_length=MAX_LENGTH, truncation=True
+        ).to(DEVICE))
+        blank_out         = model(**blank_inputs, labels=labels, output_hidden_states=True)
+        image_sensitivity = blank_out.loss.item() - loss_val
+        blank_pooled      = [pool_asst(h.squeeze(0).float()) for h in blank_out.hidden_states[-n_layers:]]
+        hidden_img_shift  = float(np.mean([(p - b).norm().item() for p, b in zip(pooled, blank_pooled)]))
+
+        # ── Pair specificity (distractor pool) ──────────────────────
+        pair_specificity = 0.0
+        if distractor_pool and len(distractor_pool) > 0:
+            distractor  = random.choice(list(distractor_pool))
+            dist_inputs = cast_inputs(processor(
+                text=templated, images=[distractor],
+                return_tensors="pt", max_length=MAX_LENGTH, truncation=True
+            ).to(DEVICE))
+            pair_specificity = model(**dist_inputs, labels=labels).loss.item() - loss_val
+
+        # ── Neighbour text attack (averaged over N perturbations) ───
+        # Averaging reduces the noise of a single random word swap.
+        text_sensitivity = 0.0
+        if assistant and len(assistant.split()) >= 4:
+            sensitivities = []
+            for _ in range(N_TEXT_PERTURBATIONS):
+                perturbed = perturb_text(assistant)
+                p_messages = [
+                    {"role": "user",      "content": [{"type": "image"}, {"type": "text", "text": user_text}]},
+                    {"role": "assistant", "content": [{"type": "text", "text": perturbed}]},
+                ]
+                p_templated = processor.apply_chat_template(p_messages, tokenize=False)
+                p_inputs    = cast_inputs(processor(
+                    text=p_templated, images=[image],
+                    return_tensors="pt", max_length=MAX_LENGTH, truncation=True
+                ).to(DEVICE))
+                p_labels = p_inputs["input_ids"].clone()
+                p_labels[p_labels == processor.tokenizer.pad_token_id] = -100
+                if n_prefix < p_labels.shape[1]:
+                    p_labels[0, :n_prefix] = -100
+                sensitivities.append(model(**p_inputs, labels=p_labels).loss.item() - loss_val)
+            text_sensitivity = float(np.mean(sensitivities))
+
+        # ── Curvature proxy (embedding noise) ───────────────────────
+        curvature_proxy = 0.0
+        try:
+            emb_layer = None
+            for submod in model.modules():
+                if hasattr(submod, "embed_tokens"):
+                    emb_layer = submod.embed_tokens
+                    break
+            if emb_layer is not None:
+                orig_weight = emb_layer.weight.data.clone()
+                emb_layer.weight.data += torch.randn_like(orig_weight) * 0.01
+                curvature_proxy       = abs(model(**inputs, labels=labels).loss.item() - loss_val)
+                emb_layer.weight.data = orig_weight
+        except Exception:
+            curvature_proxy = 0.0
+
+    return {
+        # ─ loss signals ─
+        "loss":                  loss_val,
+        "loss_var":              loss_var,
+        "loss_std":              loss_std,
+        "loss_early":            loss_early,
+        "loss_late":             loss_late,
+        "loss_early_late_ratio": loss_early_late_ratio,
+        "perplexity":            math.exp(min(loss_val, 100)),
+        "zlib_ratio":            zlib_ratio,
+        # ─ token confidence ─
+        "mink_score":            mink_score,
+        "minkpp_score":          minkpp_score,
+        "logit_gap":             logit_gap,
+        "logit_gap_std":         logit_gap_std,
+        "mean_token_prob":       mean_token_prob,
+        "low_conf_ratio":        low_conf_ratio,
+        "mean_rank":             mean_rank,
+        "rank1_ratio":           rank1_ratio,
+        # ─ gradient signals ─
+        "grad_norm":             grad_norm,
+        "grad_norm_early":       grad_norm_early,
+        # ─ hidden state (KCMP) ─
+        "layer_sim_1":           cos_sims[0] if len(cos_sims) > 0 else 0.0,
+        "layer_sim_2":           cos_sims[1] if len(cos_sims) > 1 else 0.0,
+        "layer_sim_3":           cos_sims[2] if len(cos_sims) > 2 else 0.0,
+        "hidden_state_norm":     hidden_state_norm,
+        # ─ attention ─
+        "attn_entropy":          attn_entropy,
+        # ─ reference model ─
+        "ref_delta":             ref_delta,
+        # ─ image signals ─
+        "image_sensitivity":     image_sensitivity,
+        "hidden_img_shift":      hidden_img_shift,
+        "pair_specificity":      pair_specificity,
+        # ─ perturbation signals ─
+        "text_sensitivity":      text_sensitivity,
+        "curvature_proxy":       curvature_proxy,
+        # ─ metadata ─
+        "num_tokens":            T,
+    }
+
+
+# ─────────────────────────────────────────────
+#  RAW SCORE (fallback, no classifier)
+# ─────────────────────────────────────────────
+def compute_raw_score(feats: dict) -> float:
+    """Lower = more likely member."""
+    return (
+        0.12 * feats["loss"]                  +
+        0.08 * feats["loss_var"]              +
+        0.08 * feats["loss_early_late_ratio"] +
+        0.10 * feats["mink_score"]            +
+        0.10 * feats["minkpp_score"]          +
+        0.10 * (-feats["logit_gap"])          +
+        0.10 * (-feats["ref_delta"])          +   # large positive = member
+        0.08 * (-feats["pair_specificity"])   +
+        0.08 * (-feats["image_sensitivity"])  +
+        0.08 * (-feats["text_sensitivity"])   +
+        0.04 * feats["curvature_proxy"]       +
+        0.04 * feats["attn_entropy"]              # high entropy = non-member
+    )
+
+
+# ─────────────────────────────────────────────
+#  FEATURE KEYS
+# ─────────────────────────────────────────────
+FEATURE_KEYS = [
+    "loss", "loss_var", "loss_std", "loss_early", "loss_late",
+    "loss_early_late_ratio", "perplexity", "zlib_ratio",
+    "mink_score", "minkpp_score", "logit_gap", "logit_gap_std",
+    "mean_token_prob", "low_conf_ratio", "mean_rank", "rank1_ratio",
+    "grad_norm", "grad_norm_early",
+    "layer_sim_1", "layer_sim_2", "layer_sim_3", "hidden_state_norm",
+    "attn_entropy",
+    "ref_delta",
+    "image_sensitivity", "hidden_img_shift", "pair_specificity",
+    "text_sensitivity", "curvature_proxy",
+    "num_tokens",
+    # ─ id-prefix signals ─
+    "id_is_ui_st", "id_is_si_ut", "id_is_cauldron", "id_prior",
+]
+
+
+def build_feature_vector(feats: dict):
+    if not feats:
+        return None
+    return [feats.get(k, 0.0) for k in FEATURE_KEYS]
+
+
+# ─────────────────────────────────────────────
+#  DIAGNOSTICS
+# ─────────────────────────────────────────────
+def report_univariate_aucs(X, y, label=""):
+    print(f"\n  {'─'*58}")
+    print(f"  Per-feature univariate AUC  [{label}]")
+    print(f"  {'─'*58}")
+    feat_aucs = []
+    for i, name in enumerate(FEATURE_KEYS):
+        col = X[:, i]
+        if col.std() == 0:
+            feat_aucs.append((name, 0.5))
+            continue
+        try:
+            auc = roc_auc_score(y, col)
+            auc = max(auc, 1 - auc)
+        except Exception:
+            auc = 0.5
+        feat_aucs.append((name, auc))
+    for name, auc in sorted(feat_aucs, key=lambda x: -x[1]):
+        bar = "█" * int((auc - 0.5) * 100)
+        print(f"    {name:<32} {auc:.4f}  {bar}")
+
+
+def report_metrics_by_type(results, scores, split_name=""):
+    """Break down AUC and loss gap by example type."""
+    # results is a list of dicts with keys: feats, is_member, type
+    valid_pairs = [
+        (r, s) for r, s in zip(results, scores)
+        if r.get("is_member") is not None and r.get("feats")
+    ]
+    if not valid_pairs:
+        print(f"  [report_metrics_by_type] No valid examples for [{split_name}]")
+        return
+
+    all_labels = np.array([r["is_member"] for r, _ in valid_pairs])
+    all_scores = np.array([s for _, s in valid_pairs])
+    all_types  = [r.get("type", "unknown") for r, _ in valid_pairs]
+
+    print(f"\n  {'─'*58}")
+    print(f"  Per-type AUC breakdown  [{split_name}]")
+    print(f"  {'─'*58}")
+
+    try:
+        overall_auc = roc_auc_score(all_labels, all_scores)
+        print(f"    {'OVERALL':<24} n={len(all_labels):<6} AUC={overall_auc:.4f}")
+    except Exception:
+        pass
+
+    loss_idx = FEATURE_KEYS.index("loss")
+    for t in sorted(set(all_types)):
+        mask = np.array([tt == t for tt in all_types])
+        if mask.sum() < 5:
+            continue
+        yt = all_labels[mask]
+        st = all_scores[mask]
+        if len(np.unique(yt)) < 2:
+            print(f"    {t:<24} n={mask.sum():<6} AUC=N/A (one class)")
+            continue
+        try:
+            auc      = roc_auc_score(yt, st)
+            losses_t = np.array([
+                build_feature_vector(r["feats"])[loss_idx]
+                for r, _ in valid_pairs if r.get("type") == t
+            ])
+            m_loss  = losses_t[yt == 1].mean() if (yt == 1).any() else float("nan")
+            nm_loss = losses_t[yt == 0].mean() if (yt == 0).any() else float("nan")
+            gap     = nm_loss - m_loss
+            print(f"    {t:<24} n={mask.sum():<6} AUC={auc:.4f}  "
+                  f"loss_gap={gap:+.3f}  (member={m_loss:.3f}, non={nm_loss:.3f})")
+        except Exception as e:
+            print(f"    {t:<24} n={mask.sum():<6} ERROR: {e}")
+
+    print(f"  {'─'*58}")
+
+
+# ─────────────────────────────────────────────
+#  CLASSIFIER
+# ─────────────────────────────────────────────
+def train_classifier(train_results, label="global"):
+    from sklearn.model_selection import StratifiedKFold, cross_val_score, train_test_split
+
+    X, y = [], []
+    for r in train_results:
+        if r["feats"] and r["is_member"] is not None:
+            fv = build_feature_vector(r["feats"])
+            if fv is not None:
+                X.append(fv)
+                y.append(r["is_member"])
+
+    if len(X) < 10:
+        print(f"  [{label}] Too few examples ({len(X)}), skipping.")
+        return None
+
+    X = np.array(X)
+    y = np.array(y)
+
+    if len(np.unique(y)) < 2:
+        print(f"  [{label}] Only one class present, skipping.")
+        return None
+
+    print(f"\n  [{label}] Training on {len(X)} examples ({y.mean():.1%} members)")
+
+    report_univariate_aucs(X, y, label=label)
+
+    if len(X) >= 50:
+        cv_clf = Pipeline([
+            ("scaler", StandardScaler()),
+            ("clf", XGBClassifier(
+                n_estimators=300, max_depth=3, learning_rate=0.01,
+                subsample=0.7, colsample_bytree=0.7, min_child_weight=5,
+                reg_alpha=0.1, reg_lambda=1.0, eval_metric="auc",
+                random_state=42, verbosity=0,
+            ))
+        ])
+        cv      = StratifiedKFold(n_splits=5, shuffle=True, random_state=42)
+        cv_aucs = cross_val_score(cv_clf, X, y, cv=cv, scoring="roc_auc")
+        print(f"\n  [{label}] 5-fold CV AUC: {cv_aucs.mean():.4f} ± {cv_aucs.std():.4f}")
+        if cv_aucs.mean() < 0.52:
+            print(f"  [{label}] CV AUC near random — features not discriminative for this type.")
+
+    X_tr, X_val, y_tr, y_val = train_test_split(
+        X, y, test_size=0.15, stratify=y, random_state=42
+    )
+    scaler  = StandardScaler().fit(X_tr)
+    X_tr_s  = scaler.transform(X_tr)
+    X_val_s = scaler.transform(X_val)
+
+    xgb = XGBClassifier(
+        n_estimators=1000, max_depth=3, learning_rate=0.01,
+        subsample=0.7, colsample_bytree=0.7, min_child_weight=5,
+        reg_alpha=0.1, reg_lambda=1.0, eval_metric="auc",
+        early_stopping_rounds=30, random_state=42, verbosity=0,
+    )
+    xgb.fit(X_tr_s, y_tr, eval_set=[(X_val_s, y_val)], verbose=False)
+    print(f"  [{label}] Best iteration: {xgb.best_iteration} / 1000")
+
+    scaler_full = StandardScaler().fit(X)
+    xgb.fit(scaler_full.transform(X), y, eval_set=[(X_val_s, y_val)], verbose=False)
+
+    class FittedClf:
+        def __init__(self, scaler, xgb):
+            self.scaler      = scaler
+            self.xgb         = xgb
+            self.named_steps = {"clf": xgb}
+        def predict_proba(self, X):
+            return self.xgb.predict_proba(self.scaler.transform(X))
+
+    clf       = FittedClf(scaler_full, xgb)
+    train_auc = roc_auc_score(y, clf.predict_proba(X)[:, 1])
+    print(f"  [{label}] Train AUC (will overfit): {train_auc:.4f}")
+    feat_imp = sorted(zip(FEATURE_KEYS, xgb.feature_importances_), key=lambda x: -x[1])
+    print(f"  [{label}] Top features: " +
+          ", ".join(f"{n}={v:.3f}" for n, v in feat_imp[:8]))
+
+    return clf
+
+
+def train_per_type_classifiers(train_results):
+    by_type = defaultdict(list)
+    for r in train_results:
+        by_type[r.get("type", "unknown")].append(r)
+
+    print(f"\n  Types found: {list(by_type.keys())}")
+    clfs = {}
+    for t, examples in by_type.items():
+        clf = train_classifier(examples, label=f"type={t}")
+        if clf is not None:
+            clfs[t] = clf
+    return clfs
+
+
+def classifier_score(clf, feats: dict) -> float:
+    fv = build_feature_vector(feats)
+    if fv is None or clf is None:
+        return 0.5
+    return float(clf.predict_proba(np.array([fv]))[0, 1])
+
+
+def classifier_score_typed(clfs_typed, feats, example_type, fallback_clf=None):
+    fv = build_feature_vector(feats)
+    if fv is None:
+        return 0.5
+    clf = clfs_typed.get(example_type) or fallback_clf
+    if clf is None:
+        return 0.5
+    return float(clf.predict_proba(np.array([fv]))[0, 1])
+
+
+# ─────────────────────────────────────────────
+#  PROCESS A SPLIT
+# ─────────────────────────────────────────────
+def process_split(model, base_model, processor, split: str, max_examples: int = None):
+    ds              = load_dataset(DATASET_ID, split=split, streaming=True)
+    results         = []
+    error_count     = 0
+    distractor_pool = deque(maxlen=DISTRACTOR_POOL_SIZE)
+
+    for i, example in enumerate(ds):
+        if max_examples is not None and i >= max_examples:
+            break
+
+        image = load_image(example.get("image"))
+        if image is None:
+            continue
+
+        feats = {}
+        try:
+            feats = extract_features(
+                model, base_model, processor, image, example["text"],
+                distractor_pool=distractor_pool,
+            )
+            feats.update(parse_id_prefix(example.get("id")))
+            results.append({
+                "id":        example["id"],
+                "is_member": example.get("is_member"),
+                "type":      example.get("type"),
+                "feats":     feats,
+            })
+        except Exception as e:
+            error_count += 1
+            if error_count <= 3:
+                import traceback
+                traceback.print_exc()
+            elif error_count % 100 == 0:
+                print(f"  {error_count} errors so far: {e}")
+            results.append({
+                "id":        example["id"],
+                "is_member": example.get("is_member"),
+                "type":      example.get("type"),
+                "feats":     parse_id_prefix(example.get("id")),
+            })
+
+        distractor_pool.append(image)
+
+        if (i + 1) % 50 == 0:
+            loss_str  = f"{feats.get('loss', 0):.4f}" if feats else "err"
+            ref_str   = f" ref_delta={feats.get('ref_delta', 0):.3f}" if feats else ""
+            label_str = f" label={example.get('is_member')}" if example.get("is_member") is not None else ""
+            type_str  = f" type={example.get('type')}" if example.get("type") else ""
+            print(f"  [{split}] {i+1} | loss={loss_str}{ref_str}{label_str}{type_str} err={error_count}")
+
+    print(f"  [{split}] Done. {len(results)} examples, {error_count} errors.")
+    return results
+
+
+# ─────────────────────────────────────────────
+#  METRICS REPORTING
+# ─────────────────────────────────────────────
+def report_metrics(labels, scores, split_name="Validation"):
+    labels = np.array(labels)
+    scores = np.array(scores)
+
+    auc          = roc_auc_score(labels, scores)
+    fpr, tpr, _  = roc_curve(labels, scores)
+    idx          = min(np.searchsorted(fpr, 0.1), len(tpr) - 1)
+    tpr_at_fpr01 = tpr[idx]
+
+    print(f"\n{'='*50}")
+    print(f"  {split_name} Results")
+    print(f"{'='*50}")
+    print(f"  AUC:           {auc:.4f}")
+    print(f"  TPR@FPR=0.1:   {tpr_at_fpr01:.4f}")
+    print(f"{'='*50}\n")
+
+    return auc, tpr_at_fpr01
+
+
+# ─────────────────────────────────────────────
+#  MAIN
+# ─────────────────────────────────────────────
+def run(output_path: str = "submission.csv"):
+    model, base_model, processor = load_model_and_processor()
+
+    # ── 1. Train split ───────────────────────────────────────────────
+    n_str = str(N_TRAIN) if N_TRAIN else "all"
+    print(f"\n=== Processing TRAIN split ({n_str} examples) ===")
+    train_results = process_split(model, base_model, processor, "train", max_examples=N_TRAIN)
+
+    valid_train  = [r for r in train_results if r["feats"] and r["is_member"] is not None]
+    labels_train = [r["is_member"] for r in valid_train]
+    scores_train = [-compute_raw_score(r["feats"]) for r in valid_train]
+    if labels_train:
+        report_metrics(labels_train, scores_train, "Train (raw ensemble)")
+        report_metrics_by_type(valid_train, scores_train, split_name="train / raw")
+
+    # ── 2. Train classifiers ─────────────────────────────────────────
+    print("\n=== Training classifiers ===")
+    clf_global = train_classifier(train_results, label="global")
+    clfs_typed = train_per_type_classifiers(train_results)
+
+    scores_train_clf = [
+        0.5 * classifier_score(clf_global, r["feats"]) +
+        0.5 * classifier_score_typed(clfs_typed, r["feats"], r["type"], clf_global)
+        for r in valid_train
+    ]
+    report_metrics_by_type(valid_train, scores_train_clf, split_name="train / classifier")
+
+    # ── 3. Validation split ──────────────────────────────────────────
+    print("\n=== Processing VALIDATION split ===")
+    val_results = process_split(model, base_model, processor, "validation")
+
+    valid_val           = [r for r in val_results if r["feats"] and r["is_member"] is not None]
+    labels_val          = [r["is_member"] for r in valid_val]
+    scores_val_raw      = [-compute_raw_score(r["feats"]) for r in valid_val]
+    scores_val_global   = [classifier_score(clf_global, r["feats"]) for r in valid_val]
+    scores_val_typed    = [classifier_score_typed(clfs_typed, r["feats"], r["type"], clf_global) for r in valid_val]
+    scores_val_ensemble = [0.5 * g + 0.5 * t for g, t in zip(scores_val_global, scores_val_typed)]
+
+    if labels_val:
+        report_metrics(labels_val, scores_val_raw,      "Validation (raw ensemble)")
+        report_metrics(labels_val, scores_val_global,   "Validation (XGBoost global)")
+        report_metrics(labels_val, scores_val_typed,    "Validation (XGBoost per-type)")
+        report_metrics(labels_val, scores_val_ensemble, "Validation (ensemble: global + per-type)")
+        report_metrics_by_type(valid_val, scores_val_ensemble, split_name="validation / ensemble")
+
+    # ── 4. Test split ────────────────────────────────────────────────
+    print("\n=== Processing TEST split ===")
+    test_results = process_split(model, base_model, processor, "test")
+
+    out = Path(output_path)
+    with out.open("w", newline="") as f:
+        writer = csv.DictWriter(f, fieldnames=["id", "is_member"])
+        writer.writeheader()
+        for r in test_results:
+            if r["feats"]:
+                g     = classifier_score(clf_global, r["feats"])
+                t     = classifier_score_typed(clfs_typed, r["feats"], r["type"], clf_global)
+                score = 0.5 * g + 0.5 * t
+            else:
+                score = 0.5
+            writer.writerow({"id": r["id"], "is_member": score})
+
+    print(f"\nDone. {len(test_results)} rows written to {out.resolve()}")
+    print("Check per-type AUC breakdown above to identify the bottleneck.")
+
+
+# ─────────────────────────────────────────────
+#  RUN
+# ─────────────────────────────────────────────
+run(output_path="submission-04-09-02.csv")
+```
