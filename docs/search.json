@@ -158,7 +158,7 @@
     "href": "projects.html",
     "title": "Project Portfolio",
     "section": "",
-    "text": "B.C. Housing: Endemic\n\n\n\nR\n\nVisualization\n\n\n\nThis is my Capstone project for the Social Data Analytics program at SFU. I presented this project to City of Vancouver at HUBBUB 18 in 2022. This research project describes…\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nBPE Tokenizer from scratch\n\n\n\nPython\n\nNLP\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nAgent: Kitchen Assistant\n\n\n\nAgentic AI\n\nPython\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nMost Streamed Spotify Songs: Data Cleaning\n\n\n\nPython\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nInformation Retrieval: Newsgroups\n\n\n\nPython\n\nIR\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nMongoDB Exercises\n\n\n\nMongoDB\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nGUI-Based Quiz System\n\n\n\nPython\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nOptimizing Desirability\n\n\n\nGIS\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nOptimizing Gratuity\n\n\n\nR\n\nVisualization\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nSuper Smash Brothers Player Statistics\n\n\n\nSQL\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nRAship Code\n\n\n\nR\n\nVisualization\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nMembership Inference Attack on LLMs and VLMs.\n\n\n\nPython\n\nHuggingface (🤗)\n\nPyTorch\n\n\n\nFinal assignment for COLX 585 at UBC. A group project where I and 3 peers performed membership inference attack on an LLM and VLM. Whitebox privileges were assumed, with a…\n\n\n\n\n\n\n\n\n\n\nNo matching items"
+    "text": "B.C. Housing: Endemic\n\n\n\nR\n\nVisualization\n\n\n\nThis is my Capstone project for the Social Data Analytics program at SFU. I presented this project to City of Vancouver at HUBBUB 18 in 2022. This research project describes…\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nBPE Tokenizer from scratch\n\n\n\nPython\n\nNLP\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nAgent: Kitchen Assistant\n\n\n\nAgentic AI\n\nPython\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nMost Streamed Spotify Songs: Data Cleaning\n\n\n\nPython\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nInformation Retrieval: Newsgroups\n\n\n\nPython\n\nIR\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nMongoDB Exercises\n\n\n\nMongoDB\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nGUI-Based Quiz System\n\n\n\nPython\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nOptimizing Desirability\n\n\n\nGIS\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nOptimizing Gratuity\n\n\n\nR\n\nVisualization\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nSuper Smash Brothers Player Statistics\n\n\n\nSQL\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nRAship Code\n\n\n\nR\n\nVisualization\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nMembership Inference Attack on LLMs and VLMs.\n\n\n\nPython\n\nHuggingface (🤗)\n\nPyTorch\n\n\n\nFinal assignment for COLX 585 at UBC. A group project where I and 3 peers performed membership inference attack on an LLM and VLM. Whitebox privileges were assumed, with a…\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nLow-Resource NER — Cross-Lingual Transfer\n\n\n\nPython\n\nspaCy\n\nNLP\n\nC#\n\n\n\nA full-stack named-entity recognizer for a lower-resource language, built by transferring knowledge from a high-resource one. A spaCy/FastAPI backend trains and serves the…\n\n\n\n\n\n\nJun 18, 2026\n\n\n\n\n\n\nNo matching items"
   },
   {
     "objectID": "LICENSE.html",
@@ -320,5 +320,68 @@
     "title": "RAship Code",
     "section": "Creating Real Master Data Frame: 1902, 1891, 1887, 1884, 1851, and 1849",
     "text": "Creating Real Master Data Frame: 1902, 1891, 1887, 1884, 1851, and 1849\n## Master DF... needs to be pivoted\n{Rppp &lt;- left_join(oTwoDF, RnineOneDF, by = join_by(Category));\nTRppp &lt;- left_join(Rppp, ReightSevDF, by = join_by(Category));\nCRppp &lt;- left_join(TRppp, ReightFourDF, by = join_by(Category));\nGRppp &lt;- left_join(CRppp, RfiveOneDF, by = join_by(Category));\nQRppp&lt;- left_join(GRppp, RfourNineDF, by = join_by(Category));\n}\n\n## Pivoting Master DF long...\n# Pivoting Mean\n{Rmmm = subset(QRppp, select = c(Category, mean.x, mean.y, mean.x.x, mean.y.y, mean.x.x.x, mean.y.y.y));\nRmmm &lt;- Rmmm %&gt;%\n  pivot_longer(cols=-Category, names_to = 'Year', names_prefix = 'mean.', values_to = \"mean\");\n  \nRmmm$Year[Rmmm$Year == \"x\"] = \"1902\"; Rmmm$Year[Rmmm$Year == \"y\"] = \"1891\";\n  Rmmm$Year[Rmmm$Year == \"x.x\"] = \"1887\"; Rmmm$Year[Rmmm$Year == \"y.y\"] = \"1884\"; Rmmm$Year[Rmmm$Year == \"x.x.x\"]=\"1851\";\n  Rmmm$Year[Rmmm$Year == \"y.y.y\"]=\"1849\"\n}\n\n\n# Pivoting SD\n{RsdDF = subset(QRppp, select = c(Category, sd.x, sd.y, sd.x.x, sd.y.y, sd.x.x.x, sd.y.y.y));\nRsdDF &lt;- RsdDF %&gt;%\n  pivot_longer(cols=-Category, names_to = 'Year', names_prefix = 'sd.', values_to = \"sd\");\n  \nRsdDF$Year[RsdDF$Year == \"x\"] = \"1902\"; RsdDF$Year[RsdDF$Year == \"y\"] = \"1891\"; RsdDF$Year[RsdDF$Year == \"sd\"] = \"1887\" ;\n  RsdDF$Year[RsdDF$Year == \"x.x\"] = \"1887\"; RsdDF$Year[RsdDF$Year == \"y.y\"] = \"1884\"; RsdDF$Year[RsdDF$Year == \"x.x.x\"] = \"1851\";\n  RsdDF$Year[RsdDF$Year == \"y.y.y\"]=\"1849\"\n}\n\n# Pivoting n\n{RnDF = subset(QRppp, select = c(Category, n.x, n.y, n.x.x, n.y.y, n.x.x.x, n.y.y.y));\nRnDF &lt;- RnDF %&gt;%\n  pivot_longer(cols=-Category, names_to = 'Year', names_prefix = 'n.', values_to = \"n\")\n  \nRnDF$Year[RnDF$Year == \"x\"] = \"1902\"; RnDF$Year[RnDF$Year == \"y\"] = \"1891\"; RnDF$Year[RnDF$Year == \"n\"] = \"1887\";\n  RnDF$Year[RnDF$Year == \"x.x\"] = \"1887\"; RnDF$Year[RnDF$Year == \"y.y\"] = \"1884\"; RnDF$Year[RnDF$Year == \"x.x.x\"] = \"1851\";\n  RnDF$Year[RnDF$Year == \"y.y.y\"] = \"1849\"\n}\n\n\n# joining long-pivoted DFs into final DF\nRfDFt &lt;- left_join(Rmmm, RsdDF, by= join_by(Category, Year))\nRealfDF &lt;- left_join(RfDFt, RnDF, by= join_by(Category, Year))\nRealfDF[is.na(RealfDF)] &lt;- 0 # Final Dataframe: \"fDF\"\n# Optional code to write to xlsx file\n#Write to excel file (warning: will overwrite file with same name. Make sure to change name and path) \n#write_xlsx(fDF, \"D:\\\\Everything\\\\School\\\\RA position\\\\Tariff Schedules\\\\Analysis\\\\Sector Recategorization\\\\1902-1849 Master - Real_V2.xlsx\")"
+  },
+  {
+    "objectID": "projects/lowresource-ner.html",
+    "href": "projects/lowresource-ner.html",
+    "title": "Low-Resource NER — Cross-Lingual Transfer",
+    "section": "",
+    "text": "A small full-stack project that builds a named-entity recognizer (NER) for a lower-resource language by transferring knowledge from a high-resource one. A Python linguistics backend (spaCy) trains and serves the model; a C#/Blazor frontend lets you paste text and see the entities it finds."
+  },
+  {
+    "objectID": "projects/lowresource-ner.html#the-transfer-story",
+    "href": "projects/lowresource-ner.html#the-transfer-story",
+    "title": "Low-Resource NER — Cross-Lingual Transfer",
+    "section": "The transfer story",
+    "text": "The transfer story\nNER tags spans of text as PER (person), ORG (organization), LOC (location) or MISC. We compare two models on the Danish test set:\n\n\n\n\n\n\n\n\nModel\nHow it’s trained\nDanish test F1\n\n\n\n\nBaseline\nDanish data only (272 sentences)\n49.26\n\n\nTransfer\nPretrain on English (CoNLL-2003), then fine-tune on the same 272 Danish sentences\n51.44\n\n\n\nThe transfer model wins because most of what NER needs — what a name looks like, where entities sit in a sentence — is learned from the English data and carries over, even though English and Danish vocabularies differ."
+  },
+  {
+    "objectID": "projects/lowresource-ner.html#architecture",
+    "href": "projects/lowresource-ner.html#architecture",
+    "title": "Low-Resource NER — Cross-Lingual Transfer",
+    "section": "Architecture",
+    "text": "Architecture\n┌─────────────────────┐    HTTP/JSON     ┌──────────────────────┐\n│  Blazor WebAssembly │  ───────────────▶│  FastAPI  (app.py)   │\n│  (frontend/)        │   POST /annotate │   loads cached model │\n│  entity highlighter │ ◀─────────────── │          │           │\n└─────────────────────┘                  │          ▼           │\n                                         │  spaCy NER (nercore) │\n                                         │  models/transfer-da  │\n                                         └──────────────────────┘\n\nbackend/nercore/ — the linguistics core: data.py (CoNLL/BIO parsing → spaCy format), evaluation.py (corpus precision/recall/F1), modeling.py (init_model, train with best-model pocketing, retrain for fine-tuning, annotate).\nbackend/scripts/train.py — runs the baseline + transfer pipeline once and caches models/transfer-da/ plus models/metrics.json.\nbackend/app.py — FastAPI service exposing GET /health, GET /info, POST /annotate.\nfrontend/ — Blazor WebAssembly highlighter that calls the API."
+  },
+  {
+    "objectID": "projects/lowresource-ner.html#how-transfer-learning-is-wired-up",
+    "href": "projects/lowresource-ner.html#how-transfer-learning-is-wired-up",
+    "title": "Low-Resource NER — Cross-Lingual Transfer",
+    "section": "How transfer learning is wired up",
+    "text": "How transfer learning is wired up\nThe pipeline trains in two stages and pockets the best model from each:\n# 1. Baseline: Danish only\nbaseline = init_model(labels)\ntrain(baseline, danish_train, danish_dev, epochs=10)\n\n# 2. Transfer: pretrain on English, then fine-tune on the same Danish data\ntransfer = init_model(labels)\ntrain(transfer, english_train, english_dev, epochs=5)   # high-resource pretraining\nretrain(transfer, danish_train, danish_dev, epochs=10)  # low-resource fine-tuning\n\n# 3. Both are scored on the held-out Danish test set\nscore(baseline, danish_test)   # F1 49.26\nscore(transfer, danish_test)   # F1 51.44"
+  },
+  {
+    "objectID": "projects/lowresource-ner.html#why-this-matters",
+    "href": "projects/lowresource-ner.html#why-this-matters",
+    "title": "Low-Resource NER — Cross-Lingual Transfer",
+    "section": "Why this matters",
+    "text": "Why this matters\nThe same recipe applies to genuinely low-resource and languages, where annotated data is scarce or non-existent: train where data is plentiful, then carry the structural knowledge over with a small amount of in-language fine-tuning. Danish here is only a convenient, openly licensed proxy."
+  },
+  {
+    "objectID": "projects/lowresource-ner.html#code",
+    "href": "projects/lowresource-ner.html#code",
+    "title": "Low-Resource NER — Cross-Lingual Transfer",
+    "section": "Code",
+    "text": "Code\nThe full project (backend, frontend, data and tests) lives on GitHub: SaumiRah/lowresource-ner."
+  },
+  {
+    "objectID": "projects/lowresource-ner.html#annotated-examples",
+    "href": "projects/lowresource-ner.html#annotated-examples",
+    "title": "Low-Resource NER — Cross-Lingual Transfer",
+    "section": "",
+    "text": "These are the transfer model’s actual predictions on held-out Danish test sentences it never saw during training — rendered with spaCy’s displacy:\n\n\n  PER person\n  ORG organization\n  LOC location\n  MISC miscellaneous\n\nBomberne faldt en halv mil fra hotellet, \" rapporterede John HollimannPER, Bernard ShawPER og veteranen fra VietnamLOC, krigsreporter Peter ArnettPER.\n\" Jeg fik jo nogle bank af Anders MyralfPER i havneugen i KøbenhavnLOC.\nOprindelig havde hans bekendte Steen OlsenPER, der arbejder i et kontorvarefirma i KøbenhavnLOC, bestilt programmet for prisen på 100 programmørtimer.\n\nAt a Danish-test F1 of ~51, the model is solid on clear person and location names but still makes mistakes — e.g. it sometimes tags a country as ORG. That ceiling is exactly what only 272 in-language training sentences buys you, and why the cross-lingual pretraining step matters."
+  },
+  {
+    "objectID": "projects/lowresource-ner.html#try-it-live",
+    "href": "projects/lowresource-ner.html#try-it-live",
+    "title": "Low-Resource NER — Cross-Lingual Transfer",
+    "section": "Try it live",
+    "text": "Try it live\nThe trained model runs in a Hugging Face Space — paste Danish text below and it highlights the entities it finds. (The Space sleeps when idle, so the first request after a while may take ~30s to wake up.)\n\n\n\n  Demo not loading?\n  Open it directly on Hugging Face ↗"
+  },
+  {
+    "objectID": "projects/lowresource-ner.html#effect-of-transfer-learning",
+    "href": "projects/lowresource-ner.html#effect-of-transfer-learning",
+    "title": "Low-Resource NER — Cross-Lingual Transfer",
+    "section": "Effect of Transfer Learning",
+    "text": "Effect of Transfer Learning\n\n\n\n\n\n\n\n\nModel\nHow it’s trained\nDanish test F1\n\n\n\n\nBaseline\nDanish data only (272 sentences)\n49.26\n\n\nTransfer\nPretrain on English (CoNLL-2003), then fine-tune on the same 272 Danish sentences\n51.44\n\n\n\nThe transfer model wins because most of what NER needs — what a name looks like, where entities sit in a sentence — is learned from the English data and carries over, even though English and Danish vocabularies differ."
   }
 ]
