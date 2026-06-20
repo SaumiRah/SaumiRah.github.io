@@ -82,3 +82,11 @@
   background: #ffe066;
   border-color: #e6b800;
 }
+
+/* Doodle tool is desktop-only; absent on mobile-width viewports */
+@media (max-width: 767.98px) {
+  .doodle-toggle,
+  .doodle-canvas {
+    display: none;
+  }
+}
