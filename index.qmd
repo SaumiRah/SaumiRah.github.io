@@ -17,10 +17,16 @@ You can find my most up to date CV [here](SaumiRahnamay_cv.pdf).
 :::
 
 :::{#second-column}
-![](img/selfie_cropped.jpg){width="250px"}
+<div id="doodle-wrap" class="doodle-wrap">
+<img id="doodle-image" src="img/selfie_cropped.jpg" width="250" class="img-fluid" alt="Saumi Rahnamay">
+<canvas id="doodle-canvas" class="doodle-canvas"></canvas>
+<button id="doodle-toggle" class="doodle-toggle" type="button" aria-pressed="false" title="Doodle on this photo">✏️</button>
+</div>
 :::
 
 :::
+
+<script src="doodle.js"></script>
 
 ## Featured Work
 
