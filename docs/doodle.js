@@ -2,9 +2,17 @@
   const wrap = document.getElementById("doodle-wrap");
   if (!wrap) return;
 
-  const img = document.getElementById("doodle-image");
   const canvas = document.getElementById("doodle-canvas");
   const toggle = document.getElementById("doodle-toggle");
+
+  // Doodle tool is desktop-only; remove it entirely on mobile-width viewports.
+  if (window.matchMedia("(max-width: 767.98px)").matches) {
+    canvas.remove();
+    toggle.remove();
+    return;
+  }
+
+  const img = document.getElementById("doodle-image");
   const ctx = canvas.getContext("2d");
 
   let active = false;
