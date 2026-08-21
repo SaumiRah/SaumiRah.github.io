@@ -5,7 +5,11 @@ date: "2026-06-18"
 categories: [Python, spaCy, NLP, C#]
 ---
 
+![](transfer-learning.jpg)
+
 A small full-stack project that builds a **named-entity recognizer (NER)** for a lower-resource language by transferring knowledge from a high-resource one. A Python linguistics backend (spaCy) trains and serves the model; a C#/Blazor frontend lets you paste text and see the entities it finds.
+
+
 
 ::: {.callout-note title="Disclaimers"}
 - This demo uses an open, annotated **Danish** dataset. Danish is *not* an endangered or   genuinely low-resource language; it simply has *less* annotated data than English,  which makes it a convenient stand-in. The point is the **technique**: train where data is plentiful (English), then fine-tune on the language you actually care about.
