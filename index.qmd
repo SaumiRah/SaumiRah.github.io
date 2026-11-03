@@ -24,7 +24,21 @@ You can find my most up to date CV [here](SaumiRahnamay_cv.pdf).
 
 ## Featured Work
 
-::: {layout-ncol=3}
+::: {layout-ncol=2}
+
+::: {#lolrandom-card}
+#### [lolrandom](projects/lolrandom.qmd)
+
+A word game where the goal is to name something the chain could not have predicted.
+
+![](projects/lolrandom-card.png){width="200px"}
+
+A guess is scored by its strongest `|cos|` against any word in the chain, in a
+300-dimensional GloVe space of 32,699 nouns. A bridge walk shows why each miss
+missed, and a little face gives one hint per round.
+
+Python and numpy engine, vanilla JS front end, no build step.
+:::
 
 ::: {#first-card} 
 #### [Optimizing Gratuity](projects/Optimizing_Gratuitiy.qmd)
@@ -47,7 +61,7 @@ Determining where my play needs improvement, and optimizing my tournament strate
 EDA performed in SQL.
 :::
 
-::: {#second-card}
+::: {#bpe-card}
 #### [BPE Tokenizer from Scratch](projects/bpe-tokenizer-from-scratch.ipynb)
 Coding a Byte-Pair Encoding Tokenizer from scratch; only using numpy. Tokenization is the first step of any machine learning application involving natural language (e.g. LLMs).
 

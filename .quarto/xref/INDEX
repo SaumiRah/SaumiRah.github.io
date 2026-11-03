@@ -70,5 +70,14 @@
   },
   "projects/Newsgroups_IR.ipynb": {
     "Newsgroups_IR.html": "d941f307"
+  },
+  "projects/lowresource-ner.qmd": {
+    "lowresource-ner.html": "440447ad"
+  },
+  "projects/MIA.qmd": {
+    "MIA.html": "419546ab"
+  },
+  "projects/lolrandom.qmd": {
+    "lolrandom.html": "6ed748a1"
   }
 }

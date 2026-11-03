@@ -137,9 +137,18 @@ ul.task-list li input[type="checkbox"] {
 </section>
 <section id="featured-work" class="level2">
 <h2 class="anchored" data-anchor-id="featured-work">Featured Work</h2>
-<div class="quarto-layout-panel" data-layout-ncol="3">
+<div class="quarto-layout-panel" data-layout-ncol="2">
 <div class="quarto-layout-row">
-<div id="first-card" class="quarto-layout-cell" style="flex-basis: 33.3%;justify-content: center;">
+<div id="lolrandom-card" class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
+<section id="lolrandom" class="level4">
+<h4 class="anchored" data-anchor-id="lolrandom"><a href="./projects/lolrandom.html">lolrandom</a></h4>
+<p>A word game where the goal is to name something the chain could not have predicted.</p>
+<p><img src="projects/lolrandom-card.png" class="img-fluid" width="200"></p>
+<p>A guess is scored by its strongest <code>|cos|</code> against any word in the chain, in a 300-dimensional GloVe space of 32,699 nouns. A bridge walk shows why each miss missed, and a little face gives one hint per round.</p>
+<p>Python and numpy engine, vanilla JS front end, no build step.</p>
+</section>
+</div>
+<div id="first-card" class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
 <section id="optimizing-gratuity" class="level4">
 <h4 class="anchored" data-anchor-id="optimizing-gratuity"><a href="./projects/Optimizing_Gratuitiy.html">Optimizing Gratuity</a></h4>
 <p>Analysis of day-of-week and precipitation levels on tip amounts from my part-time pizza delivery job.</p>
@@ -148,7 +157,9 @@ ul.task-list li input[type="checkbox"] {
 <p>Inferential statistics performed with R.</p>
 </section>
 </div>
-<div id="second-card" class="quarto-layout-cell" style="flex-basis: 33.3%;justify-content: flex-start;">
+</div>
+<div class="quarto-layout-row">
+<div id="second-card" class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: flex-start;">
 <section id="super-smash-brothers-player-statistics" class="level4">
 <h4 class="anchored" data-anchor-id="super-smash-brothers-player-statistics"><a href="./projects/Melee-SQL.html">Super Smash Brothers Player Statistics</a></h4>
 <p>Analysis of my own player statistics in the fighting game Super Smash Brothers Melee.</p>
@@ -156,7 +167,7 @@ ul.task-list li input[type="checkbox"] {
 <p>EDA performed in SQL.</p>
 </section>
 </div>
-<div id="second-card" class="quarto-layout-cell" style="flex-basis: 33.3%;justify-content: center;">
+<div id="bpe-card" class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
 <section id="bpe-tokenizer-from-scratch" class="level4">
 <h4 class="anchored" data-anchor-id="bpe-tokenizer-from-scratch"><a href="./projects/bpe-tokenizer-from-scratch.html">BPE Tokenizer from Scratch</a></h4>
 <p>Coding a Byte-Pair Encoding Tokenizer from scratch; only using numpy. Tokenization is the first step of any machine learning application involving natural language (e.g.&nbsp;LLMs).</p>
