@@ -144,34 +144,22 @@ ul.task-list li input[type="checkbox"] {
 <div class="text-center">
 <p><a href="https://lolrandom.onrender.com" class="btn btn-primary btn-lg" target="_blank" rel="noopener">Play lolrandom ↗</a></p>
 </div>
-<p>You are shown a chain of words. Name a word the chain doesn’t predict — and you have to be clear of <strong>every</strong> word in it, including the ones you added yourself. Each round you win appends your word to the chain and makes the next round harder. Three strikes and the run is over; your score is how long the chain got.</p>
-<p>There is no hidden target word to guess at. That is the whole design: a guess is judged only by how strongly it is predicted, so a strange but honest answer is a good move.</p>
-<section id="how-the-scoring-works" class="level2">
-<h2 class="anchored" data-anchor-id="how-the-scoring-works">How the scoring works</h2>
-<p>Every word is a 300-dimensional GloVe vector. A guess’s score is its largest <code>|cos|</code> against any single member of the chain, so it can’t hide behind a good average — one related word is enough to sink it. The 32,699-word Pool is nouns only, filtered through a committed lexicon.</p>
-<p>The win cut is an absolute <code>|cos| &lt; 0.075</code>, not a rank cut. I measured both: a rank cut holds a fixed <em>share</em> of the Pool and therefore stays difficulty-invariant as the chain grows (a plausible guess won 14.2% of the time at chain length 1 and 10.1% at length 5), while an absolute cut is the only version that actually ramps. Bands above the cut tell you roughly how close you were.</p>
-</section>
-<section id="the-board" class="level2">
-<h2 class="anchored" data-anchor-id="the-board">The board</h2>
-<p>The chain is drawn as a node graph rather than a list: a seed is one node, two words are a line, three are a triangle, and so on. A wrong guess lands inside that polygon, placed by how tied it is to <em>every</em> member, so its position tells you which word it was nearest without saying so in words.</p>
-<p>The newest miss also draws its <strong>bridge</strong>: a dashed loop from your word through the intermediate words that lose, ending on the member that caught it.</p>
-<pre class="text"><code>sandwich                                          nearest dog
-BRIDGE  sandwich → chicken → pig → dog</code></pre>
-<p>The bridge is a deterministic walk on a graph of each frequent word’s 20 nearest neighbours, so it costs nothing and it isn’t something the hint button should sell. The hint buys the <em>direction</em>, not the path.</p>
-</section>
-<section id="hints" class="level2">
-<h2 class="anchored" data-anchor-id="hints">Hints</h2>
-<p>The little face in the corner gives one hint per round, free, and only after you’ve missed — so it is a way out of a dead end rather than a way to skip the thinking. A hint points at one curated <em>kind</em> of word whose targets I verified were winners, and an LLM writes the one sentence, in the game’s own rawr-xD register. If the model fails or no key is set, a template built from the chain’s hardest predictions takes over: correct, just blunter.</p>
-<p>The numbers stay off the screen on purpose. They live behind a debug flag instead, because a game that shows you the <code>|cos|</code> is a game you solve with arithmetic.</p>
-</section>
-<section id="daily-and-endless" class="level2">
-<h2 class="anchored" data-anchor-id="daily-and-endless">Daily and endless</h2>
-<p><strong>Daily</strong> is one run per UTC day, seeded from a curated list of common, concrete nouns — the words whose predictions are broadest. Everyone starts from the same word and the chains diverge from the first answer. <strong>Endless</strong> lets you start from any word in the Pool, which is how I actually played it a hundred times while tuning the cut.</p>
-</section>
-<section id="the-build" class="level2">
-<h2 class="anchored" data-anchor-id="the-build">The build</h2>
-<p>Standard library Python plus numpy for the engine, vanilla JavaScript for the page with no build step. The 35 MB of vectors are loaded at boot; the whole thing is 85 MB of RSS and answers in well under a second. State is in memory, so a reload resumes a run instead of resetting it.</p>
-<p>The design decisions — what the win cut is, why a run is a chain, why the bridge is guess feedback — are written down as ADRs, along with the directions I tried and rejected so they don’t get re-derived.</p>
+<p>lolrandom is a browser-based game about being random xD</p>
+<p>Given a word, think of another word that is as random as possible; a word isn’t associated with the given word at all (with some room for error).</p>
+<p>The game don’s an early 2000s internet scene kid aesthetic. Click the awesome-face in the bottom right to get a hint in rawr xD speak *holds up spork*.</p>
+<div class="callout callout-style-default callout-note callout-titled" title="WIP">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+WIP
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>This game is in alpha, and will change in the coming months. If you have feedback, email me: saumirah@gmail.com</p>
+</div>
+</div>
 <div class="callout callout-style-default callout-note callout-titled" title="Running it yourself">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -182,12 +170,11 @@ Running it yourself
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>The game is deployed on a small always-on instance, so it should be awake when you click. If it isn’t, that is a five-dollar server having a bad day, not the game.</p>
+<p>The game is deployed on a small always-on instance, so it should be awake when you click. If it isn’t, that’s the five-dollar server having a bad day, not the game.</p>
 </div>
 </div>
 
 
-</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
