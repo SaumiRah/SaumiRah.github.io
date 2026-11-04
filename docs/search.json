@@ -4,42 +4,28 @@
     "href": "projects/lolrandom.html",
     "title": "lolrandom",
     "section": "",
-    "text": "Play lolrandom ↗\n\nlolrandom is a browser-based game about being random xD\nGiven a word, think of another word that is as random as possible; a word isn’t associated with the given word at all (with some room for error).\nThe game don’s an early 2000s internet scene kid aesthetic. Click the awesome-face in the bottom right to get a hint in rawr xD speak *holds up spork*.\n\n\n\n\n\n\nWIP\n\n\n\nThis game is in alpha, and will change in the coming months. If you have feedback, email me: saumirah@gmail.com\n\n\n\n\n\n\n\n\nRunning it yourself\n\n\n\nThe game is deployed on a small always-on instance, so it should be awake when you click. If it isn’t, that’s the five-dollar server having a bad day, not the game."
+    "text": "lolrandom is a browser-based game about being random xD\nGiven a word, think of another word that is as random as possible; a word that isn’t associated with the given word at all (with some room for error).\nThe game don’s an early 2000s internet scene kid aesthetic. Click the awesome-face in the bottom right to get a hint in rawr xD speak *holds up spork*."
   },
   {
-    "objectID": "projects/lolrandom.html#how-the-scoring-works",
-    "href": "projects/lolrandom.html#how-the-scoring-works",
+    "objectID": "projects/lolrandom.html#todo",
+    "href": "projects/lolrandom.html#todo",
     "title": "lolrandom",
-    "section": "How the scoring works",
-    "text": "How the scoring works\nEvery word is a 300-dimensional GloVe vector. A guess’s score is its largest |cos| against any single member of the chain, so it can’t hide behind a good average — one related word is enough to sink it. The 32,699-word Pool is nouns only, filtered through a committed lexicon.\nThe win cut is an absolute |cos| &lt; 0.075, not a rank cut. I measured both: a rank cut holds a fixed share of the Pool and therefore stays difficulty-invariant as the chain grows (a plausible guess won 14.2% of the time at chain length 1 and 10.1% at length 5), while an absolute cut is the only version that actually ramps. Bands above the cut tell you roughly how close you were."
+    "section": "TODO",
+    "text": "TODO\n\nBugs\n\nBug: New instance starts on run-over screen for the daily.\n\nShould start on endless screen for now, and lock daily mode (with a visual lock and mouse-over explanation).\nDaily mode\n\nBug: Incorrect guess bridges to nearest word need not be circular."
   },
   {
-    "objectID": "projects/lolrandom.html#the-board",
-    "href": "projects/lolrandom.html#the-board",
+    "objectID": "projects/lolrandom.html#platform",
+    "href": "projects/lolrandom.html#platform",
     "title": "lolrandom",
-    "section": "The board",
-    "text": "The board\nThe chain is drawn as a node graph rather than a list: a seed is one node, two words are a line, three are a triangle, and so on. A wrong guess lands inside that polygon, placed by how tied it is to every member, so its position tells you which word it was nearest without saying so in words.\nThe newest miss also draws its bridge: a dashed loop from your word through the intermediate words that lose, ending on the member that caught it.\nsandwich                                          nearest dog\nBRIDGE  sandwich → chicken → pig → dog\nThe bridge is a deterministic walk on a graph of each frequent word’s 20 nearest neighbours, so it costs nothing and it isn’t something the hint button should sell. The hint buys the direction, not the path."
+    "section": "Platform",
+    "text": "Platform\n\nMobile-friendly version.\nOnboarding needs images, fewer words.\n\nShould NOT have to scroll on desktop or mobile. If Wordle can do it so can I!\nHide it in a mouse-over on the guess X? Would rather use remaining space more elegantly.\nOffset the graph and dedicate an area to printing the bridge? …"
   },
   {
-    "objectID": "projects/lolrandom.html#hints",
-    "href": "projects/lolrandom.html#hints",
+    "objectID": "projects/lolrandom.html#cosmetic",
+    "href": "projects/lolrandom.html#cosmetic",
     "title": "lolrandom",
-    "section": "Hints",
-    "text": "Hints\nThe little face in the corner gives one hint per round, free, and only after you’ve missed — so it is a way out of a dead end rather than a way to skip the thinking. A hint points at one curated kind of word whose targets I verified were winners, and an LLM writes the one sentence, in the game’s own rawr-xD register. If the model fails or no key is set, a template built from the chain’s hardest predictions takes over: correct, just blunter.\nThe numbers stay off the screen on purpose. They live behind a debug flag instead, because a game that shows you the |cos| is a game you solve with arithmetic."
-  },
-  {
-    "objectID": "projects/lolrandom.html#daily-and-endless",
-    "href": "projects/lolrandom.html#daily-and-endless",
-    "title": "lolrandom",
-    "section": "Daily and endless",
-    "text": "Daily and endless\nDaily is one run per UTC day, seeded from a curated list of common, concrete nouns — the words whose predictions are broadest. Everyone starts from the same word and the chains diverge from the first answer. Endless lets you start from any word in the Pool, which is how I actually played it a hundred times while tuning the cut."
-  },
-  {
-    "objectID": "projects/lolrandom.html#the-build",
-    "href": "projects/lolrandom.html#the-build",
-    "title": "lolrandom",
-    "section": "The build",
-    "text": "The build\nStandard library Python plus numpy for the engine, vanilla JavaScript for the page with no build step. The 35 MB of vectors are loaded at boot; the whole thing is 85 MB of RSS and answers in well under a second. State is in memory, so a reload resumes a run instead of resetting it.\nThe design decisions — what the win cut is, why a run is a chain, why the bridge is guess feedback — are written down as ADRs, along with the directions I tried and rejected so they don’t get re-derived.\n\n\n\n\n\n\nRunning it yourself\n\n\n\nThe game is deployed on a small always-on instance, so it should be awake when you click. If it isn’t, that is a five-dollar server having a bad day, not the game."
+    "section": "Cosmetic",
+    "text": "Cosmetic\n\nReplace nodes with emojis.\n\nUse the most semantically similar emoji.\n\nScene-theme. Need to create scene-style background. And UI elements.\nAdd comesmetic interactivity\n\nAble to drag the network around (Mario 64)\n\n\n\n\n\n\n\n\nWIP\n\n\n\nThis game is in alpha, and will change in the coming months. If you have feedback, email me: saumirah@gmail.com"
   },
   {
     "objectID": "projects/RAship-Data-Analysis.html",
