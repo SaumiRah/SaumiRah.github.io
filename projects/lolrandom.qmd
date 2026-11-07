@@ -1,7 +1,10 @@
---- title: "lolrandom" description: "A word game where the goal is to say something the 
-chain could not have predicted. I built the game, the scoring, the hint system and the 
-little guy who gives the hints." date: "2026-11-03" image: lolrandom-card.png categories: 
-[Python, NLP, Machine Learning, JavaScript] ---
+---
+title: "lolrandom"
+description: "A word game where the goal is to say something the chain could not have predicted. I built the game, the scoring, the hint system and the little guy who gives the hints."
+date: "2026-11-03"
+image: lolrandom-card.png
+categories: [Python, NLP, Machine Learning, JavaScript]
+---
 
 ![](lolrandom.png)
 

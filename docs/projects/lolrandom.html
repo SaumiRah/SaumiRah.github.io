@@ -143,7 +143,11 @@ ul.task-list li input[type="checkbox"] {
 <p><img src="lolrandom.png" class="img-fluid"></p>
 <div class="text-center">
 <p><a href="https://lolrandom.onrender.com" class="btn btn-primary btn-lg" target="_blank" rel="noopener">Play lolrandom ↗</a></p>
+<p><a href="https://lolrandom.onrender.com/devlog" target="_blank" rel="noopener">Dev timeline ↗</a> · <a href="https://github.com/SaumiRah/lolrandom" target="_blank" rel="noopener">Source ↗</a></p>
 </div>
+<p>lolrandom is a browser-based game about being random xD</p>
+<p>Given a word, think of another word that is as random as possible; a word that isn’t associated with the given word at all (with some room for error).</p>
+<p>The game dons an early 2000s internet scene kid aesthetic. Click the awesome-face in the bottom right to get a hint in rawr xD speak *holds up spork*.</p>
 <div class="callout callout-style-default callout-note callout-titled" title="WIP">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -157,47 +161,94 @@ WIP
 <p>This game is in alpha, and will change in the coming months. If you have feedback, email me: saumirah@gmail.com</p>
 </div>
 </div>
-<p>lolrandom is a browser-based game about being random xD</p>
-<p>Given a word, think of another word that is as random as possible; a word that isn’t associated with the given word at all (with some room for error).</p>
-<p>The game don’s an early 2000s internet scene kid aesthetic. Click the awesome-face in the bottom right to get a hint in rawr xD speak *holds up spork*.</p>
-<section id="todo" class="level2">
-<h2 class="anchored" data-anchor-id="todo">TODO</h2>
-<section id="bugs" class="level3">
-<h3 class="anchored" data-anchor-id="bugs">Bugs</h3>
-<ul class="task-list">
-<li><label><input type="checkbox">Bug: New instance starts on run-over screen for the daily.</label>
-<ul class="task-list">
-<li><label><input type="checkbox">Should start on endless screen for now, and lock daily mode (with a visual lock and mouse-over explanation).</label></li>
-<li><label><input type="checkbox">Daily mode</label></li>
-</ul></li>
-<li><label><input type="checkbox">Bug: Incorrect guess bridges to nearest word need not be circular.</label></li>
-</ul>
-</section>
-</section>
+<section id="todo" class="level1">
+<h1>TODO</h1>
 <section id="platform" class="level2">
 <h2 class="anchored" data-anchor-id="platform">Platform</h2>
 <ul class="task-list">
-<li><label><input type="checkbox">Mobile-friendly version.</label></li>
-<li><label><input type="checkbox">Onboarding needs images, fewer words.</label>
-<ul>
-<li>Should NOT have to scroll on desktop or mobile. If Wordle can do it so can I!</li>
-<li>Hide it in a mouse-over on the guess X? Would rather use remaining space more elegantly.</li>
-<li>Offset the graph and dedicate an area to printing the bridge? …</li>
+<li><label><input type="checkbox" checked="">Mobile-friendly version.</label></li>
+<li><label><input type="checkbox" checked="">Onboarding: three inline illustrations, four short sections, and no scrolling on desktop or mobile. The images are inline SVG, so they ship with the page rather than needing an asset pipeline.</label></li>
+<li><label><input type="checkbox" checked=""><code>OPENBLAS_NUM_THREADS=1</code> (plus the OMP/MKL equivalents), set before numpy is imported and named in the Dockerfile and <code>render.yaml</code>.</label></li>
+<li><label><input type="checkbox" checked="">Connection hygiene: a socket timeout and a connection budget that answers <code>503 Retry-After</code> instead of growing a thread per stalled client.</label></li>
+<li><label><input type="checkbox" checked="">Links: website and LinkedIn in the footer, the help panel and <code>/devlog</code>.</label></li>
+<li><label><input type="checkbox" checked="">Dev timeline page at <code>/devlog</code> (<code>web/devlog.html</code>), with the roadmap and the shipped history.</label></li>
+<li><label><input type="checkbox" checked="">Legal: plain-language <code>/privacy</code> and <code>/terms</code>, an MIT <code>LICENSE</code>, and a checklist in <code>docs/memos/legal-checklist.md</code>. No consent banner: the only cookie is strictly necessary.</label></li>
+</ul>
+</section>
+<section id="engine" class="level2">
+<h2 class="anchored" data-anchor-id="engine">Engine</h2>
+<ul class="task-list">
+<li><label><input type="checkbox" checked="">Bug: State keyed with (mode, seed) so anyone playing the same seed shares one state.</label>
+<ul class="task-list">
+<li><label><input type="checkbox" checked="">Should be keyed with (mode, seed, user-id)</label></li>
 </ul></li>
+<li><label><input type="checkbox" checked="">Bug: didn’t finish daily yesterday, picked up at the same state today.</label>
+<ul>
+<li>A Daily is keyed by its date, the clock is read per request, and a test drives it across midnight and past a repeated seed. The fix was already in; the test is the thing that keeps it fixed.</li>
+</ul></li>
+<li><label><input type="checkbox">Experiment with different embedding model?</label>
+<ul>
+<li>A memo and a concrete benchmark plan are in <code>docs/memos/embedding-models.md</code>. ConceptNet Numberbatch is the first candidate. It needs a new artifact and a recalibrated win cut, so it is a project rather than a drop-in.</li>
+</ul></li>
+<li><label><input type="checkbox" checked="">Establish database to start producing game statistics. Right now all previous games disapear on restart. Should start collecting any useful data I legally can.</label>
+<ul>
+<li>SQLite on a Render disk (<code>LOLRANDOM_DB</code>). Live runs survive a restart; games, guesses and hints are append-only; <code>python3 -m engine.stats</code> reads them. The statistics store a salted hash, never the cookie.</li>
+</ul></li>
+<li><label><input type="checkbox" checked="">Win condition: High score. Each round gets you a higher score and a bigger reaction for how RANDOM you are <em>waffles</em>.</label>
+<ul>
+<li>The score stays “rounds won” and the reaction escalates: a bigger sticker burst and a louder rawr-xD line as the chain grows. Per the decision to keep the scoring model and add the reward around it.</li>
+</ul></li>
+<li><label><input type="checkbox" checked="">Hover/click nodes to reveal neighbouring words for extra information.</label></li>
 </ul>
 </section>
 <section id="cosmetic" class="level2">
 <h2 class="anchored" data-anchor-id="cosmetic">Cosmetic</h2>
 <ul class="task-list">
-<li><label><input type="checkbox">Replace nodes with emojis.</label>
+<li><label><input type="checkbox" checked="">Replace nodes with emojis.</label>
 <ul>
-<li>Use the most semantically similar emoji.</li>
+<li>Deterministic word-to-emoji stickers, with the word label kept; the seed has a fixed one because it is the word you did not choose.</li>
 </ul></li>
-<li><label><input type="checkbox">Scene-theme. Need to create scene-style background. And UI elements.</label></li>
-<li><label><input type="checkbox">Add comesmetic interactivity</label>
+<li><label><input type="checkbox">Scene-theme. Need to create scene-style background. And UI elements.</label>
 <ul>
-<li>Able to drag the network around (Mario 64)</li>
+<li><label><input type="checkbox">Add cosmetic interactivity</label></li>
+<li>Able to drag the network around (Mario 64)?</li>
+<li>Deferred to the next pass: the background, the UI elements and dragging are one coherent piece of art direction, not three small changes.</li>
 </ul></li>
+<li><label><input type="checkbox" checked="">Kerning is too tight on mobile.</label></li>
+<li><label><input type="checkbox" checked="">Guess name and marker is currently being drawn under the nodes, make sure its the tallest layer.</label></li>
+<li><label><input type="checkbox" checked="">Bug: Incorrect guess bridges need not be circular. It is ugly enough to be considered a bug.</label>
+<ul>
+<li>It is a gentle dashed arc with the intermediate words on it now. No hover-only version and no off-canvas panel: the arc is the explanation.</li>
+</ul></li>
+<li><label><input type="checkbox" checked="">Stop using the words “bridge” or “chain”, instead use “chain of association”.</label>
+<ul>
+<li>Player-facing copy only: the board, history, help panel and docs say “chain of association”; the code, ADRs and CONTEXT.md keep <em>Bridge</em> for the concept and <em>Chain</em> for the player’s word list.</li>
+</ul></li>
+<li><label><input type="checkbox" checked="">Display total number of words remaining at each round. Very interesting and engaging.</label>
+<ul>
+<li>The board caption and every history heading show how many Pool words still win against the chain.</li>
+</ul></li>
+</ul>
+</section>
+<section id="questionsthoughts" class="level2">
+<h2 class="anchored" data-anchor-id="questionsthoughts">Questions/Thoughts</h2>
+<ul>
+<li><label><input type="checkbox" checked="">I’m saving everything in memory right now: this feels like a bad idea.</label>
+<ul>
+<li>It is SQLite on a disk now, one file, with a fallback to memory if the disk cannot be written. Still one process and one disk; that is the trade-off.</li>
+<li><label><input type="checkbox" checked="">I don’t what what else I don’t know.</label>
+<ul class="task-list">
+<li><label><input type="checkbox">Should I get a bachelors in comp sci? or the free, online equivalent?</label>
+<ul>
+<li><code>docs/memos/cs-degree.md</code> has the decision rule keyed to immigration, industry, research and indie work. It is a question, not a code change.</li>
+</ul></li>
+</ul></li>
+</ul></li>
+<li><label><input type="checkbox" checked="">Am I paying too much for a server?</label>
+<ul>
+<li><code>docs/memos/hosting-costs.md</code>: Render is about $7.25/month; Fly.io is about $2.34 for the same shape. Not overcharged, but about 3x the cheapest credible option; the memo says when the migration is worth it.</li>
+</ul></li>
+<li>This long todo list is very exciting, but daunting.</li>
 </ul>
 <div class="callout callout-style-default callout-note callout-titled" title="WIP">
 <div class="callout-header d-flex align-content-center">
@@ -214,6 +265,7 @@ WIP
 </div>
 
 
+</section>
 </section>
 
 </main> <!-- /main -->
