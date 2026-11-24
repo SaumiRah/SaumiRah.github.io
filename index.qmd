@@ -29,15 +29,13 @@ You can find my most up to date CV [here](SaumiRahnamay_cv.pdf).
 ::: {#lolrandom-card}
 #### [lolrandom](projects/lolrandom.qmd)
 
-A word game where the goal is to name something the chain could not have predicted.
+A word game about being random. Offers a challenging daily mode, and a replayable endless mode.
 
-![](projects/lolrandom-card.png){width="200px"}
+![](projects/lolrandom-title.png){width="200px"}
 
-A guess is scored by its strongest `|cos|` against any word in the chain, in a
-300-dimensional GloVe space of 32,699 nouns. A bridge walk shows why each miss
-missed, and a little face gives one hint per round.
+Leverages GloVe word embeddings to calculate orthogonal regions relative to a set of words. The goal is to guess words that lie in that orthogonal region - i.e. finding random words. 
 
-Python and numpy engine, vanilla JS front end, no build step.
+[Available to play now!](https://lolrandom.lol)
 :::
 
 ::: {#first-card} 
